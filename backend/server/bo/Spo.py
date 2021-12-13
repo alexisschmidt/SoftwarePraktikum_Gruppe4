@@ -1,9 +1,13 @@
+from datetime import date
+
 from server.bo.NamedBo import NamedBo
 """das Modul "datetime" wird importiert um das datumsformat für Variablen zu verwenden"""
 import datetime
 
 
 class Spo (NamedBo):
+    start_date: date
+    end_date: date
 
     def __init__(self):
         super().__init__()
