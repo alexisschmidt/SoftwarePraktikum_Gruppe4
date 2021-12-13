@@ -30,4 +30,5 @@ class Spo (NamedBo):
         """Bestimmen des Enddatums der SPO Gültigkeit """
         self.end_date = datetime.date(year, month, day)
 
-        
+
+

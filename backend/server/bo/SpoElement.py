@@ -29,3 +29,5 @@ class SpoElement (NamedBo):
 
     def set_workload(self, workload):
         self.workload = workload
+
+
