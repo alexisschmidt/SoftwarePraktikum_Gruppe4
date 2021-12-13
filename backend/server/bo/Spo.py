@@ -1,5 +1,5 @@
 from server.bo.NamedBo import NamedBo
-"""Die "date" Klasse aus dem Modul "datetime" wird importiert um das datumsformat für Variablen zu verwenden"""
+"""das Modul "datetime" wird importiert um das datumsformat für Variablen zu verwenden"""
 import datetime
 
 
