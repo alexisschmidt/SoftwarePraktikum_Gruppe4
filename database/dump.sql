@@ -95,7 +95,7 @@ CREATE TABLE `person` (
   `id` int NOT NULL,
   `creationdate` datetime NOT NULL,
   `title` varchar(45) NOT NULL,
-  `firstnamename` varchar(45) NOT NULL,
+  `firstname` varchar(45) NOT NULL,
   `lastname` varchar(45) NOT NULL,
   `email` varchar(45) NOT NULL,
   PRIMARY KEY (`id`)
