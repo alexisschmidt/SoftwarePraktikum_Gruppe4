@@ -1,4 +1,4 @@
-from server.bo.BusinessObject import BusinessObject
+from server.bo.Businessobject import BusinessObject
 
 
 """Realisierung einer exemplarischen Benutzerklasse.
