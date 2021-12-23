@@ -11,17 +11,6 @@ class Module (NamedBo):
         self.__examtype = ""
         self.__instructor = ""
 
-        self.__type = ""
-        self.__requirement = ""
-        self.__outcome = ""
-        self.__examtype = ""
-        self.__instructor = ""
-
-        self.__type = ""
-        self.__requirement = ""
-        self.__outcome = ""
-        self.__examtype = ""
-        self.__instructor = ""
 
 
 # Auslesen
