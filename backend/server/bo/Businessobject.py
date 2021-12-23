@@ -1,10 +1,11 @@
 from abc import ABC, abstractmethod
-
+import datetime
 
 class BusinessObject(ABC):
 
     def __init__(self):
         self.id = 0
+        self.creationdate = datetime.date(1, 1, 1)
 
     def set_id(self, value):
         """Setzen der ID."""
@@ -14,10 +15,10 @@ class BusinessObject(ABC):
         """Auslesen der ID."""
         return self.id
 
-    def set_creationDate(self, value):
+    def set_creationdate(self, value):
         """setzung der erstellten Datum"""
         self.creationdate = value
 
-    def get_creationDate(self):
+    def get_creationdate(self):
         """Auslesen des erstellten Datum"""
-        return self.set_creationDate
+        return self.set_creationdate
