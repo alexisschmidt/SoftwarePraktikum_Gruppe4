@@ -1,15 +1,17 @@
 from server.bo.NamedBo import NamedBo
+from server.bo.Person import Person
 from server.bo.SpoElement import SpoElement
 
 class Module (NamedBo):
     def __init__(self):
-        super.__init__()
+        super().__init__()
 
         self.__type = ""
         self.__requirement = ""
         self.__outcome = ""
         self.__examtype = ""
-        self.__instructor = ""
+        self.__instructor = Person()
+
 
 
 
