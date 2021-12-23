@@ -64,8 +64,8 @@ spoelement = api.inherit('Spoelement', namedbo,{
 module = api.inherit('Module', namedbo, {
     'type': fields.String(attribute='_type', description='Typ des Moduls'),
     'requirement': fields.String(attribute='_requirement', description='Voraussetzungen für das Modul'),
-    'outcome': fields.String(attribute='_outcome', description='Outcome des Moduls')
-    'examtype': fields.String(attribute='_examtype', description='Prüfungstyp des Moduls')
+    'outcome': fields.String(attribute='_outcome', description='Outcome des Moduls'),
+    'examtype': fields.String(attribute='_examtype', description='Prüfungstyp des Moduls'),
     'instructor': fields.String(attribute='_instructor', description='Modulverantwortlicher')
 })
 
@@ -73,7 +73,7 @@ modulepart = api.inherit('Modulepart', namedbo,{
     'sws': fields.String(attribute='_sws', description='Anzahl der SWS des Modulteils'),
     'language': fields.String(attribute='_sanguage', descpription='Sprache des Modulteils'),
     'description': fields.String(attibute='_description', attribute='Beschreibung des Modulteils'),
-    'connection': fields.String(attibute='_connection', attribute='Verbindung zu anderen Modulteilen')
+    'connection': fields.String(attibute='_connection', attribute='Verbindung zu anderen Modulteilen'),
     'literature': fields.String(attibute='_literature', attribute='Literatur für das Modulteil'),
     'sources': fields.String(attibute='_sources', attribute='Quellen'),
     'semester': fields.String(attibute='_semester', attribute='Semester des Modulteils')
