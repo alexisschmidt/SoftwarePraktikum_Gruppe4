@@ -1,4 +1,4 @@
-"""HIER BO IMPORTIEREN"""
+from server.bo.Semester import Semester
 from backend.server.db.Mapper import Mapper
 
 
