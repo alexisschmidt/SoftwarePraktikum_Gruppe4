@@ -1,7 +1,8 @@
+from abc import ABC, abstractmethod
 from server.bo.NamedBo import NamedBo
 
 
-class SpoElement (NamedBo):
+class SpoElement (ABC, NamedBo):
     edvnr: int
     ects: int
     workload: str
