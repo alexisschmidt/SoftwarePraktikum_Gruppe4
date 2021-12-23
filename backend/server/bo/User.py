@@ -1,4 +1,4 @@
-from server.bo.BusinessObject import BusinessObject
+from server.bo.Businessobject import BusinessObject
 
 
 """Realisierung einer exemplarischen Benutzerklasse.
@@ -49,6 +49,8 @@ class User(BusinessObject):
         obj.set_lastname(dictionary["lastname"])
         obj.set_email(dictionary["email"])
         return obj
+
+
 
 
 
