@@ -1,9 +1,11 @@
 from server.bo.NamedBo import NamedBo
+from server.bo.Semester import Semester
+from server.bo.Person import Person
 from server.bo.SpoElement import SpoElement
 
 class Modulepart (NamedBo):
     def __init__(self):
-        super.__init__()
+        super().__init__()
 
         self.__SWS = ""
         self.__language = ""
@@ -11,7 +13,8 @@ class Modulepart (NamedBo):
         self.__connection = ""
         self.__literature = ""
         self.__sources = ""
-        self.__semester = ""
+        self.__professor = Person()
+        self.__semester = Semester()
 
         # Auslesen
 
