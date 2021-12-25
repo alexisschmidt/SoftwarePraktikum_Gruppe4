@@ -1,7 +1,11 @@
-from abc import ABC, abstractmethod
+from abc import ABC
+"""das Modul "datetime" wird importiert um das datumsformat für Variablen zu verwenden"""
 import datetime
 
+
 class BusinessObject(ABC):
+    id: int
+    creationdate: datetime.date
 
     def __init__(self):
         self.id = 0
@@ -16,9 +20,9 @@ class BusinessObject(ABC):
         return self.id
 
     def set_creationdate(self, value):
-        """setzung der erstellten Datum"""
+        """Setzen des erstellten Datums"""
         self.creationdate = value
 
     def get_creationdate(self):
-        """Auslesen des erstellten Datum"""
+        """Auslesen des erstellten Datums"""
         return self.set_creationdate
