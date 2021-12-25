@@ -39,7 +39,7 @@ bo = api.model('BusinessObject', {
 })
 
 """Alle anderen BusinessObjects"""
-user = api.inherit('User', BusinessObject, {
+user = api.inherit('User', 'BusinessObject', {
     'firstname': fields.String(attibute='__firstname', description='Vorname eines Users'),
     'lastname': fields.String(attibute='__lastname', description='Nachname eines Users'),
     'email': fields.String(attibute='__email', description='Emailadresse eines Users')
