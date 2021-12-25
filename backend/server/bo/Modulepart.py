@@ -1,4 +1,5 @@
 from server.bo.NamedBo import NamedBo
+from server.bo.Person import Person
 
 
 class Modulepart (NamedBo):
@@ -9,6 +10,7 @@ class Modulepart (NamedBo):
     __literature: str
     __sources: str
     __semester: str
+    _professor: Person
 
     def __init__(self):
         super().__init__()
@@ -19,6 +21,7 @@ class Modulepart (NamedBo):
         self.__literature = ""
         self.__sources = ""
         self.__semester = ""
+        self._professor = Person()
 
         # Auslesen
 

@@ -1,12 +1,12 @@
 from server.bo.NamedBo import NamedBo
-
+from server.bo.Person import Person
 
 class Module(NamedBo):
     __type: str
     __requirement: str
     __outcome: str
     __examtype: str
-    __instructor: str
+    __instructor: Person
 
     def __init__(self):
         super().__init__()
@@ -14,7 +14,7 @@ class Module(NamedBo):
         self.__requirement = ""
         self.__outcome = ""
         self.__examtype = ""
-        self.__instructor = ""
+        self.__instructor = Person()
 
     # Auslesen
     def get_type(self):
