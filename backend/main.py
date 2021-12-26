@@ -88,8 +88,175 @@ person = api.inherit('Person', namedbo, {
     'email': fields.String(attibute='__email', description='Emailadresse einer Person')
 })
 
-
 """Alles @sposystem.route('')"""
+
+
+@sposystem.route('/users')
+@sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
+class UserListOperations(Resource):
+
+    @sposystem.marshal_with(user, code=200)
+    @sposystem.expect(user)
+    @secured
+    def post(self):
+
+        adm = Administration()
+        proposal = User.from_dict(api.payload)
+
+        if proposal is not None:
+            c = adm.create_user(proposal.get_firstname(), proposal.get_lastname(), proposal.get_email())
+            return c, 200
+        else:
+            return '', 500
+
+
+@sposystem.route('/users/<int:id>')
+@sposystem.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
+@sposystem.param('id', 'Die ID des User-Objekts')
+class UserOperations(Resource):
+    @sposystem.marshal_with(user)
+    @secured
+    def get(self, id):
+        """Auslesen eines bestimmten Customer-Objekts.
+        Das auszulesende Objekt wird durch die ```id``` in dem URI bestimmt."""
+
+        adm = Administration()
+        us = adm.get_user_by_id(id)
+        return us
+
+    @secured
+    def delete(self, id):
+        """Löschen eines bestimmten User-Objekts.
+        Das zu löschende Objekt wird durch die ```id``` in dem URI bestimmt."""
+
+        adm = Administration()
+        us = adm.get_user_by_id(id)
+        adm.delete_user(us)
+        return '', 200
+
+    @sposystem.marshal_with(user)
+    @sposystem.expect(user, validate=True)
+    @secured
+    def put(self, id):
+        """Update eines bestimmten User-Objekts.
+        **ACHTUNG: ** relevante id ist die id, die mittels URI bereitgestellt und somit als Methodenparameter
+        verwendet wird. Dieser Parameter überschreibt das ID-Attribut des im Payload der Anfrage übermittelten
+        User-Objekts."""
+
+        adm = Administration()
+        us = User.from_dict(api.payload)
+
+        if us is not None:
+            """Hierdurch wird die id des zu überschreibenden (vgl. Update) Customer-Objekts gesetzt.
+            Siehe Hinweise oben."""
+
+            us.set_id(id)
+            adm.save_user(us)
+            return '', 200
+        else:
+            return '', 500
+
+
+@sposystem.route('/users-by-name/<string:lastname>')
+@sposystem.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
+@sposystem.param('lastname', 'Der Nachname des Users')
+class UserByNameOperations(Resource):
+    @sposystem.marshal_with(user)
+    @secured
+    def get(self, lastname):
+        """
+        Auslesen von Customer-Objekten, die durch den Nachnamen bestimmt werden.
+        Die auszulesenden Objekte werden durch ```lastname``` in dem URI bestimmt.
+        """
+
+        adm = Administration()
+        us = adm.get_user_by_name(lastname)
+        return us
+
+
+@sposystem.route('/spos')
+@sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
+class SpoListOperations(Resource):
+    @sposystem.marshal_list_with(spo)
+    @secured
+    def get(self):
+        """
+        Auslesen aller SPO-Objekte.
+        Sollten keine SPO-Objekte verfügbar sein, so wird eine leere Sequenz zurückgegeben.
+        """
+
+        adm = Administration()
+        spo_list = adm.get_all_spos()
+        return spo_list
+
+
+@sposystem.route('/spos/<int:id>')
+@sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
+@sposystem.param('id', 'Die ID des SPO-Objekts')
+class SpoOperations(Resource):
+    @sposystem.marshal_with(spo)
+    @secured
+    def get(self, id):
+        """
+        Auslesen eines bestimmten SPO-Objekts.
+        Das auszulesende Objekt wird durch die ```id``` in dem URI bestimmt.
+        """
+
+        adm = Administration()
+        spo = adm.get_spo_by_id(id)
+        return spo
+
+    @secured
+    def delete(self, id):
+        """
+        Löschen eines bestimmten SPO-Objekts.
+        Das zu löschende Objekt wird durch die ```id``` in dem URI bestimmt.
+        """
+
+        adm = Administration()
+        spo = adm.get_spo_by_id(id)
+        adm.delete_spo(spo)
+        return '', 200
+
+    @sposystem.marshal_with(spo)
+    @secured
+    def put(self, id):
+        """
+        Update eines bestimmten SPO-Objekts.
+        **ACHTUNG: ** relevante id ist die id, die mittels URI bereitgestellt und somit als Methodenparameter
+        verwendet wird. Dieser Parameter überschreibt das ID-Attribut des im Payload der Anfrage übermittelten
+        SPO-Objekts.
+        """
+
+        adm = Administration()
+        spo = Spo.from_dict(api.payload)
+
+        if spo is not None:
+            """
+            Hierdurch wird die id des zu überschreibenden (vgl. Update) SPO-Objekts gesetzt.
+            Siehe Hinweise oben.
+            """
+            spo.set_id(id)
+            adm.save_spo(spo)
+            return '', 200
+        else:
+            return '', 500
+
+    @sposystem.marshal_with(spo, code=200)
+    @sposystem.expect(spo)
+    @secured
+    def post(self, id):
+
+        adm = Administration()
+        proposal = User.from_dict(api.payload)
+
+        if proposal is not None:
+            c = adm.create_user(proposal.get_firstname(), proposal.get_lastname(), proposal.get_email())
+            return c, 200
+        else:
+            return '', 500
+
+
 
 """**ACHTUNG:** Diese Zeile wird nur in der lokalen Entwicklungsumgebung ausgeführt und hat in der Cloud keine Wirkung!
 """
