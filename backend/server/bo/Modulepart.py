@@ -1,8 +1,8 @@
-from server.bo.NamedBo import NamedBo
+from server.bo.NamedBo import SpoElement
 from server.bo.Person import Person
 
 
-class Modulepart (NamedBo):
+class Modulepart (SpoElement):
     __SWS: str
     __language: str
     __description: str
@@ -99,6 +99,9 @@ class Modulepart (NamedBo):
         obj.set_id(dictionary["id"])                    # Teil von BusinessObject!
         obj.set_sws(dictionary["SWS"])                  # Teil von NamedBo!
         obj.set_language(dictionary["language"])        # Teil von NamedBo!
+        obj.set_edvnr(dictionary["edvnr"])              # Teil von SPOElement
+        obj.set_ects(dictionary["ects"])                # Teil von SPOElement
+        obj.set_workload(dictionary["workload"])        # Teil von SPOElement
         obj.set_description(dictionary["description"])
         obj.set_connection(dictionary["connection"])
         obj.set_literature(dictionary["literature"])

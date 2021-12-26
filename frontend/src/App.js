@@ -2,13 +2,13 @@ import React from 'react';
 import Studentview from "./components/pages/Studentview";
 import SpoStudent from "./components/pages/SpoStudent";
 
-import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
+/* import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
 import { Container, ThemeProvider, CssBaseline } from '@material-ui/core';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import SignIn from './Components/Pages/SignIn';
 import firebaseConfig from './firebaseConfig';
-import ContextErrorMessage from "./Components/Dialog/ContextErrorMessage";
+import ContextErrorMessage from "./Components/Dialog/ContextErrorMessage"; */
 
 
 
@@ -39,15 +39,14 @@ import ContextErrorMessage from "./Components/Dialog/ContextErrorMessage";
 
 
 
-
-function App() {
-  return (
-    <div>
-      <Studentview />
-      <SpoStudent />
-     
-    </div>
-  );
-}
-
+	render(){
+		return (
+		<div>
+		<Studentview />
+		<SpoStudent />
+		
+		</div>
+	);
+	}
+ }
 export default App;

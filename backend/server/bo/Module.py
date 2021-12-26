@@ -20,6 +20,8 @@ class Module (SpoElement): # diese infos sind nicht relevant, nicht in den anfor
         self.__outcome = ""
         self.__examtype = ""
         self.__instructor = Person()
+        self.__moduleparts =[]
+
 
     # Auslesen
     def get_type(self):
@@ -62,10 +64,22 @@ class Module (SpoElement): # diese infos sind nicht relevant, nicht in den anfor
         """Setzen des Modulverantwortlichen"""
         self.__instructor = instructor
     
+    def add_modulepart(self,modulepart):
+        self.__moduleparts.append(modulepart)
+
+    def get_moduleparts(self):
+        return self.__moduleparts
 
 
     def json(self):
-        return json.dumps({'a': self.a, 'b': self.b, 'c': self.c})
+        modulehash=[]
+        for modulepart in self.__moduleparts:
+            modulehash.append(modulepart.hash())
+
+        return json.dumps({
+            'id': self.get_id(), 
+            'b': self.b, 
+            'c': self.c})
 
 
 
@@ -86,7 +100,10 @@ class Module (SpoElement): # diese infos sind nicht relevant, nicht in den anfor
         obj.set_id(dictionary["id"])                    # Teil von BusinessObject!
         obj.set_name(dictionary["name"])                # Teil von NamedBo!
         obj.set_title(dictionary["title"])              # Teil von NamedBo!
-        obj.set_type(dictionary["type"])
+        obj.set_edvnr(dictionary["edvnr"])              # Teil von SPOElement
+        obj.set_ects(dictionary["ects"])                # Teil von SPOElement
+        obj.set_workload(dictionary["workload"])        # Teil von SPOElement
+        obj.set_type(dictionary["type"])                    
         obj.set_requirement(dictionary["requirement"])
         obj.set_outcome(dictionary["outcome"])
         obj.set_examtype(dictionary["examtype"])
