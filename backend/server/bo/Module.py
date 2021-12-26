@@ -1,12 +1,17 @@
-from server.bo.NamedBo import NamedBo
+from server.bo.SpoElement import SpoElement
+import json
 from server.bo.Person import Person
 
-class Module(NamedBo):
+
+
+class Module (SpoElement): # diese infos sind nicht relevant, nicht in den anforderungen 
     __type: str
     __requirement: str
     __outcome: str
     __examtype: str
     __instructor: Person
+       
+
 
     def __init__(self):
         super().__init__()
@@ -56,6 +61,13 @@ class Module(NamedBo):
     def set_instructor(self, instructor):
         """Setzen des Modulverantwortlichen"""
         self.__instructor = instructor
+    
+
+
+    def json(self):
+        return json.dumps({'a': self.a, 'b': self.b, 'c': self.c})
+
+
 
     def __str__(self):
         return "Module: {}, {}, {}, {}, {}, {}".format(
