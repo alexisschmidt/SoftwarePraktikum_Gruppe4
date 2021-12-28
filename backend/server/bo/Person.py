@@ -1,4 +1,5 @@
 from server.bo.NamedBo import NamedBo
+import json
 
 
 class Person (NamedBo):
@@ -44,6 +45,20 @@ class Person (NamedBo):
             self.__firstname,
             self.__lastname,
             self.__email)
+
+    def json(self):
+        modulehash=[]
+        for modulepart in self.__moduleparts:
+            modulehash.append(modulepart.hash())
+
+        return json.dumps({
+            'id': self.get_id(), 
+            'name': self.get_name(),
+            'title': self.get_title(),
+            'firstname': self.get_firstname(),
+            'lastname': self.get_lastname(),
+            'email': self.get_email()
+            })
 
     @staticmethod
     def from_dict(dictionary=dict()):
