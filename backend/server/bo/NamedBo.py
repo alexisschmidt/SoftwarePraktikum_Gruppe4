@@ -1,8 +1,8 @@
 from abc import ABC
-from server.bo.Businessobject import BusinessObject as bo
+from server.bo import Businessobject as bo
 
 
-class NamedBo(ABC, bo.BusinessObject):
+class NamedBo(bo.BusinessObject, ABC):
     _name: str
     _title: str
 
@@ -26,4 +26,3 @@ class NamedBo(ABC, bo.BusinessObject):
     def set_title(self, title):
         """Setzen des Titels"""
         self._title = title
-

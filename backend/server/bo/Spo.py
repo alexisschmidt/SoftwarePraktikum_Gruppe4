@@ -1,12 +1,12 @@
-from server.bo.NamedBo import NamedBo as nbo
+from server.bo import NamedBo as nbo
 """das Modul "datetime" wird importiert um das datumsformat für Variablen zu verwenden"""
 import datetime
 import json
 
 
 class Spo (nbo.NamedBo):
-    start_date: date
-    end_date: date
+    start_date: datetime.date
+    end_date: datetime.date
 
     def __init__(self):
         super().__init__()

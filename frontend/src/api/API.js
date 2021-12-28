@@ -5,13 +5,13 @@ export default class API{
 		static #api = null;
 	
 		//local Python backend
-		#serverBaseURL = '/sopra';
+		//serverBaseURL = '/sopra';
 	
 		//Local http-fake-backend?
 	
 	
 		//... related
-		#getCustomersURL = () => `${this.#bankServerBaseURL}/customers`;
+		//getCustomersURL = () => `${this.#bankServerBaseURL}/customers`;
 	
 		//... related
 	
@@ -22,7 +22,7 @@ export default class API{
 	   */
 		 static getAPI() {
 			if (this.#api == null) {
-			  this.#api = new BankAPI();
+			  this.#api = new API();
 			}
 			return this.#api;
 		  }
