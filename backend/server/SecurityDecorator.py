@@ -5,11 +5,12 @@ import google.oauth2.id_token
 from server.Administration import Administration
 """Decorator zur Google Firebase-basierten Authentifizierung von Benutzern"""
 
+
 def secured(function):
     firebase_request_adapter = requests.Request()
     
     def wrapper(*args, **kwargs):
-        #Verify Firebase auth
+        # Verify Firebase auth
         id_token = request.cookies.get("token")
         error_message = None
         claims = None
@@ -18,7 +19,7 @@ def secured(function):
         if id_token:
             try:
                 claims = google.oauth2.id_token.verify_firebase_token(
-					id_token, firebase_request_adapter)
+                    id_token, firebase_request_adapter)
                 if claims is not None:
                     adm = Administration()
                     google_user_id = claims.get("user_id")
@@ -40,7 +41,7 @@ def secured(function):
                     objects = function(*args, **kwargs)
                     return objects
                 else:
-                    return ''; 401 #Unauthorized
+                    return '', 401  # Unauthorized
             except ValueError as exc:
                 # This will be raised if the token is expired or any other
                 # verification checks fail.
@@ -49,5 +50,4 @@ def secured(function):
 
         return '', 401  # UNAUTHORIZED !!!
 
-    return wrapper		
-				
+    return wrapper

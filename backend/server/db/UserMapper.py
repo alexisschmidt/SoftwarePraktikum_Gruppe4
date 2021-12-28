@@ -1,4 +1,4 @@
-"""HIER BO IMPORTIEREN"""
+from server.bo.User import User
 from backend.server.db.Mapper import Mapper
 
 

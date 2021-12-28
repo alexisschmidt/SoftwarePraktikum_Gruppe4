@@ -1,23 +1,29 @@
-super.__init__()
-from server.bo.BusinessObject import BusinessObject
+from abc import ABC
+from server.bo.Businessobject import BusinessObject as bo
 
-class NamedBo(BusinessObject):
+
+class NamedBo(ABC, bo.BusinessObject):
+    _name: str
+    _title: str
+
     def __init__(self):
-        self.name = None
-
-    def __init__(self):
-        self.title = None
-
-
-
-    def set_name(self, value):
-        self.name = value
+        super().__init__()
+        self._name = ""
+        self._title = ""
 
     def get_name(self):
-        return self.name
+        """Auslesen des Namens"""
+        return self._name
 
-    def set_title(self, value):
-        self.title = value
+    def set_name(self, name):
+        """Setzen des Namens"""
+        self._name = name
 
     def get_title(self):
-        return self.title
+        """Auslesen des Namens"""
+        return self._title
+
+    def set_title(self, title):
+        """Setzen des Titels"""
+        self._title = title
+
