@@ -1,8 +1,8 @@
-"""HIER BO IMPORTIEREN"""
+from server.bo.Modulepart import Modulepart
 from backend.server.db.Mapper import Mapper
 
 
-class ModuleMapper(Mapper):
+class ModulePartMapper(Mapper):
 
     def __init__(self):
         super().__init__()
