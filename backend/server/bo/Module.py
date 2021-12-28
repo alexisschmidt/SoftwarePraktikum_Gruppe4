@@ -1,8 +1,8 @@
-from server.bo.NamedBo import NamedBo
+from server.bo.NamedBo import NamedBo as nbo
 from server.bo.Person import Person
 
 
-class Module(NamedBo):
+class Module(nbo.NamedBo):
     __type: str
     __requirement: str
     __outcome: str

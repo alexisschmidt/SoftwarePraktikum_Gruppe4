@@ -1,7 +1,7 @@
-from server.bo.NamedBo import NamedBo
+from server.bo.NamedBo import NamedBo as nbo
 
 
-class StudyCourse (NamedBo):
+class StudyCourse (nbo.NamedBo):
     def __init__(self):
         super().__init__()
 

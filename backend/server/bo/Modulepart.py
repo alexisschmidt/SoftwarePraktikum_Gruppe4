@@ -1,8 +1,8 @@
-from server.bo.NamedBo import NamedBo
+from server.bo.NamedBo import NamedBo as nbo
 from server.bo.Person import Person
 
 
-class Modulepart (NamedBo):
+class Modulepart (nbo.NamedBo):
     __SWS: str
     __language: str
     __description: str

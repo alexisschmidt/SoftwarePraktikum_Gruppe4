@@ -1,4 +1,4 @@
-from server.bo.Businessobject import BusinessObject
+from server.bo.Businessobject import BusinessObject as bo
 
 
 """Realisierung einer exemplarischen Benutzerklasse.
@@ -8,7 +8,7 @@ from server.bo.Businessobject import BusinessObject
     unseres Systems verwaltete User ID (z.B. die Google ID). """
 
 
-class User(BusinessObject):
+class User(bo.BusinessObject):
     __firstname: str
     __lastname: str
     __email: str

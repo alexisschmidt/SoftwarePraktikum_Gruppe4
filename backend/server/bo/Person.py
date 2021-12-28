@@ -1,7 +1,7 @@
-from server.bo.NamedBo import NamedBo
+from server.bo.NamedBo import NamedBo as nbo
 
 
-class Person (NamedBo):
+class Person (nbo.NamedBo):
     __firstname: str
     __lastname: str
     __email: str

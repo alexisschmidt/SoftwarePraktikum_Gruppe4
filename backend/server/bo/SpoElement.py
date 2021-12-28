@@ -1,8 +1,8 @@
 from abc import ABC
-from server.bo.NamedBo import NamedBo
+from server.bo.NamedBo import NamedBo as nbo
 
 
-class SpoElement (ABC, NamedBo):
+class SpoElement (ABC, nbo.NamedBo):
     edvnr: int
     ects: int
     workload: str
