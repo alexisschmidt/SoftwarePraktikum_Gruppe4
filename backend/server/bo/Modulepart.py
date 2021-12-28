@@ -1,14 +1,10 @@
-from server.bo.NamedBo import SpoElement
+from server.bo.NamedBo import NamedBo as nbo
 from server.bo.Person import Person
-import json
 
 
-class Modulepart (SpoElement):
+class Modulepart (nbo.NamedBo):
     __SWS: str
     __language: str
-    __edvnr: str
-    __ects: str
-    __workload: str
     __description: str
     __connection: str
     __literature: str
@@ -20,9 +16,6 @@ class Modulepart (SpoElement):
         super().__init__()
         self.__SWS = ""
         self.__language = ""
-        self.__edvnr = ""
-        self.__ects = ""
-        self.__workload =""
         self.__description = ""
         self.__connection = ""
         self.__literature = ""
@@ -48,25 +41,6 @@ class Modulepart (SpoElement):
         """Setzen der Modulteilsprache"""
         self.__language = language
 
-    def get_edvnr(self):
-        return self.__edvnr
-
-    def set_edvr(self, edvnr):
-        self.__edvnr = edvnr
-
-    def get_ects(self):
-        return self.__ects
-
-    def set_ects(self, ects):
-        self.__ects = ects
-
-    def get_workload(self):
-        return self.__workload
-
-    def set_workload(self, workload):
-        self.__workload = workload
-
-    
     def get_description(self):
         """Auslesen der Modulteilbeschreibung"""
         return self.__description
@@ -107,28 +81,19 @@ class Modulepart (SpoElement):
         """Setzen des Semesters"""
         self.__semester = semester
 
-    def get_professor(self):
-            """Auslesen des Professors"""
-            return self.__professor
-
-    def set_professor(self, professor):
-            """Setzen des Professors"""
-            self.__professor = professor
-
     def __str__(self):
+
 
         return "Modulepart: {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {} ".format(
 
             self.get_id(),
             self.__SWS,
             self.__language,
-            self.__edvnr,
-            self.__ects,
-            self.__workload,
             self.__description,
             self.__connection,
             self.__literature,
             self.__sources,
+            self.__semester)
             self.__semester,
             self.__professor)
 
@@ -155,6 +120,7 @@ class Modulepart (SpoElement):
                 })                
 
 
+
     @staticmethod
     def from_dict(dictionary=dict()):
         """Umwandeln eines Python dict() in ein Modulepart()."""
@@ -162,13 +128,9 @@ class Modulepart (SpoElement):
         obj.set_id(dictionary["id"])                    # Teil von BusinessObject!
         obj.set_sws(dictionary["SWS"])                  # Teil von NamedBo!
         obj.set_language(dictionary["language"])        # Teil von NamedBo!
-        obj.set_edvnr(dictionary["edvnr"])              # Teil von SPOElement
-        obj.set_ects(dictionary["ects"])                # Teil von SPOElement
-        obj.set_workload(dictionary["workload"])        # Teil von SPOElement
         obj.set_description(dictionary["description"])
         obj.set_connection(dictionary["connection"])
         obj.set_literature(dictionary["literature"])
         obj.set_sources(dictionary["sources"])
         obj.set_semester(dictionary["semester"])
-        obj.set_professor(dictionary["professor"])
         return obj

@@ -1,5 +1,4 @@
-from server.bo.Businessobject import BusinessObject
-import json
+from server.bo.Businessobject import BusinessObject as bo
 
 
 """Realisierung einer exemplarischen Benutzerklasse.
@@ -9,7 +8,7 @@ import json
     unseres Systems verwaltete User ID (z.B. die Google ID). """
 
 
-class User(BusinessObject):
+class User(bo.BusinessObject):
     __firstname: str
     __lastname: str
     __email: str
@@ -48,21 +47,6 @@ class User(BusinessObject):
 
     def __str__(self):
         return "User: {}, {}, {}, {}".format(self.get_id(), self.__firstname, self.__lastname, self.__email,)
-
-
-
-    def json(self):
-        modulehash=[]
-        for modulepart in self.__moduleparts:
-            modulehash.append(modulepart.hash())
-
-        return json.dumps({
-            'id': self.get_id(), 
-            'firstname': self.get_firstname(),
-            'lastname': self.get_lastname(),
-            'email': self.get_email()
-            }) 
-
     
     @staticmethod
     def from_dict(dictionary=dict()):
