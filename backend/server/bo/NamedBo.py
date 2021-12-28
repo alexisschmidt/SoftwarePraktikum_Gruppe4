@@ -1,8 +1,7 @@
-from abc import ABC
 from server.bo.Businessobject import BusinessObject
 
 
-class NamedBo(ABC, BusinessObject):
+class NamedBo(BusinessObject):
     _name: str
     _title: str
 

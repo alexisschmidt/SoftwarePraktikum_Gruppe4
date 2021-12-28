@@ -78,8 +78,17 @@ class Module (SpoElement): # diese infos sind nicht relevant, nicht in den anfor
 
         return json.dumps({
             'id': self.get_id(), 
-            'b': self.b, 
-            'c': self.c})
+            'name': self.get_name(), 
+            'title': self.get_title(),
+            'edvnr': self.get_edvnr(),
+            'ects': self.get_ects(),
+            'workload': self.get_workload(),
+            'type' : self.get_type(),
+            'requirement': self.get_requirement(),
+            'outcome': self.get_outcome(),
+            'examtype': self.get_examtype(),
+            'instructor': self.get_instructor(),  
+            })
 
 
 
