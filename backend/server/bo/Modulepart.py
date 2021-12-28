@@ -82,7 +82,10 @@ class Modulepart (nbo.NamedBo):
         self.__semester = semester
 
     def __str__(self):
-        return "Modulepart: {}, {}, {}, {}, {}, {}, {}, {}".format(
+
+
+        return "Modulepart: {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {} ".format(
+
             self.get_id(),
             self.__SWS,
             self.__language,
@@ -91,6 +94,32 @@ class Modulepart (nbo.NamedBo):
             self.__literature,
             self.__sources,
             self.__semester)
+            self.__semester,
+            self.__professor)
+
+
+
+    def json(self):
+            modulehash=[]
+            for modulepart in self.__moduleparts:
+                modulehash.append(modulepart.hash())
+
+            return json.dumps({
+                'id': self.get_id(),
+                'sws': self.get_id(),
+                'language': self.get_language(),
+                'edvnr': self.get_edvnr(),
+                'ects': self.get_ects(),
+                'workload': self.get_workload(),
+                'description': self.get_description(),
+                'connection': self.get_connection(), 
+                'literature': self.get_literature(),
+                'sources': self.get_sources(),
+                'semester': self.get_semester(),
+                'professor': self.get_professor()
+                })                
+
+
 
     @staticmethod
     def from_dict(dictionary=dict()):
