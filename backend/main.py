@@ -5,20 +5,18 @@ from flask_restx import Api, Resource, fields
 from flask_cors import CORS
 
 # Wir greifen natürlich auf unsere Applikationslogik inkl. BusinessObject-Klassen zurück
-from server.bo.Businessobject import BusinessObject
-from server.bo.NamedBo import NamedBo
+from server.SecurityDecorator import secured
+from server.Administration import Administration
 from server.bo.Spo import Spo
-from server.bo.SpoElement import SpoElement
+from server.bo.User import User
+"""
 from server.bo.Module import Module
 from server.bo.Modulepart import Modulepart
 from server.bo.StudyCourse import StudyCourse
 from server.bo.Person import Person
-from server.bo.User import User
-
-from server.Administration import Administration
+"""
 
 # Außerdem nutzen wir einen selbstgeschriebenen Decorator der die Authentifikation übernimmt
-from server.SecurityDecorator import secured
 
 app = Flask(__name__)
 CORS(app, resources=r'/sopra/*')
