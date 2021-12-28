@@ -91,6 +91,7 @@ person = api.inherit('Person', namedbo, {
 """Alles @sposystem.route('')"""
 
 
+
 @sposystem.route('/users')
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
 class UserListOperations(Resource):
