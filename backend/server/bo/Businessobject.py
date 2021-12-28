@@ -1,6 +1,8 @@
-from abc import ABC
 """das Modul "datetime" wird importiert um das datumsformat für Variablen zu verwenden"""
 import datetime
+from abc import ABC, abstractmethod
+import hashlib
+
 
 
 class BusinessObject(ABC):
@@ -23,6 +25,15 @@ class BusinessObject(ABC):
         """Setzen des erstellten Datums"""
         self.creationdate = value
 
-    def get_creationdate(self):
-        """Auslesen des erstellten Datums"""
-        return self.set_creationdate
+    def get_creationDate(self):
+        """Auslesen des erstellten Datum"""
+        return self.set_creationDate
+
+    def hash(self):
+        encoded= self.json().encode()
+        hash= hashlib.sha256(encoded)
+        return hash.hexdigest()
+
+    @abstractmethod 
+    def json():
+       pass

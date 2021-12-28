@@ -1,6 +1,7 @@
 from server.bo.NamedBo import NamedBo as nbo
 """das Modul "datetime" wird importiert um das datumsformat für Variablen zu verwenden"""
 import datetime
+import json
 
 
 class Spo (nbo.NamedBo):
@@ -27,6 +28,21 @@ class Spo (nbo.NamedBo):
     def set_end_date(self, year, month, day):
         """Setzen des Enddatums der SPO Gültigkeit """
         self.end_date = datetime.date(year, month, day)
+
+
+    def json(self):
+            modulehash=[]
+            for modulepart in self.__moduleparts:
+                modulehash.append(modulepart.hash())
+
+            return json.dumps({
+                'id': self.get_id(),
+                'name': self.get_name(),
+                'title': self.get_title(),
+                'start_date': self.get_start_date(),
+                'end_date': self.get_end_date(),
+                })
+
 
     @staticmethod
     def from_dict(dictionary=dict()):
