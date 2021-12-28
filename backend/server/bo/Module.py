@@ -1,6 +1,7 @@
 from server.bo.NamedBo import NamedBo
 from server.bo.Person import Person
 
+
 class Module(NamedBo):
     __type: str
     __requirement: str
@@ -34,11 +35,11 @@ class Module(NamedBo):
         self.__requirement = requirement
 
     def get_outcome(self):
-        """Auslesen des Outcomes"""
+        """Auslesen des Lernergebnisses"""
         return self.__outcome
 
     def set_outcome(self, outcome):
-        """Setzen des Outcomes"""
+        """Setzen des Lernergebnisses"""
         self.__outcome = outcome
 
     def get_examtype(self):
