@@ -1,12 +1,13 @@
 import React from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Navigate } from 'react-router-dom';
 import { Container, ThemeProvider, CssBaseline } from '@material-ui/core'; //um Material-UI-Komponente nutzen zu können
-import firebase from 'firebase/compat/app';
+import firebase from 'firebase/app';
+import Header from './components/layout/Header';
 import 'firebase/auth';
-import Header from './components/layout/Header'
 import Theme from './Theme';
 /**import SignIn from './components/pages/SignIn';*/
 import firebaseConfig from './firebaseconfig';
+import SignIn from './components/pages/SignIn';
 
 
 
@@ -103,7 +104,19 @@ Globales CSS-Reset und Browser-Normalisierung. CssBaseline startet eine elegante
       <Router basename={process.env.PUBLIC_URL}>
         <Container maxWidth='md'>
           <Header user={currentUser} />
-          
+		  {
+							// Is a user signed in?
+							currentUser ?
+								<>
+									<Navigate from='/' to='start' />
+								</>
+								:
+								// else show the sign in page
+								<>
+									<Navigate to='/index.html' />
+									<SignIn onSignIn={this.handleSignIn} />
+								</>
+						}
         </Container>
       </Router>
     </ThemeProvider>
