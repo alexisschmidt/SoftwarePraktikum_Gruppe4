@@ -117,7 +117,7 @@ class Modulepart (SpoElement):
 
     def __str__(self):
 
-        return "Modulepart: {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}".format(
+        return "Modulepart: {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {} ".format(
 
             self.get_id(),
             self.__SWS,
@@ -150,7 +150,8 @@ class Modulepart (SpoElement):
                 'connection': self.get_connection(), 
                 'literature': self.get_literature(),
                 'sources': self.get_sources(),
-                'semester': self.get_semester()
+                'semester': self.get_semester(),
+                'professor': self.get_professor()
                 })                
 
 
