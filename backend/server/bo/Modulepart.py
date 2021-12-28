@@ -81,8 +81,16 @@ class Modulepart (SpoElement):
         """Setzen des Semesters"""
         self.__semester = semester
 
+    def get_professor(self):
+            """Auslesen des Professors"""
+            return self.__professor
+
+    def set_professor(self, professor):
+            """Setzen des Professors"""
+            self.__professor = professor
+
     def __str__(self):
-        return "Modulepart: {}, {}, {}, {}, {}, {}, {}, {}".format(
+        return "Modulepart: {}, {}, {}, {}, {}, {}, {}, {}, {} ".format(
             self.get_id(),
             self.__SWS,
             self.__language,
@@ -90,7 +98,8 @@ class Modulepart (SpoElement):
             self.__connection,
             self.__literature,
             self.__sources,
-            self.__semester)
+            self.__semester,
+            self.__professor)
 
     @staticmethod
     def from_dict(dictionary=dict()):
@@ -107,4 +116,5 @@ class Modulepart (SpoElement):
         obj.set_literature(dictionary["literature"])
         obj.set_sources(dictionary["sources"])
         obj.set_semester(dictionary["semester"])
+        obj.set_professor(dictionary["professor"])
         return obj
