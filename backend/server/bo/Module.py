@@ -3,7 +3,6 @@ import json
 from server.bo.Person import Person
 
 
-
 class Module (SpoElement): # diese infos sind nicht relevant, nicht in den anforderungen 
     __type: str
     __requirement: str
@@ -41,11 +40,11 @@ class Module (SpoElement): # diese infos sind nicht relevant, nicht in den anfor
         self.__requirement = requirement
 
     def get_outcome(self):
-        """Auslesen des Outcomes"""
+        """Auslesen des Lernergebnisses"""
         return self.__outcome
 
     def set_outcome(self, outcome):
-        """Setzen des Outcomes"""
+        """Setzen des Lernergebnisses"""
         self.__outcome = outcome
 
     def get_examtype(self):
