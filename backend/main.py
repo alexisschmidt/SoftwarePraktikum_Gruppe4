@@ -37,10 +37,10 @@ bo = api.model('BusinessObject', {
 })
 
 """Alle anderen BusinessObjects"""
-user = api.inherit('User', 'BusinessObject', {
-    'firstname': fields.String(attibute='__firstname', description='Vorname eines Users'),
-    'lastname': fields.String(attibute='__lastname', description='Nachname eines Users'),
-    'email': fields.String(attibute='__email', description='Emailadresse eines Users')
+user = api.inherit('User', bo, {
+    'firstname': fields.String(attribute='__firstname', description='Vorname eines Users'),
+    'lastname': fields.String(attribute='__lastname', description='Nachname eines Users'),
+    'email': fields.String(attribute='__email', description='Emailadresse eines Users')
 })
 
 namedbo = api.inherit('Namedbo', bo, {
@@ -54,9 +54,9 @@ spo = api.inherit('Spo', namedbo, {
 })
 
 spoelement = api.inherit('Spoelement', namedbo, {
-    'edvnr': fields.String(attibute='_edvnr', description='EDV nr des Spoelements'),
-    'ects': fields.String(attibute='_ects', description=''),
-    'workload': fields.String(attibute='_workload',
+    'edvnr': fields.String(attribute='_edvnr', description='EDV nr des Spoelements'),
+    'ects': fields.String(attribute='_ects', description=''),
+    'workload': fields.String(attribute='_workload',
                               description='Arbeitszeit für das Spoelement und ihre Zusammensetzung')
 })
 
@@ -71,23 +71,22 @@ module = api.inherit('Module', namedbo, {
 modulepart = api.inherit('Modulepart', namedbo, {
     'sws': fields.String(attribute='_sws', description='Anzahl der SWS des Modulteils'),
     'language': fields.String(attribute='_language', descpription='Sprache des Modulteils'),
-    'description': fields.String(attibute='_description', attribute='Beschreibung des Modulteils'),
-    'connection': fields.String(attibute='_connection', attribute='Verbindung zu anderen Modulteilen'),
-    'literature': fields.String(attibute='_literature', attribute='Literatur für das Modulteil'),
-    'sources': fields.String(attibute='_sources', attribute='Quellen'),
-    'semester': fields.String(attibute='_semester', attribute='Semester des Modulteils')
+    'description': fields.String(attribute='_description', description='Beschreibung des Modulteils'),
+    'connection': fields.String(attribute='_connection', description='Verbindung zu anderen Modulteilen'),
+    'literature': fields.String(attribute='_literature', description='Literatur für das Modulteil'),
+    'sources': fields.String(attribute='_sources', description='Quellen'),
+    'semester': fields.String(attribute='_semester', description='Semester des Modulteils')
 })
 
 studycourse = api.inherit('StudyCourse', namedbo)
 
 person = api.inherit('Person', namedbo, {
-    'firstname': fields.String(attibute='__firstname', description='Vorname einer Person'),
-    'lastname': fields.String(attibute='__lastname', description='Nachname einer Person'),
-    'email': fields.String(attibute='__email', description='Emailadresse einer Person')
+    'firstname': fields.String(attribute='__firstname', description='Vorname einer Person'),
+    'lastname': fields.String(attribute='__lastname', description='Nachname einer Person'),
+    'email': fields.String(attribute='__email', description='Email adresse einer Person')
 })
 
 """Alles @sposystem.route('')"""
-
 
 
 @sposystem.route('/users')
@@ -193,6 +192,15 @@ class SpoListOperations(Resource):
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
 @sposystem.param('id', 'Die ID des SPO-Objekts')
 class SpoOperations(Resource):
+
+
+
+
+
+
+
+
+
     @sposystem.marshal_with(spo)
     @secured
     def get(self, id):
@@ -254,7 +262,6 @@ class SpoOperations(Resource):
             return c, 200
         else:
             return '', 500
-
 
 
 """**ACHTUNG:** Diese Zeile wird nur in der lokalen Entwicklungsumgebung ausgeführt und hat in der Cloud keine Wirkung!

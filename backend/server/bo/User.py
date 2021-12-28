@@ -1,4 +1,4 @@
-from server.bo.Businessobject import BusinessObject as bo
+from server.bo import Businessobject as bo
 
 
 """Realisierung einer exemplarischen Benutzerklasse.
@@ -51,6 +51,7 @@ class User(bo.BusinessObject):
     @staticmethod
     def from_dict(dictionary=dict()):
         """Umwandeln eines Python dict() in einen User()."""
+        print(dictionary)
         obj = User()
         obj.set_id(dictionary["id"])  # Teil von BusinessObject!
         obj.set_firstname(dictionary["firstname"])

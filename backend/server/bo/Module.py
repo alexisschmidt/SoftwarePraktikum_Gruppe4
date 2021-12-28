@@ -1,8 +1,9 @@
-from server.bo.NamedBo import NamedBo as nbo
+from server.bo import SpoElement as spe
 from server.bo.Person import Person
+import json
 
 
-class Module(nbo.NamedBo):
+class Module(spe.SpoElement):
     __type: str
     __requirement: str
     __outcome: str
@@ -59,14 +60,39 @@ class Module(nbo.NamedBo):
         self.__instructor = instructor
 
     def __str__(self):
-        return "Module: {}, {}, {}, {}, {}, {}".format(
+        return "Module: {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}".format(
 
             self.get_id(),
+            self._name,
+            self._title,
+            self.edvnr,
+            self.ects,
+            self.workload,
             self.__type,
             self.__requirement,
             self.__outcome,
             self.__examtype,
             self.__instructor)
+
+    def json(self):
+            modulehash=[]
+            for module in self.__module:
+                modulehash.append(module.hash())
+
+            return json.dumps({
+                'id': self.get_id(),
+                'name': self.get_name(),
+                'title': self.get_title(),
+                'edvnr': self.get_edvnr(),
+                'ects': self.get_ects(),
+                'workload': self.get_workload(),
+                'type': self.get_type(),
+                'requirement': self.get_requirement(),
+                'outcome': self.get_outcome(),
+                'examtype': self.get_examtype(),
+                'instructor': self.get_instructor()
+                })
+
 
     @staticmethod
     def from_dict(dictionary=dict()):
@@ -75,6 +101,9 @@ class Module(nbo.NamedBo):
         obj.set_id(dictionary["id"])                    # Teil von BusinessObject!
         obj.set_name(dictionary["name"])                # Teil von NamedBo!
         obj.set_title(dictionary["title"])              # Teil von NamedBo!
+        obj.set_edvnr(dictionary["edvnr"])              # Teil von SpoElement!
+        obj.set_ects(dictionary["ects"])                # Teil von SpoElement!
+        obj.set_workload(dictionary["workload"])        # Teil von SpoElement!
         obj.set_type(dictionary["type"])
         obj.set_requirement(dictionary["requirement"])
         obj.set_outcome(dictionary["outcome"])

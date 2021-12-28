@@ -1,5 +1,4 @@
-from server.bo.NamedBo import NamedBo as nbo
-
+from server.bo import NamedBo as nbo
 
 class Person (nbo.NamedBo):
     __firstname: str

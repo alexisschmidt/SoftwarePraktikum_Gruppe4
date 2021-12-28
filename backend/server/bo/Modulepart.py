@@ -1,8 +1,8 @@
-from server.bo.NamedBo import NamedBo as nbo
+from server.bo import SpoElement as spe
 from server.bo.Person import Person
+import json
 
-
-class Modulepart (nbo.NamedBo):
+class Modulepart (spe.SpoElement):
     __SWS: str
     __language: str
     __description: str
@@ -84,16 +84,20 @@ class Modulepart (nbo.NamedBo):
     def __str__(self):
 
 
-        return "Modulepart: {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {} ".format(
+        return "Modulepart: {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {} ".format(
 
             self.get_id(),
+            self._name,
+            self._title,
+            self.edvnr,
+            self.ects,
+            self.workload,
             self.__SWS,
             self.__language,
             self.__description,
             self.__connection,
             self.__literature,
             self.__sources,
-            self.__semester)
             self.__semester,
             self.__professor)
 
@@ -106,7 +110,7 @@ class Modulepart (nbo.NamedBo):
 
             return json.dumps({
                 'id': self.get_id(),
-                'sws': self.get_id(),
+                'sws': self.get_sws(),
                 'language': self.get_language(),
                 'edvnr': self.get_edvnr(),
                 'ects': self.get_ects(),
@@ -128,6 +132,9 @@ class Modulepart (nbo.NamedBo):
         obj.set_id(dictionary["id"])                    # Teil von BusinessObject!
         obj.set_sws(dictionary["SWS"])                  # Teil von NamedBo!
         obj.set_language(dictionary["language"])        # Teil von NamedBo!
+        obj.set_edvnr(dictionary["edvnr"])              # Teil von SpoElement!
+        obj.set_ects(dictionary["ects"])                # Teil von SpoElement!
+        obj.set_workload(dictionary["workload"])        # Teil von SpoElement!
         obj.set_description(dictionary["description"])
         obj.set_connection(dictionary["connection"])
         obj.set_literature(dictionary["literature"])

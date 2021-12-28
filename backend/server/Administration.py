@@ -68,7 +68,7 @@ class Administration (object):
 
 
     def create_modulepart(self, name, title, language, literature, semester_id, sources, connection, description, sws, ects, edvnr, workload):
-        modulepart = ModulePart()
+        modulepart = Modulepart()
         modulepart.set_name(name)
         modulepart.set_title(title)
         modulepart.set_language(language)
@@ -202,7 +202,7 @@ class Administration (object):
         spo.set_title(title)
         spo.set_start_date(start)
         spo.set_end_date(end)
-        semester.set_id(1)
+        spo.set_id(1)
 
         with SpoMapper() as mapper:
             return mapper.insert(spo)
@@ -306,6 +306,12 @@ class Administration (object):
 
         with UserMapper() as mapper:
             mapper.delete(user)
+
+    def get_user_by_google_user_id(self, id):
+        """Den Benutzer mit der gegebenen Google ID auslesen."""
+        with UserMapper() as mapper:
+            return mapper.find_by_google_user_id(id)
+
 
 
 

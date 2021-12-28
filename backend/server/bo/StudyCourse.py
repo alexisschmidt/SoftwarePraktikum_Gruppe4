@@ -1,5 +1,4 @@
-from server.bo.NamedBo import NamedBo as nbo
-
+from server.bo import NamedBo as nbo
 
 class StudyCourse (nbo.NamedBo):
     def __init__(self):
