@@ -34,5 +34,5 @@ class BusinessObject(ABC):
         return hash.hexdigest()
 
     @abstractmethod 
-    def json():
+    def json(self):
         pass
