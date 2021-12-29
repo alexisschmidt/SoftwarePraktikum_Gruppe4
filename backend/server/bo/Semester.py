@@ -7,7 +7,7 @@ class Semester(nbo.NamedBo):
 
 
     def __str__(self):
-        return "Module: id: {}, name: {}, title: {}".format(
+        return "Semester: id: {}, name: {}, title: {}".format(
 
             self.get_id(),
             self._name,
