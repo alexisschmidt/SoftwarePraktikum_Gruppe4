@@ -140,4 +140,5 @@ class Modulepart (spe.SpoElement):
         obj.set_literature(dictionary["literature"])
         obj.set_sources(dictionary["sources"])
         obj.set_semester(dictionary["semester"])
+        obj.set_professor(dictionary["professor"])
         return obj
