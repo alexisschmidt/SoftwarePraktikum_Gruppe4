@@ -17,6 +17,8 @@ from server.bo.Person import Person
 """
 
 # Außerdem nutzen wir einen selbstgeschriebenen Decorator der die Authentifikation übernimmt
+# test von hashing
+testojekt = Spo()
 
 app = Flask(__name__)
 CORS(app, resources=r'/sopra/*')

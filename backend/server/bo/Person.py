@@ -1,4 +1,6 @@
 from server.bo import NamedBo as nbo
+import json
+
 
 class Person (nbo.NamedBo):
     __firstname: str
@@ -9,7 +11,7 @@ class Person (nbo.NamedBo):
         super().__init__()
         self.__firstname = ""   # Der Vorname der Person
         self.__lastname = ""    # Der Nachname der Person
-        self.__email = ""   # email der Person
+        self.__email = ""       # email der Person
 
 # Auslesen / des Vor-/nachnamens und Email.
 
@@ -43,6 +45,16 @@ class Person (nbo.NamedBo):
             self.__firstname,
             self.__lastname,
             self.__email)
+
+    def json(self):
+        return json.dumps({
+            'id': self.get_id(),
+            'name': self.get_name(),
+            'title': self.get_title(),
+            'firstname': self.get_firstname(),
+            'lastname': self.get_lastname(),
+            'email': self.get_email()
+            })
 
     @staticmethod
     def from_dict(dictionary=dict()):
