@@ -24,19 +24,19 @@ def secured(function):
                     adm = Administration()
                     google_user_id = claims.get("user_id")
                     email = claims.get("email")
-                    name = claims.get("name")
+                    firstname = claims.get("firstname")
                     
                     user = adm.get_user_by_google_user_id(google_user_id)
                     if user is not None:
                         """Fall: Der Benutzer ist unserem System bereits bekannt."""
-                        user.set_name(name)
+                        user.set_firstname(firstname)
                         user.set_email(email)
                         adm.save_user(user)
                     else:
                         """Fall: Der Benutzer war bislang noch nicht eingelogged. """
-                        user = adm.create_user(name, email, google_user_id)
+                        user = adm.create_user(firstname, email, google_user_id)
                     
-                    print(request.method. request.path, "angefragt durch:", name, email)
+                    print(request.method. request.path, "angefragt durch:", firstname, email)
                     
                     objects = function(*args, **kwargs)
                     return objects

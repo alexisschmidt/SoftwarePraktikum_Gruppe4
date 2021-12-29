@@ -12,12 +12,14 @@ class User(bo.BusinessObject):
     __firstname: str
     __lastname: str
     __email: str
+    __user_id: str
 
     def __init__(self):
         super().__init__()
         self.__firstname = ""   # Der Vorname des Nutzers
         self.__lastname = ""    # Der Nachname des Nutzers
         self.__email = ""   # Die E-Mail des Nutzers
+        self.__user_id = "" #Google ID des Benutzers
 
 # Auslesen / des Vor-/nachnamens und Email.
 
@@ -44,9 +46,18 @@ class User(bo.BusinessObject):
     def set_email(self, email):
         """Setzen der E-Mail"""
         self.__email = email
+        
+    def get_user_id(self):
+        """Auslesen der E-Mail"""
+        return self.__user_id
+
+    def set_user_id(self, value):
+        """Setzen der E-Mail"""
+        self.__user_id = value     
+        
 
     def __str__(self):
-        return "User: {}, {}, {}, {}".format(self.get_id(), self.__firstname, self.__lastname, self.__email,)
+        return "User: {}, {}, {}, {}, {}".format(self.get_id(), self.__firstname, self.__lastname, self.__email, self.__user_id)
     
     @staticmethod
     def from_dict(dictionary=dict()):
@@ -57,6 +68,7 @@ class User(bo.BusinessObject):
         obj.set_firstname(dictionary["firstname"])
         obj.set_lastname(dictionary["lastname"])
         obj.set_email(dictionary["email"])
+        obj.set_user_id(dictionary["user_id"])
         return obj
 
 
