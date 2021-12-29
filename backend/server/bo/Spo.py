@@ -1,33 +1,37 @@
 from server.bo import NamedBo as nbo
 """das Modul "datetime" wird importiert um das datumsformat für Variablen zu verwenden"""
-import datetime
+from server.bo.Semester import Semester
+from server.bo.StudyCourse import StudyCourse
 import json
 
 
 class Spo (nbo.NamedBo):
-    start_date: datetime.date
-    end_date: datetime.date
+    _start_semester: Semester
+    _end_semester: Semester
+    _studycourse_id: StudyCourse
 
     def __init__(self):
         super().__init__()
-        self._start_date = datetime.date(1, 1, 1)    # Anfangsdatum der SPO Gültigkeit
-        self._end_date = datetime.date(1, 1, 1)  # Enddatum der SPO Gültigkeit
+        self._start_semester = Semester ()   # Anfangssemesterder SPO Gültigkeit
+        self._end_semester = Semester()     # Endsemesterder SPO Gültigkeit
+        self._studycourse_id = StudyCourse ()
 
-    def get_start_date(self):
+    def get_start_semester(self):
         """Auslesen des Anfangsdatums der SPO Gültigkeit """
-        return self.start_date
+        return self.start_semester
 
-    def set_start_date(self, year, month, day):
+    def set_start_semester(self, start_semester):
         """Setzen des Anfangsdatums der SPO Gültigkeit """
-        self.start_date = datetime.date(year, month, day)
+        self._start_semester = start_semester
 
-    def get_end_date(self):
+    def get_end_semester(self):
         """Auslesen des Enddatums der SPO Gültigkeit """
-        return self.end_date
+        return self.end_semester
 
-    def set_end_date(self, year, month, day):
+    def set_end_semester(self, end_semester):
         """Setzen des Enddatums der SPO Gültigkeit """
-        self.end_date = datetime.date(year, month, day)
+        self._end_semester = end_semester
+
 
 
     def json(self):
@@ -39,8 +43,9 @@ class Spo (nbo.NamedBo):
                 'id': self.get_id(),
                 'name': self.get_name(),
                 'title': self.get_title(),
-                'start_date': self.get_start_date(),
-                'end_date': self.get_end_date(),
+                'start_semester': self.get_start_semester(),
+                'end_semester': self.get_end_semester(),
+                'studycourse_id': self.get_studycourse_id()
                 })
 
 
@@ -51,6 +56,7 @@ class Spo (nbo.NamedBo):
         obj.set_id(dictionary["id"])  # Teil von BusinessObject!
         obj.set_name(dictionary["name"])    # Teil von NamedBo!
         obj.set_title(dictionary["title"])  # Teil von NamedBo!
-        obj.set_start_date(dictionary["year, month, day"], dictionary["month"], dictionary["day"])
-        obj.set_end_date(dictionary["year, month, day"], dictionary["month"], dictionary["day"])
+        obj.set_start_semester(dictionary["start_semester"])
+        obj.set_end_semester(dictionary["end_semester"])
+        obj.set_studycourse_id(dictionary["studycourse_id"])
         return obj
