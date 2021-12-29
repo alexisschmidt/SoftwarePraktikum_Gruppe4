@@ -92,7 +92,8 @@ class Modulepart (spe.SpoElement):
         self._professor = professor
 
     def __str__(self):
-        return "Modulepart: {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {} ".format(
+        return "Modulepart: id: {}, name: {}, title: {}, edvnr: {}, ects: {}, workload: {}, SWS: {}, language: {}," \
+               "description: {}, connection: {}, literature: {}, sources: {}, semester: {}, professor: {}".format(
 
             self.get_id(),
             self._name,
