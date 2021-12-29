@@ -60,7 +60,9 @@ class Module(spe.SpoElement):
         self.__instructor = instructor
 
     def __str__(self):
-        return "Module: {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}".format(
+        return "Module: id: {}, name: {}, title: {}, edvnr: {}, ects: {}, workload: {}, type: {}, " \
+               "requirement: {}, outcome: {}, examtype: {}, instructor: {}".format(
+
 
             self.get_id(),
             self._name,
