@@ -40,7 +40,8 @@ bo = api.model('BusinessObject', {
 user = api.inherit('User', bo, {
     'firstname': fields.String(attribute='__firstname', description='Vorname eines Users'),
     'lastname': fields.String(attribute='__lastname', description='Nachname eines Users'),
-    'email': fields.String(attribute='__email', description='Emailadresse eines Users')
+    'email': fields.String(attribute='__email', description='Emailadresse eines Users'),
+    'google_user_id': fields.String(attribute='__google_user_id', description='Google ID des Users')
 })
 
 namedbo = api.inherit('Namedbo', bo, {
@@ -49,8 +50,9 @@ namedbo = api.inherit('Namedbo', bo, {
 })
 
 spo = api.inherit('Spo', namedbo, {
-    'start_date': fields.Date(attribute='_start_date', description='Anfangsdatum der SPO-gültigkeit'),
-    'end_date': fields.Date(attribute='_end_date', description='Enddatum der SPO-gültigkeit')
+    'start_semester': fields.Date(attribute='_start_semester', description='Anfangssemester der SPO-gültigkeit'),
+    'end_semester': fields.Date(attribute='_end_semester', description='Endsemester der SPO-gültigkeit'),
+    'studycourse_id': fields.Date(attribute='_studycourse_id', description='Studycourse der SPO')
 })
 
 spoelement = api.inherit('Spoelement', namedbo, {
