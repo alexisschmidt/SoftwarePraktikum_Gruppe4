@@ -32,7 +32,7 @@ CREATE TABLE `module` (
   `instructor` varchar(45) NOT NULL,
   `outcome` varchar(45) NOT NULL,
   `type` varchar(45) NOT NULL,
-  `modulepart_id` int NOT NULL,
+  `modulepart_id` varchar(60) NOT NULL,
   `ects` int DEFAULT NULL,
   `edvnr` varchar(45) DEFAULT NULL,
   `workload` varchar(45) DEFAULT NULL,
@@ -148,8 +148,9 @@ CREATE TABLE `spo` (
   `creationdate` datetime NOT NULL,
   `name` varchar(45) NOT NULL,
   `title` varchar(45) NOT NULL,
-  `start` datetime NOT NULL,
-  `end` datetime DEFAULT NULL,
+  `start_semester` int NOT NULL,
+  `end_semester` int DEFAULT NULL,
+  `studycourse_id` int NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -202,6 +203,7 @@ CREATE TABLE `user` (
   `firstname` varchar(45) NOT NULL,
   `lastname` varchar(45) NOT NULL,
   `email` varchar(45) NOT NULL,
+  `google_user_id` varchar(60) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -224,4 +226,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-11-26 11:55:32
+-- Dump completed on 2021-12-29  9:56:48

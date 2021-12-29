@@ -195,13 +195,14 @@ class Administration (object):
 
     """Spo-spezifische Methoden"""
 
-    def create_spo(self, name, title, start, end):
+    def create_spo(self, name, title, start_semester, end_semester, studycourse_id):
         """Eine Spo anlegen"""
         spo = Spo()
         spo.set_name(name)
         spo.set_title(title)
-        spo.set_start_date(start)
-        spo.set_end_date(end)
+        spo.set_start_semester(start_semester)
+        spo.set_end_semester(end_semester)
+        spo.set_studycourse_id(studycourse_id)
         spo.set_id(1)
 
         with SpoMapper() as mapper:
