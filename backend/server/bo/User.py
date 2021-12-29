@@ -46,7 +46,7 @@ class User(bo.BusinessObject):
         self.__email = email
 
     def __str__(self):
-        return "User: {}, {}, {}, {}".format(self.get_id(), self.__firstname, self.__lastname, self.__email,)
+        return "User: id: {}, firstname: {}, lastname: {}, email: {}".format(self.get_id(), self.__firstname, self.__lastname, self.__email)
     
     @staticmethod
     def from_dict(dictionary=dict()):
