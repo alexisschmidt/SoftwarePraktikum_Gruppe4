@@ -38,7 +38,7 @@ class Person (nbo.NamedBo):
         self.__email = email
 
     def __str__(self):
-        return "Person: {}, {}, {}, {}".format(
+        return "Person: id: {}, firstname: {}, lastname: {}, email: {}".format(
             self.get_id(),
             self.__firstname,
             self.__lastname,
