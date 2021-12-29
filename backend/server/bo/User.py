@@ -1,5 +1,5 @@
 from server.bo import Businessobject as bo
-
+import json
 
 """Realisierung einer exemplarischen Benutzerklasse.
 
@@ -46,7 +46,20 @@ class User(bo.BusinessObject):
         self.__email = email
 
     def __str__(self):
-        return "User: id: {}, firstname: {}, lastname: {}, email: {}".format(self.get_id(), self.__firstname, self.__lastname, self.__email)
+        return "User: id: {}, firstname: {}, lastname: {}, email: {}".format(
+            self.get_id(),
+            self.__firstname,
+            self.__lastname,
+            self.__email
+            )
+
+    def json(self):
+        return json.dumps({
+            'id': self.get_id(),
+            'firstname': self.get_firstname(),
+            'lastname': self.get_lastname(),
+            'email': self.get_email()
+            })
     
     @staticmethod
     def from_dict(dictionary=dict()):
@@ -59,6 +72,11 @@ class User(bo.BusinessObject):
         obj.set_email(dictionary["email"])
         return obj
 
+
+test = User()
+print(test)
+print(test.json())
+print(test.hash())
 
 
 

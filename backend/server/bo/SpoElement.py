@@ -1,6 +1,7 @@
 from abc import ABC
 from server.bo import NamedBo as nbo
 
+
 class SpoElement (nbo.NamedBo, ABC):
     edvnr: int
     ects: int

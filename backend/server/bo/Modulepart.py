@@ -1,6 +1,5 @@
 from server.bo import SpoElement as spe
 from server.bo.Person import Person
-from server.bo.Semester import Semester
 import json
 
 
@@ -11,7 +10,7 @@ class Modulepart (spe.SpoElement):
     __connection: str
     __literature: str
     __sources: str
-    __semester: Semester
+    __semester: int
     _professor: Person
 
     def __init__(self):
@@ -22,8 +21,8 @@ class Modulepart (spe.SpoElement):
         self.__connection = ""
         self.__literature = ""
         self.__sources = ""
-        self.__semester = Semester()
-        self._professor = Person()
+        self.__semester = 1
+        self._professor = Person
 
         # Auslesen
 
@@ -94,27 +93,25 @@ class Modulepart (spe.SpoElement):
     def __str__(self):
         return "Modulepart: id: {}, name: {}, title: {}, edvnr: {}, ects: {}, workload: {}, SWS: {}, language: {}," \
                "description: {}, connection: {}, literature: {}, sources: {}, semester: {}, professor: {}".format(
-
-            self.get_id(),
-            self._name,
-            self._title,
-            self.edvnr,
-            self.ects,
-            self.workload,
-            self.__SWS,
-            self.__language,
-            self.__description,
-            self.__connection,
-            self.__literature,
-            self.__sources,
-            self.__semester,
-            self._professor)
+                self.get_id(),
+                self._name,
+                self._title,
+                self.edvnr,
+                self.ects,
+                self.workload,
+                self.__SWS,
+                self.__language,
+                self.__description,
+                self.__connection,
+                self.__literature,
+                self.__sources,
+                self.__semester,
+                Person.get_lastname(self._professor))
 
     def json(self):
-        modulehash = []
-        for modulepart in self.__moduleparts:
-            modulehash.append(modulepart.hash())
-
+        # modulehash = []
+        # for modulepart in self.__moduleparts:
+        # modulehash.append(modulepart.hash())
         return json.dumps({
             'id': self.get_id(),
             'sws': self.get_sws(),
@@ -127,7 +124,7 @@ class Modulepart (spe.SpoElement):
             'literature': self.get_literature(),
             'sources': self.get_sources(),
             'semester': self.get_semester(),
-            'professor': self.get_professor()
+            'professor': Person.hash(self.get_professor())
             })
 
     @staticmethod
@@ -147,3 +144,16 @@ class Modulepart (spe.SpoElement):
         obj.set_semester(dictionary["semester"])
         obj.set_professor(dictionary["professor"])
         return obj
+
+
+"""
+    Test Script
+
+    test = Modulepart()
+    person1 = Person()
+    person1.set_lastname("testname")
+    test.set_professor(person1)
+    print(test)
+    print(test.json())
+    print(test.hash())
+"""
