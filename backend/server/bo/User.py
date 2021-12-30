@@ -17,7 +17,7 @@ class User(bo.BusinessObject):
         super().__init__()
         self.__firstname = ""   # Der Vorname des Nutzers
         self.__lastname = ""    # Der Nachname des Nutzers
-        self.__email = ""   # Die E-Mail des Nutzers
+        self.__email = ""       # Die E-Mail des Nutzers
 
 # Auslesen / des Vor-/nachnamens und Email.
 
@@ -71,6 +71,13 @@ class User(bo.BusinessObject):
         obj.set_lastname(dictionary["lastname"])
         obj.set_email(dictionary["email"])
         return obj
+
+    def __eq__(self, other):
+        return super().__eq__(other) and self.get_firstname() == other.get_name() and\
+               self.get_lastname() == other.get_lastname() and\
+               self.get_email() == other.get_email()
+
+    __hash__ = bo.BusinessObject.__hash__
 
 
 test = User()
