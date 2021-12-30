@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Navigate, Redirect } from 'react-router-dom';
 import { Container, ThemeProvider, CssBaseline } from '@material-ui/core'; //um Material-UI-Komponente nutzen zu können
 import firebase from 'firebase/app';
 import Header from './components/layout/Header';
@@ -108,12 +108,11 @@ Globales CSS-Reset und Browser-Normalisierung. CssBaseline startet eine elegante
 							// Is a user signed in?
 							currentUser ?
 								<>
-									<Navigate from='/' to='start' />
 								</>
 								:
 								// else show the sign in page
 								<>
-									<Navigate to='/index.html' />
+
 									<SignIn onSignIn={this.handleSignIn} />
 								</>
 						}
