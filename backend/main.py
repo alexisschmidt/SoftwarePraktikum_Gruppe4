@@ -473,6 +473,159 @@ class ModulePartOperations(Resource):
         return '', 200
 
 
+@sposystem.route('/studycourses')
+@sposystem.response(500, 'fallseszueinemServer-seitigenFehlerkommt.')
+class StudycourseListOperations(Resource):
+    @sposystem.marshal_list_with(studycourse)
+    @secured
+    def get(self):
+        """
+        AuslesenallerSPO-Objekte.
+        SolltenkeineSPO-Objekteverfügbarsein,sowirdeineleereSequenzzurückgegeben.
+        """
+
+        adm = Administration()
+        studycourse_list = adm.get_all_studycourses()
+        return studycourse_list
+
+    @sposystem.marshal_list_with(studycourse, code=200)
+    @sposystem.expect(studycourse)
+    @secured
+    def post(self):
+        adm = Administration()
+        proposal = StudyCourse.from_dict(api.payload)
+
+        if proposalisnotNone:
+            sc = adm.create_studycourse(proposal.get_name(), proposal.get_title())
+            return sc, 200
+        else:
+            return'', 500
+
+
+@sposystem.route('/studycourse/<int:id>')
+@sposystem.response(500, 'FallseszueinemServer-seitigenFehlerkommt.')
+@sposystem.param('id', 'DieIDdesStudycourse-Objekts')
+class StudycourseOperations(Resource):
+    @sposystem.marshal_with(studycourse)
+    @secured
+    def get(self, id):
+        """AusleseneinesbestimmtenStudycourse-Objekts.
+        DasauszulesendeObjektwirddurchdie```id```indemURIbestimmt."""
+
+        adm = Administration()
+        sc = adm.get_studycourse_by_id(id)
+        return sc
+
+    @secured
+    def delete(self, id):
+        """LöscheneinesbestimmtenStudycourse-Objekts.
+        DaszulöschendeObjektwirddurchdie```id```indemURIbestimmt."""
+
+        adm = Administration()
+        sc = adm.get_studycourse_by_id(id)
+        adm.delete_studycourse(sc)
+        return'', 200
+
+    @sposystem.marshal_with(studycourse)
+    @sposystem.expect(studycourse, validate=True)
+    @secured
+    def put(self, id):
+        """UpdateeinesbestimmtenStudycourse-Objekts.
+        **ACHTUNG:**relevanteidistdieid,diemittelsURIbereitgestelltundsomitalsMethodenparameter
+        verwendetwird.DieserParameterüberschreibtdasID-AttributdesimPayloadderAnfrageübermittelten
+        User-Objekts."""
+
+        adm = Administration()
+        sc = StudyCourse.from_dict(api.payload)
+
+        if sc is not None:
+            """Hierdurchwirddieiddeszuüberschreibenden(vgl.Update)Studycourse-Objektsgesetzt.
+            SieheHinweiseoben."""
+
+            sc.set_id(id)
+            adm.save_studycourse(sc)
+            return'', 200
+        else:
+            return'', 500
+
+
+@sposystem.route('/persons')
+@sposystem.response(500, 'fallseszueinemServer-seitigenFehlerkommt.')
+class PersonListOperations(Resource):
+    @sposystem.marshal_list_with(person)
+    @secured
+    def get(self):
+        """
+        AuslesenallerPerson-Objekte.
+        SolltenkeinePerson-Objekteverfügbarsein,sowirdeineleereSequenzzurückgegeben.
+        """
+
+        adm = Administration()
+        person_list = adm.get_all_persons()
+
+        return person_list
+
+    @sposystem.marshal_list_with(person, code=200)
+    @sposystem.expect(person)
+    @secured
+    def post(self):
+        adm = Administration()
+        proposal = Person.from_dict(api.payload)
+
+        if proposal is not None:
+            pe = adm.create_person(proposal.get_name(), proposal.get_title(), proposal.get_firstname(),
+                                   proposal.get_lastname(), proposal.get_email())
+            return pe, 200
+        else:
+            return'', 500
+
+
+@sposystem.route('/persons/<int:id>')
+@sposystem.response(500, 'FallseszueinemServer-seitigenFehlerkommt.')
+@sposystem.param('id', 'DieIDdesPerson-Objekts')
+class PersonOperations(Resource):
+    @sposystem.marshal_with(person)
+    @secured
+    def get(self, id):
+        """AusleseneinesbestimmtenPerson-Objekts.
+        DasauszulesendeObjektwirddurchdie```id```indemURIbestimmt."""
+
+        adm = Administration()
+        pe = adm.get_person_by_id(id)
+        return pe
+
+    @secured
+    def delete(self, id):
+        """LöscheneinesbestimmtenPerson-Objekts.
+        DaszulöschendeObjektwirddurchdie```id```indemURIbestimmt."""
+
+        adm = Administration()
+        pe = adm.get_person_by_id(id)
+        adm.delete_person(pe)
+        return'', 200
+
+    @sposystem.marshal_with(person)
+    @sposystem.expect(person, validate=True)
+    @secured
+    def put(self, id):
+        """UpdateeinesbestimmtenStudycourse-Objekts.
+        **ACHTUNG:**relevanteidistdieid,diemittelsURIbereitgestelltundsomitalsMethodenparameter
+        verwendetwird.DieserParameterüberschreibtdasID-AttributdesimPayloadderAnfrageübermittelten
+        User-Objekts."""
+
+        adm = Administration()
+        pe = Person.from_dict(api.payload)
+
+        if pe is not None:
+            """Hierdurchwirddieiddeszuüberschreibenden(vgl.Update)Studycourse-Objektsgesetzt.
+            SieheHinweiseoben."""
+
+            pe.set_id(id)
+            adm.save_person(pe)
+            return'', 200
+        else:
+            return'', 500
+
 
 """**ACHTUNG:** Diese Zeile wird nur in der lokalen Entwicklungsumgebung ausgeführt und hat in der Cloud keine Wirkung!
 """
