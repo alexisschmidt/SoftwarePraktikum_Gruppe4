@@ -9,6 +9,8 @@ from server.SecurityDecorator import secured
 from server.Administration import Administration
 from server.bo.Spo import Spo
 from server.bo.User import User
+from server.bo.Module import Module
+from server.bo.Modulepart import Modulepart
 """
 from server.bo.Module import Module
 from server.bo.Modulepart import Modulepart
@@ -266,6 +268,101 @@ class SpoOperations(Resource):
             return c, 200
         else:
             return '', 500
+
+@sposystem.route('/modules')
+@sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
+class ModulelistOperations(Resource):
+    @sposystem.marshal_list_with(module, code=200)
+    @secured
+    def get(self):
+
+        adm = Administration()
+        modules = adm.get_all_modules()
+        return modules
+
+    @sposystem.marshal_with()
+    @secured
+    def post(self):
+
+        adm = Administration()
+        proposal = Module.from_dict(api.payload)
+        if proposal is not None:
+            mo = adm.create_module(proposal.get_name(),
+                                   proposal.get_title(),
+                                   proposal.get_requirement(),
+                                   proposal.get_examtype(),
+                                   proposal.get_instructor(),
+                                   proposal.get_outcome(),
+                                   proposal.get_type(),
+                                   proposal.get_modulepart_id(),
+                                   proposal.get_ects(),
+                                   proposal.get_edvnr(),
+                                   proposal.get_workload()
+                                   )
+            return mo, 200
+        else:
+            return '', 500
+
+
+
+@sposystem.route('/modules/<int: id>')
+@sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
+@sposystem.param("id", "Die id des Modules")
+class ModuleOperations(Resource):
+    @sposystem.marshal_with(module)
+    @secured
+    def get(self, id):
+        """Auslesen eines bestimmten Modul-Objekts"""
+        adm = Administration()
+        mo = adm.get_module_by_id(id)
+        return mo
+
+    @sposystem.marshal_with(module)
+    @sposystem.expect(module, validate=True)
+    @secured
+    def put(self, id):
+        """Update eines bestimmten Module-Objekts.
+        **ACHTUNG: ** relevante id ist die id, die mittels URI bereitgestellt und somit als Methodenparameter
+        verwendet wird. Dieser Parameter überschreibt das ID-Attribut des im Payload der Anfrage übermittelten
+        User-Objekts."""
+
+        adm = Administration()
+        mo = Module.from_dict(api.payload)
+
+        if mo is not None:
+            """Hierdurch wird die id des zu überschreibenden (vgl. Update) Customer-Objekts gesetzt.
+            Siehe Hinweise oben."""
+
+            mo.set_id(id)
+            adm.save_module(mo)
+            return '', 200
+        else:
+            return '', 500
+
+    @secured
+    def delete(self, id):
+        """Löschen eines bestimmten Module-Objekts.
+        Das zu löschende Objekt wird durch die ```id``` in dem URI bestimmt."""
+
+        adm = Administration()
+        mo = adm.get_module_by_id(id)
+        adm.delete_module(mo)
+        return '', 200
+
+@sposystem.route('/module/<int: module_id>')
+@sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
+@sposystem.param('id', 'Die id des Moduls')
+class ModulePartsOperations(Resource):
+    @sposystem.marshal_list_with(module)
+    @secured
+    def get(self, id):
+        adm = Administration()
+        moparts = adm.get_module_by_id(id)
+        moparts.get_moduleparts()
+
+        return moparts
+
+
 
 
 """**ACHTUNG:** Diese Zeile wird nur in der lokalen Entwicklungsumgebung ausgeführt und hat in der Cloud keine Wirkung!
