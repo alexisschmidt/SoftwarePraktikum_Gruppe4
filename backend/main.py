@@ -9,6 +9,8 @@ from server.SecurityDecorator import secured
 from server.Administration import Administration
 from server.bo.Spo import Spo
 from server.bo.User import User
+from server.bo.StudyCourse import StudyCourse
+from server.bo.Person import Person
 """
 from server.bo.Module import Module
 from server.bo.Modulepart import Modulepart
@@ -17,8 +19,6 @@ from server.bo.Person import Person
 """
 
 # Außerdem nutzen wir einen selbstgeschriebenen Decorator der die Authentifikation übernimmt
-# test von hashing
-testojekt = Spo()
 
 app = Flask(__name__)
 CORS(app, resources=r'/sopra/*')
@@ -26,7 +26,7 @@ CORS(app, resources=r'/sopra/*')
 api = Api(app, version='1.0', title='Sopra API',
           description='Datenverarbeitungssystem für SpOs.')
 
-"""Alegen von Namespaces 
+"""Anlegen von Namespaces 
 Namespaces erlauben uns die Strukturierung von APIs.
 """
 sposystem = api.namespace('sopra', description='Funktionen des SpoSystems')
@@ -42,7 +42,7 @@ bo = api.model('BusinessObject', {
 user = api.inherit('User', bo, {
     'firstname': fields.String(attribute='__firstname', description='Vorname eines Users'),
     'lastname': fields.String(attribute='__lastname', description='Nachname eines Users'),
-    'email': fields.String(attribute='__email', description='Emailadresse eines Users'),
+    'email': fields.String(attribute='__email', description='Email adresse eines Users'),
     'google_user_id': fields.String(attribute='__google_user_id', description='Google ID des Users')
 })
 
@@ -54,7 +54,7 @@ namedbo = api.inherit('Namedbo', bo, {
 spo = api.inherit('Spo', namedbo, {
     'start_semester': fields.Date(attribute='_start_semester', description='Anfangssemester der SPO-gültigkeit'),
     'end_semester': fields.Date(attribute='_end_semester', description='Endsemester der SPO-gültigkeit'),
-    'studycourse_id': fields.Date(attribute='_studycourse_id', description='Studycourse der SPO')
+    'studycourse_id': fields.String(attribute='_studycourse_id', description='Studycourse der SPO')
 })
 
 spoelement = api.inherit('Spoelement', namedbo, {
@@ -69,7 +69,10 @@ module = api.inherit('Module', namedbo, {
     'requirement': fields.String(attribute='_requirement', description='Voraussetzungen für das Modul'),
     'outcome': fields.String(attribute='_outcome', description='Outcome des Moduls'),
     'examtype': fields.String(attribute='_examtype', description='Prüfungstyp des Moduls'),
-    'instructor': fields.String(attribute='_instructor', description='Modulverantwortlicher')
+    'instructor': fields.String(attribute='_instructor', description='Modulverantwortlicher'),
+    'moduleparts': fields.List(attribute='__moduleparts',
+                               cls_or_instance='Modulepart',
+                               description='Modulteile des Moduls')
 })
 
 modulepart = api.inherit('Modulepart', namedbo, {
@@ -79,7 +82,7 @@ modulepart = api.inherit('Modulepart', namedbo, {
     'connection': fields.String(attribute='_connection', description='Verbindung zu anderen Modulteilen'),
     'literature': fields.String(attribute='_literature', description='Literatur für das Modulteil'),
     'sources': fields.String(attribute='_sources', description='Quellen'),
-    'semester': fields.String(attribute='_semester', description='Semester des Modulteils')
+    'semester': fields.Integer(attribute='_semester', description='Semester des Modulteils')
 })
 
 studycourse = api.inherit('StudyCourse', namedbo)
@@ -96,6 +99,16 @@ person = api.inherit('Person', namedbo, {
 @sposystem.route('/users')
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
 class UserListOperations(Resource):
+    @sposystem.marshal_list_with(user)
+    @secured
+    def get(self):
+        """
+        Auslesen aller User Objekte.
+        Sollte kein User Objekt verfügbar sein, wird eine leere Sequenz zurückgegeben
+        """
+        adm = Administration()
+        users = adm.get_all_users()
+        return users
 
     @sposystem.marshal_with(user, code=200)
     @sposystem.expect(user)
@@ -126,16 +139,6 @@ class UserOperations(Resource):
         us = adm.get_user_by_id(id)
         return us
 
-    @secured
-    def delete(self, id):
-        """Löschen eines bestimmten User-Objekts.
-        Das zu löschende Objekt wird durch die ```id``` in dem URI bestimmt."""
-
-        adm = Administration()
-        us = adm.get_user_by_id(id)
-        adm.delete_user(us)
-        return '', 200
-
     @sposystem.marshal_with(user)
     @sposystem.expect(user, validate=True)
     @secured
@@ -157,6 +160,16 @@ class UserOperations(Resource):
             return '', 200
         else:
             return '', 500
+
+    @secured
+    def delete(self, id):
+        """Löschen eines bestimmten User-Objekts.
+        Das zu löschende Objekt wird durch die ```id``` in dem URI bestimmt."""
+
+        adm = Administration()
+        us = adm.get_user_by_id(id)
+        adm.delete_user(us)
+        return '', 200
 
 
 @sposystem.route('/users-by-name/<string:lastname>')
@@ -191,23 +204,33 @@ class SpoListOperations(Resource):
         spo_list = adm.get_all_spos()
         return spo_list
 
+    @sposystem.marshal_with(spo, code=200)
+    @sposystem.expect(spo)
+    @secured
+    def post(self):
+
+        adm = Administration()
+        proposal = Spo.from_dict(api.payload)
+
+        if proposal is not None:
+            newspo = adm.create_spo(proposal.get_name(),
+                                    proposal.get_title(),
+                                    proposal.get_start_semester(),
+                                    proposal.get_end_semester(),
+                                    proposal.get_studycourse_id())
+            return newspo, 200
+        else:
+            return '', 500
+
 
 @sposystem.route('/spos/<int:id>')
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
 @sposystem.param('id', 'Die ID des SPO-Objekts')
 class SpoOperations(Resource):
 
-
-
-
-
-
-
-
-
     @sposystem.marshal_with(spo)
     @secured
-    def get(self, id):
+    def get_by_id(self, id):
         """
         Auslesen eines bestimmten SPO-Objekts.
         Das auszulesende Objekt wird durch die ```id``` in dem URI bestimmt.
@@ -216,18 +239,6 @@ class SpoOperations(Resource):
         adm = Administration()
         spo = adm.get_spo_by_id(id)
         return spo
-
-    @secured
-    def delete(self, id):
-        """
-        Löschen eines bestimmten SPO-Objekts.
-        Das zu löschende Objekt wird durch die ```id``` in dem URI bestimmt.
-        """
-
-        adm = Administration()
-        spo = adm.get_spo_by_id(id)
-        adm.delete_spo(spo)
-        return '', 200
 
     @sposystem.marshal_with(spo)
     @secured
@@ -253,19 +264,40 @@ class SpoOperations(Resource):
         else:
             return '', 500
 
-    @sposystem.marshal_with(spo, code=200)
-    @sposystem.expect(spo)
     @secured
-    def post(self, id):
+    def delete(self, id):
+        """
+        Löschen eines bestimmten SPO-Objekts.
+        Das zu löschende Objekt wird durch die ```id``` in dem URI bestimmt.
+        """
 
         adm = Administration()
-        proposal = User.from_dict(api.payload)
+        spo = adm.get_spo_by_id(id)
+        adm.delete_spo(spo)
+        return '', 200
 
-        if proposal is not None:
-            c = adm.create_user(proposal.get_firstname(), proposal.get_lastname(), proposal.get_email())
-            return c, 200
-        else:
-            return '', 500
+    @sposystem.marshal_list_with(spo)
+    @secured
+    def get_modules_by_spo(self, id):
+
+        adm = Administration()
+        s = adm.get_spo_by_id(id)
+        molist = adm.get_all_modules(s)
+        return molist
+
+"""
+@sposystem.route('/spos/<semester: startsemester>')
+@sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
+@sposystem.param('start_semester', 'Das Startsemester des SPO-Objekts')
+class SpoStartSemesterOperations:
+
+    @sposystem.marshal_with(spo)
+    @secured
+    def get_by_start_semester(self, semester):
+"""
+
+
+
 
 
 """**ACHTUNG:** Diese Zeile wird nur in der lokalen Entwicklungsumgebung ausgeführt und hat in der Cloud keine Wirkung!
