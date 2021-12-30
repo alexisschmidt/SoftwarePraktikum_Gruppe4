@@ -1,6 +1,5 @@
 from server.bo import SpoElement as spe
 from server.bo.Person import Person
-from server.bo.Modulepart import Modulepart
 import json
 
 
@@ -9,8 +8,8 @@ class Module(spe.SpoElement):
     __requirement: str
     __outcome: str
     __examtype: str
-    __instructor: Person
-    __moduleparts: list[Modulepart]
+    __instructor: int
+    __moduleparts: list[int]
 
     def __init__(self):
         super().__init__()
@@ -18,7 +17,7 @@ class Module(spe.SpoElement):
         self.__requirement = ""
         self.__outcome = ""
         self.__examtype = ""
-        self.__instructor = Person()
+        self.__instructor = 0
         self.__moduleparts = []
 
     # Auslesen
@@ -60,20 +59,27 @@ class Module(spe.SpoElement):
 
     def set_instructor(self, instructor):
         """Setzen des Modulverantwortlichen"""
-        self.__instructor = instructor
+        if isinstance(instructor, Person):
+            self.__instructor = hash(instructor)
 
     def get_moduleparts(self):
-        """Auslesen der Modulteilliste"""
         return self.__moduleparts
 
-    def set_moduleparts(self, modulepartlist):
-        self.__moduleparts = modulepartlist
+    def set_moduleparts(self, moduleparts):
+        if isinstance(moduleparts, list):
+            for i in moduleparts:
+                if isinstance(i, Module):
+                    self.__moduleparts.append(hash(i))
 
-    def append_moduleparts(self, modulpart):
-        self.__moduleparts.append(modulpart)
+    def append_moduleparts(self, module):
+        if isinstance(module, Module):
+            self.__moduleparts.append(hash(module))
 
-    def remove_moduleparts(self, index):
-        self.__moduleparts.remove(index)
+    def remove_moduleparts(self, modulepart):
+        if isinstance(modulepart, Module):
+            for i in self.__moduleparts:
+                if hash(modulepart) == i:
+                    self.__moduleparts.remove(i)
 
     def __str__(self):
         return "Module: id: {}, name: {}, title: {}, edvnr: {}, ects: {}, workload: {}, type: {}, " \
@@ -88,13 +94,10 @@ class Module(spe.SpoElement):
                 self.__requirement,
                 self.__outcome,
                 self.__examtype,
-                Person.get_lastname(self.__instructor)
+                self.__instructor
                 )
 
     def json(self):
-        # modulehash = []
-        # for modulepart in self.__moduleparts:
-        # modulehash.append(modulepart.hash())
         return json.dumps({
             'id': self.get_id(),
             'name': self.get_name(),
@@ -106,7 +109,7 @@ class Module(spe.SpoElement):
             'requirement': self.get_requirement(),
             'outcome': self.get_outcome(),
             'examtype': self.get_examtype(),
-            'instructor': Person.hash(self.get_instructor())
+            'instructor': hash(self.get_instructor())
             })
 
     @staticmethod
@@ -125,6 +128,16 @@ class Module(spe.SpoElement):
         obj.set_examtype(dictionary["examtype"])
         obj.set_instructor(dictionary["instructor"])
         return obj
+
+    def __eq__(self, other):
+        return super().__eq__(other) and\
+               self.get_type() == other.get_type() and\
+               self.get_requirement() == other.get_requirement() and\
+               self.get_outcome() == other.get_outcome() and\
+               self.get_examtype() == other.get_examtype() and \
+               self.get_instructor() == other.get_instructor()
+
+    __hash__ = spe.SpoElement.__hash__
 
 
 """

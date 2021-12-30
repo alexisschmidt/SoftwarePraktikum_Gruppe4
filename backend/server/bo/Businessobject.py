@@ -1,7 +1,6 @@
 """das Modul "datetime" wird importiert, um das datumsformat für Variablen zu verwenden"""
 import datetime
 from abc import ABC, abstractmethod
-import json
 import hashlib
 
 
@@ -31,9 +30,19 @@ class BusinessObject(ABC):
 
     @abstractmethod
     def json(self):
+        """Gibt das Objekt als json aus. Wird von allen BOs überschrieben"""
         pass
 
-    def hash(self):
-        encoded = self.json().encode()
-        hash = hashlib.sha256(encoded)
-        return hash.hexdigest()
+    def __eq__(self, other):
+        """Vergleicht die einzelnen Attribute auf ihre identität und gibt nur ein Ergebnis, wenn alle übereinstimmen.
+        Wird von allen BOs erweitert"""
+        return self.get_id() == other.get_id() and self.get_creationdate() == other.get_creationdate()
+
+    def __hash__(self):
+        """
+        Gibt den Integer aus den Bits des Hash der json vom Objekt aus. Wird von allen BOs geerbt.
+        Ermöglicht die referentielle Integrität.
+        """
+
+        hashedbo = int.from_bytes(hashlib.sha256(self.json().encode()).digest(), 'big')
+        return hashedbo

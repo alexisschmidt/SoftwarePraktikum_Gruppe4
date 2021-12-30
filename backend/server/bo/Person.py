@@ -67,3 +67,10 @@ class Person (nbo.NamedBo):
         obj.set_lastname(dictionary["lastname"])
         obj.set_email(dictionary["email"])
         return obj
+
+    def __eq__(self, other):
+        return super().__eq__(other) and self.get_firstname() == other.get_name() and \
+               self.get_lastname() == other.get_lastname() and \
+               self.get_email() == other.get_email()
+
+    __hash__ = nbo.NamedBo.__hash__

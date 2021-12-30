@@ -21,7 +21,7 @@ class SpoMapper(Mapper):
             spo.set_title(title)
             spo.set_start_semester(start_semester)
             spo.set_end_semester(end_semester)
-            spo.set_studycourse_id(studycourse_id)
+            spo.set_studycourse(studycourse_id)
             result.append(spo)
 
         self._cnx.commit()
@@ -44,7 +44,7 @@ class SpoMapper(Mapper):
             spo.set_title(title)
             spo.set_start_semester(start_semester)
             spo.set_end_semester(end_semester)
-            spo.set_studycourse_id(studycourse_id)
+            spo.set_studycourse(studycourse_id)
 
             result.append(spo)
 
@@ -70,7 +70,7 @@ class SpoMapper(Mapper):
             spo.set_title(title)
             spo.set_start_semester(start_semester)
             spo.set_end_semester(end_semester)
-            spo.set_studycourse_id(studycourse_id)
+            spo.set_studycourse(studycourse_id)
             result = spo
         except IndexError:
 
@@ -169,7 +169,7 @@ class SpoMapper(Mapper):
 
         command = "INSERT INTO spo (id, creationdate, name, title, start_semester, end_semester, studycourse_id) VALUES (%s,%s,%s,%s,%s,%s,%s) "
         data = (
-            spo.get_id(), spo.get_creationdate(), spo.get_name(), spo.get_title(), spo.get_start_semester(), spo.get_end_semester(), spo.get_studycourse_id())
+            spo.get_id(), spo.get_creationdate(), spo.get_name(), spo.get_title(), spo.get_start_semester(), spo.get_end_semester(), spo.get_studycourse())
         cursor.execute(command, data)
 
         self._cnx.commit()
@@ -182,7 +182,7 @@ class SpoMapper(Mapper):
         cursor = self._cnx.cursor()
 
         command = "UPDATE spo " + "SET name=%s, SET title=%s, SET start_semester=%s, SET end_semester=%s, SET studycourse_id=%s WHERE id=%s "
-        data = (spo.get_name(), spo.get_title(), spo.get_start_semester(), spo.get_end_semester(), spo.get_studycourse_id(), spo.get_id())
+        data = (spo.get_name(), spo.get_title(), spo.get_start_semester(), spo.get_end_semester(), spo.get_studycourse(), spo.get_id())
         cursor.execute(command, data)
 
         self._cnx.commit()
