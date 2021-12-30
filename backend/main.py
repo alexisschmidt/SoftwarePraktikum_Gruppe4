@@ -9,8 +9,11 @@ from server.SecurityDecorator import secured
 from server.Administration import Administration
 from server.bo.Spo import Spo
 from server.bo.User import User
+from server.bo.Module import Module
+from server.bo.Modulepart import Modulepart
 from server.bo.StudyCourse import StudyCourse
 from server.bo.Person import Person
+
 """
 from server.bo.Module import Module
 from server.bo.Modulepart import Modulepart
@@ -296,7 +299,178 @@ class SpoStartSemesterOperations:
     def get_by_start_semester(self, semester):
 """
 
+@sposystem.route('/modules')
+@sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
+class ModuleListOperations(Resource):
+    @sposystem.marshal_list_with(module, code=200)
+    @secured
+    def get(self):
 
+        adm = Administration()
+        modules = adm.get_all_modules()
+        return modules
+
+    @sposystem.marshal_with()
+    @secured
+    def post(self):
+
+        adm = Administration()
+        proposal = Module.from_dict(api.payload)
+        if proposal is not None:
+            mo = adm.create_module(proposal.get_name(),
+                                   proposal.get_title(),
+                                   proposal.get_requirement(),
+                                   proposal.get_examtype(),
+                                   proposal.get_instructor(),
+                                   proposal.get_outcome(),
+                                   proposal.get_type(),
+                                   proposal.get_modulepart_id(),
+                                   proposal.get_ects(),
+                                   proposal.get_edvnr(),
+                                   proposal.get_workload()
+                                   )
+            return mo, 200
+        else:
+            return '', 500
+
+
+
+@sposystem.route('/modules/<int: id>')
+@sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
+@sposystem.param("id", "Die id des Modules")
+class ModuleOperations(Resource):
+    @sposystem.marshal_with(module)
+    @secured
+    def get(self, id):
+        """Auslesen eines bestimmten Modul-Objekts"""
+        adm = Administration()
+        mo = adm.get_module_by_id(id)
+        return mo
+
+    @sposystem.marshal_with(module)
+    @sposystem.expect(module, validate=True)
+    @secured
+    def put(self, id):
+        """Update eines bestimmten Module-Objekts.
+        **ACHTUNG: ** relevante id ist die id, die mittels URI bereitgestellt und somit als Methodenparameter
+        verwendet wird. Dieser Parameter überschreibt das ID-Attribut des im Payload der Anfrage übermittelten
+        User-Objekts."""
+
+        adm = Administration()
+        mo = Module.from_dict(api.payload)
+
+        if mo is not None:
+            """Hierdurch wird die id des zu überschreibenden (vgl. Update) Customer-Objekts gesetzt.
+            Siehe Hinweise oben."""
+
+            mo.set_id(id)
+            adm.save_module(mo)
+            return '', 200
+        else:
+            return '', 500
+
+    @secured
+    def delete(self, id):
+        """Löschen eines bestimmten Module-Objekts.
+        Das zu löschende Objekt wird durch die ```id``` in dem URI bestimmt."""
+
+        adm = Administration()
+        mo = adm.get_module_by_id(id)
+        adm.delete_module(mo)
+        return '', 200
+
+@sposystem.route('/module/<int: module_id>')
+@sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
+@sposystem.param('id', 'Die id des Moduls')
+class ModulePartsOperations(Resource):
+    @sposystem.marshal_list_with(module)
+    @secured
+    def get(self, id):
+        adm = Administration()
+        moparts = adm.get_module_by_id(id)
+        moparts.get_moduleparts()
+
+        return moparts
+
+@sposystem.route('/moduleparts')
+@sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
+class ModulePartListOperations(Resource):
+    @sposystem.marshal_list_with(modulepart, code=200)
+    @secured
+    def get(self):
+
+        adm = Administration()
+        moduleparts = adm.get_all_moduleparts()
+        return moduleparts
+
+    @sposystem.marshal_with()
+    @secured
+    def post(self):
+
+        adm = Administration()
+        proposal = Modulepart.from_dict(api.payload)
+        if proposal is not None:
+            mopart = adm.create_modulepart(proposal.get_name(),
+                                           proposal.get_title(),
+                                           proposal.get_language(),
+                                           proposal.get_literature(),
+                                           proposal.get_semester_id(),
+                                           proposal.get_sources(),
+                                           proposal.get_connection(),
+                                           proposal.get_description(),
+                                           proposal.get_sws(),
+                                           proposal.get_ects(),
+                                           proposal.get_edvnr(),
+                                           proposal.get_workload()
+                                          )
+            return mopart, 200
+        else:
+            return '', 500
+
+
+@sposystem.route('/moduleparts/<int: id>')
+@sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
+@sposystem.param("id", "Die id des Moduleparts")
+class ModulePartOperations(Resource):
+    @sposystem.marshal_with(modulepart)
+    @secured
+    def get(self, id):
+        """Auslesen eines bestimmten Modulepart-Objekts"""
+        adm = Administration()
+        mopart = adm.get_modulepart_by_id(id)
+        return mopart
+
+    @sposystem.marshal_with(modulepart)
+    @sposystem.expect(modulepart, validate=True)
+    @secured
+    def put(self, id):
+        """Update eines bestimmten Modulepart-Objekts.
+        **ACHTUNG: ** relevante id ist die id, die mittels URI bereitgestellt und somit als Methodenparameter
+        verwendet wird. Dieser Parameter überschreibt das ID-Attribut des im Payload der Anfrage übermittelten
+        User-Objekts."""
+
+        adm = Administration()
+        mopart = Modulepart.from_dict(api.payload)
+
+        if mopart is not None:
+            """Hierdurch wird die id des zu überschreibenden (vgl. Update) Customer-Objekts gesetzt.
+            Siehe Hinweise oben."""
+
+            mopart.set_id(id)
+            adm.save_modulepart(mopart)
+            return '', 200
+        else:
+            return '', 500
+
+    @secured
+    def delete(self, id):
+        """Löschen eines bestimmten Modulepart-Objekts.
+        Das zu löschende Objekt wird durch die ```id``` in dem URI bestimmt."""
+
+        adm = Administration()
+        mopart = adm.get_modulepart_by_id(id)
+        adm.delete_modulepart(mopart)
+        return '', 200
 
 
 
