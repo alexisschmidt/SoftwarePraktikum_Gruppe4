@@ -203,16 +203,14 @@ class SpoListOperations(Resource):
         Auslesen aller SPO-Objekte.
         Sollten keine SPO-Objekte verfügbar sein, so wird eine leere Sequenz zurückgegeben.
         """
-
         adm = Administration()
         spo_list = adm.get_all_spos()
         return spo_list
 
     @sposystem.marshal_with(spo, code=200)
-    @sposystem.expect(spo)
+    @sposystem.expect(spo, validate=True)
     @secured
     def post(self):
-
         adm = Administration()
         proposal = Spo.from_dict(api.payload)
 
@@ -221,7 +219,7 @@ class SpoListOperations(Resource):
                                     proposal.get_title(),
                                     proposal.get_start_semester(),
                                     proposal.get_end_semester(),
-                                    proposal.get_studycourse_id())
+                                    proposal.get_studycourse())
             return newspo, 200
         else:
             return '', 500
@@ -245,6 +243,7 @@ class SpoOperations(Resource):
         return spo
 
     @sposystem.marshal_with(spo)
+    @sposystem.expect(spo, validate=True)
     @secured
     def put(self, id):
         """

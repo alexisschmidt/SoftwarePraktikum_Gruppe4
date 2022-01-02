@@ -23,6 +23,7 @@ class User(bo.BusinessObject):
         self.__google_user_id = "" # Die Google ID des Nutzers
         self.__isadmin = 0
 
+
 # Auslesen / des Vor-/nachnamens und Email.
 
     def get_firstname(self):
@@ -95,6 +96,13 @@ class User(bo.BusinessObject):
         obj.set_google_user_id(dictionary["google_user_id"])
         obj.set_isadmin(["isadmin"])
         return obj
+
+    def __eq__(self, other):
+        return super().__eq__(other) and self.get_firstname() == other.get_name() and\
+               self.get_lastname() == other.get_lastname() and\
+               self.get_email() == other.get_email()
+
+    __hash__ = bo.BusinessObject.__hash__
 
 
 test = User()
