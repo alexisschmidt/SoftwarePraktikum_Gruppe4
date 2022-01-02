@@ -13,13 +13,14 @@ class UserMapper(Mapper):
         cursor.execute("SELECT * from user")
         tuples = cursor.fetchall()
 
-        for (id, creationdate, firstname, lastname, email, google_user_id) in tuples:
+        for (id, creationdate, firstname, lastname, email, google_user_id, isadmin) in tuples:
             user = User()
             user.set_id(id)
             user.set_firstname(firstname)
             user.set_lastname(lastname)
             user.set_email(email)
             user.set_google_user_id(google_user_id)
+            user.set_isadmin(isadmin)
             result.append(user)
 
         self._cnx.commit()
@@ -35,13 +36,15 @@ class UserMapper(Mapper):
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for (id, creationdate, firstname, lastname, email, google_user_id) in tuples:
+        for (id, creationdate, firstname, lastname, email, google_user_id, isadmin) in tuples:
             user = User()
             user.set_id(id)
+            user.set_creationdate(creationdate)
             user.set_firstname(firstname)
             user.set_lastname(lastname)
             user.set_email(email)
             user.set_google_user_id(google_user_id)
+            user.set_isadmin(isadmin)
 
             result.append(user)
 
@@ -60,13 +63,15 @@ class UserMapper(Mapper):
         tuples = cursor.fetchall()
 
         try:
-            (id, creationdate, firstname, lastname, email, google_user_id) = tuples[0]
+            (id, creationdate, firstname, lastname, email, google_user_id, isadmin) = tuples[0]
             user = User()
             user.set_id(id)
+            user.set_creationdate(creationdate)
             user.set_firstname(firstname)
             user.set_lastname(lastname)
             user.set_email(email)
             user.set_google_user_id(google_user_id)
+            user.set_isadmin(isadmin)
             result = user
         except IndexError:
 
@@ -91,8 +96,8 @@ class UserMapper(Mapper):
 
                 user.set_id(1)
 
-        command = "INSERT INTO user (id, creationdate, firstname, lastname, email, google_user_id) VALUES (%s,%s,%s,%s,%s,%s) "
-        data = (user.get_id(), user.get_creationdate(), user.get_firstname(), user.get_lastname(), user.get_email(), user.get_google_user_id())
+        command = "INSERT INTO user (id, creationdate, firstname, lastname, email, google_user_id, isadmin) VALUES (%s,%s,%s,%s,%s,%s,%s) "
+        data = (user.get_id(), user.get_creationdate(), user.get_firstname(), user.get_lastname(), user.get_email(), user.get_google_user_id(), user.get_isadmin())
         cursor.execute(command, data)
 
         self._cnx.commit()
@@ -104,8 +109,8 @@ class UserMapper(Mapper):
 
         cursor = self._cnx.cursor()
 
-        command = "UPDATE user " + "SET firstname=%s, SET lastname=%s, SET email=%s, google_user_id=%s WHERE id=%s "
-        data = (user.get_firstname(), user_get.lastname(), user_get.email(), user.get_google_user_id(), user.get_id())
+        command = "UPDATE user " + "SET firstname=%s, SET lastname=%s, SET email=%s, google_user_id=%s, isadmin=%s WHERE id=%s "
+        data = (user.get_firstname(), user_get.lastname(), user_get.email(), user.get_google_user_id(), user.get_isadmin, user.get_id())
         cursor.execute(command, data)
 
         self._cnx.commit()
@@ -130,13 +135,15 @@ class UserMapper(Mapper):
         tuples = cursor.fetchall()
 
         try:
-            (id, creationdate, firstname, lastname, email, google_user_id) = tuples[0]
+            (id, creationdate, firstname, lastname, email, google_user_id, isadmin) = tuples[0]
             user = User()
             user.set_id(id)
+            user.set_creationdate(creationdate)
             user.set_firstname(firstname)
             user.set_lastname(lastname)
             user.set_email(email)
             user.set_google_user_id(google_user_id)
+            user.set_isadmin(isadmin)
             result = user
 
         except IndexError:
