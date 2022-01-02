@@ -105,11 +105,12 @@ class User(bo.BusinessObject):
     __hash__ = bo.BusinessObject.__hash__
 
 
+"""
 test = User()
 print(test)
 print(test.json())
 print(test.hash())
-
+"""
 
 
 
