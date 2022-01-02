@@ -1,5 +1,4 @@
 # -- coding:utf-8 --
-
 from flask import Flask
 from flask_restx import Api, Resource, fields
 from flask_cors import CORS
@@ -74,8 +73,7 @@ module = api.inherit('Module', namedbo, {
     'outcome': fields.String(attribute='_outcome', description='Outcome des Moduls'),
     'examtype': fields.String(attribute='_examtype', description='Prüfungstyp des Moduls'),
     'instructor': fields.String(attribute='_instructor', description='Modulverantwortlicher'),
-    'moduleparts': fields.List(attribute='__moduleparts',
-                               cls_or_instance='Modulepart',
+    'moduleparts': fields.List(attribute='__moduleparts', cls_or_instance=fields.Integer,
                                description='Modulteile des Moduls')
 })
 
@@ -288,6 +286,7 @@ class SpoOperations(Resource):
         molist = adm.get_all_modules(s)
         return molist
 
+
 """
 @sposystem.route('/spos/<semester: startsemester>')
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
@@ -298,6 +297,7 @@ class SpoStartSemesterOperations:
     @secured
     def get_by_start_semester(self, semester):
 """
+
 
 @sposystem.route('/modules')
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
@@ -310,7 +310,7 @@ class ModuleListOperations(Resource):
         modules = adm.get_all_modules()
         return modules
 
-    @sposystem.marshal_with()
+    @sposystem.marshal_with(module)
     @secured
     def post(self):
 
@@ -334,8 +334,7 @@ class ModuleListOperations(Resource):
             return '', 500
 
 
-
-@sposystem.route('/modules/<int: id>')
+@sposystem.route('/modules/<int:id>')
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
 @sposystem.param("id", "Die id des Modules")
 class ModuleOperations(Resource):
@@ -379,7 +378,8 @@ class ModuleOperations(Resource):
         adm.delete_module(mo)
         return '', 200
 
-@sposystem.route('/module/<int: module_id>')
+
+@sposystem.route('/module/<int:module_id>')
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
 @sposystem.param('id', 'Die id des Moduls')
 class ModulePartsOperations(Resource):
@@ -392,6 +392,7 @@ class ModulePartsOperations(Resource):
 
         return moparts
 
+
 @sposystem.route('/moduleparts')
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
 class ModulePartListOperations(Resource):
@@ -403,7 +404,7 @@ class ModulePartListOperations(Resource):
         moduleparts = adm.get_all_moduleparts()
         return moduleparts
 
-    @sposystem.marshal_with()
+    @sposystem.marshal_with(modulepart)
     @secured
     def post(self):
 
@@ -422,13 +423,13 @@ class ModulePartListOperations(Resource):
                                            proposal.get_ects(),
                                            proposal.get_edvnr(),
                                            proposal.get_workload()
-                                          )
+                                           )
             return mopart, 200
         else:
             return '', 500
 
 
-@sposystem.route('/moduleparts/<int: id>')
+@sposystem.route('/moduleparts/<int:id>')
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
 @sposystem.param("id", "Die id des Moduleparts")
 class ModulePartOperations(Resource):
@@ -474,14 +475,14 @@ class ModulePartOperations(Resource):
 
 
 @sposystem.route('/studycourses')
-@sposystem.response(500, 'fallseszueinemServer-seitigenFehlerkommt.')
+@sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
 class StudycourseListOperations(Resource):
     @sposystem.marshal_list_with(studycourse)
     @secured
     def get(self):
         """
-        AuslesenallerSPO-Objekte.
-        SolltenkeineSPO-Objekteverfügbarsein,sowirdeineleereSequenzzurückgegeben.
+        Auslesen aller SPO-Objekte.
+        Sollten keine SPO-Objekte verfügbar sein, so wird eine leere Sequenz zurückgegeben.
         """
 
         adm = Administration()
@@ -495,7 +496,7 @@ class StudycourseListOperations(Resource):
         adm = Administration()
         proposal = StudyCourse.from_dict(api.payload)
 
-        if proposalisnotNone:
+        if proposal is not None:
             sc = adm.create_studycourse(proposal.get_name(), proposal.get_title())
             return sc, 200
         else:
@@ -503,14 +504,14 @@ class StudycourseListOperations(Resource):
 
 
 @sposystem.route('/studycourse/<int:id>')
-@sposystem.response(500, 'FallseszueinemServer-seitigenFehlerkommt.')
-@sposystem.param('id', 'DieIDdesStudycourse-Objekts')
+@sposystem.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
+@sposystem.param('id', 'Die ID des Studycourse-Objekts')
 class StudycourseOperations(Resource):
     @sposystem.marshal_with(studycourse)
     @secured
     def get(self, id):
-        """AusleseneinesbestimmtenStudycourse-Objekts.
-        DasauszulesendeObjektwirddurchdie```id```indemURIbestimmt."""
+        """Auslesen eines bestimmten Studycourse-Objekts.
+        Das auszulesende Objekt wird durch die```id```in dem URI bestimmt."""
 
         adm = Administration()
         sc = adm.get_studycourse_by_id(id)
@@ -518,8 +519,8 @@ class StudycourseOperations(Resource):
 
     @secured
     def delete(self, id):
-        """LöscheneinesbestimmtenStudycourse-Objekts.
-        DaszulöschendeObjektwirddurchdie```id```indemURIbestimmt."""
+        """Löschen eines bestimmten Studycourse-Objekts.
+        Das zu löschende Objekt wird durch die```id```in dem URI bestimmt."""
 
         adm = Administration()
         sc = adm.get_studycourse_by_id(id)
@@ -530,17 +531,17 @@ class StudycourseOperations(Resource):
     @sposystem.expect(studycourse, validate=True)
     @secured
     def put(self, id):
-        """UpdateeinesbestimmtenStudycourse-Objekts.
-        **ACHTUNG:**relevanteidistdieid,diemittelsURIbereitgestelltundsomitalsMethodenparameter
-        verwendetwird.DieserParameterüberschreibtdasID-AttributdesimPayloadderAnfrageübermittelten
+        """Update eines bestimmten Studycourse-Objekts.
+        **ACHTUNG: ** relevante id ist die id, die mittels URI bereitgestellt und somit als Methodenparameter
+        verwendet wird. Dieser Parameter überschreibt das ID-Attribut des im Payload der Anfrage übermittelten
         User-Objekts."""
 
         adm = Administration()
         sc = StudyCourse.from_dict(api.payload)
 
         if sc is not None:
-            """Hierdurchwirddieiddeszuüberschreibenden(vgl.Update)Studycourse-Objektsgesetzt.
-            SieheHinweiseoben."""
+            """Hier durch wird die id des zu überschreibenden (vgl.Update)Studycourse-Objekts gesetzt.
+            Siehe Hinweise oben."""
 
             sc.set_id(id)
             adm.save_studycourse(sc)
@@ -550,14 +551,14 @@ class StudycourseOperations(Resource):
 
 
 @sposystem.route('/persons')
-@sposystem.response(500, 'fallseszueinemServer-seitigenFehlerkommt.')
+@sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
 class PersonListOperations(Resource):
     @sposystem.marshal_list_with(person)
     @secured
     def get(self):
         """
-        AuslesenallerPerson-Objekte.
-        SolltenkeinePerson-Objekteverfügbarsein,sowirdeineleereSequenzzurückgegeben.
+        Auslesen aller Person-Objekte.
+        Sollten keine Person-Objekte verfügbar sein, so wird eine leere Sequenz zurückgegeben.
         """
 
         adm = Administration()
@@ -581,14 +582,14 @@ class PersonListOperations(Resource):
 
 
 @sposystem.route('/persons/<int:id>')
-@sposystem.response(500, 'FallseszueinemServer-seitigenFehlerkommt.')
-@sposystem.param('id', 'DieIDdesPerson-Objekts')
+@sposystem.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
+@sposystem.param('id', 'Die ID des Person-Objekts')
 class PersonOperations(Resource):
     @sposystem.marshal_with(person)
     @secured
     def get(self, id):
-        """AusleseneinesbestimmtenPerson-Objekts.
-        DasauszulesendeObjektwirddurchdie```id```indemURIbestimmt."""
+        """Auslesen eines bestimmten Person-Objekts.
+        Das auszulesende Objekt wird durch die```id```in dem URI bestimmt."""
 
         adm = Administration()
         pe = adm.get_person_by_id(id)
@@ -596,8 +597,8 @@ class PersonOperations(Resource):
 
     @secured
     def delete(self, id):
-        """LöscheneinesbestimmtenPerson-Objekts.
-        DaszulöschendeObjektwirddurchdie```id```indemURIbestimmt."""
+        """Löschen eines bestimmten Person-Objekts.
+        Das zu löschende Objekt wird durch die```id```in dem URI bestimmt."""
 
         adm = Administration()
         pe = adm.get_person_by_id(id)
@@ -608,17 +609,17 @@ class PersonOperations(Resource):
     @sposystem.expect(person, validate=True)
     @secured
     def put(self, id):
-        """UpdateeinesbestimmtenStudycourse-Objekts.
-        **ACHTUNG:**relevanteidistdieid,diemittelsURIbereitgestelltundsomitalsMethodenparameter
-        verwendetwird.DieserParameterüberschreibtdasID-AttributdesimPayloadderAnfrageübermittelten
+        """Update eines bestimmten Studycourse-Objekts.
+        **ACHTUNG: ** relevante id ist die id, die mittels URI bereitgestellt und somit als Methodenparameter
+        verwendet wird. Dieser Parameter überschreibt das ID-Attribut des im Payload der Anfrage übermittelten
         User-Objekts."""
 
         adm = Administration()
         pe = Person.from_dict(api.payload)
 
         if pe is not None:
-            """Hierdurchwirddieiddeszuüberschreibenden(vgl.Update)Studycourse-Objektsgesetzt.
-            SieheHinweiseoben."""
+            """Hierdurch wird die id des zu überschreibenden (vgl.Update)Studycourse-Objekts gesetzt.
+            Siehe Hinweise oben."""
 
             pe.set_id(id)
             adm.save_person(pe)
