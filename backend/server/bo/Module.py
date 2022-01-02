@@ -1,5 +1,6 @@
 from server.bo import SpoElement as spe
 from server.bo.Person import Person
+from server.bo.Modulepart import Modulepart
 import json
 
 
@@ -8,8 +9,8 @@ class Module(spe.SpoElement):
     __requirement: str
     __outcome: str
     __examtype: str
-    __instructor: int
-    __moduleparts: list[int]
+    __instructor: dict
+    __moduleparts: dict
 
     def __init__(self):
         super().__init__()
@@ -17,8 +18,8 @@ class Module(spe.SpoElement):
         self.__requirement = ""
         self.__outcome = ""
         self.__examtype = ""
-        self.__instructor = 0
-        self.__moduleparts = []
+        self.__instructor = {}
+        self.__moduleparts = {}
 
     # Auslesen
     def get_type(self):
@@ -60,7 +61,7 @@ class Module(spe.SpoElement):
     def set_instructor(self, instructor):
         """Setzen des Modulverantwortlichen"""
         if isinstance(instructor, Person):
-            self.__instructor = hash(instructor)
+            self.__instructor = {hash(instructor): instructor.get_id()}
 
     def get_moduleparts(self):
         return self.__moduleparts
@@ -68,9 +69,12 @@ class Module(spe.SpoElement):
     def set_moduleparts(self, moduleparts):
         if isinstance(moduleparts, list):
             for i in moduleparts:
-                if isinstance(i, Module):
-                    self.__moduleparts.append(hash(i))
+                if isinstance(i, Modulepart):
+                    self.__moduleparts.update({hash(i): i.get_id()})
 
+    """ 
+    Muss in Administration.py
+    
     def append_moduleparts(self, module):
         if isinstance(module, Module):
             self.__moduleparts.append(hash(module))
@@ -80,6 +84,7 @@ class Module(spe.SpoElement):
             for i in self.__moduleparts:
                 if hash(modulepart) == i:
                     self.__moduleparts.remove(i)
+    """
 
     def __str__(self):
         return "Module: id: {}, name: {}, title: {}, edvnr: {}, ects: {}, workload: {}, type: {}, " \
@@ -109,7 +114,7 @@ class Module(spe.SpoElement):
             'requirement': self.get_requirement(),
             'outcome': self.get_outcome(),
             'examtype': self.get_examtype(),
-            'instructor': hash(self.get_instructor())
+            'instructor': self.get_instructor()
             })
 
     @staticmethod
@@ -140,11 +145,12 @@ class Module(spe.SpoElement):
     __hash__ = spe.SpoElement.__hash__
 
 
-"""
-    Test Script
 
-    test = Module() 
-    print(test)
-    print(test.json())
-    print(test.hash())
-"""
+
+test = Module()
+person1 = Person()
+person1.set_id(69)
+test.set_instructor(person1)
+print(test)
+print(test.json())
+print(hash(test))
