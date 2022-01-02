@@ -154,7 +154,7 @@ class Modulepart (spe.SpoElement):
         return obj
 
 
-
+"""
 #Test Script
 
 test = Modulepart()
@@ -164,3 +164,4 @@ test.set_professor(person1)
 print(test)
 print(test.json())
 print(hash(test))
+"""

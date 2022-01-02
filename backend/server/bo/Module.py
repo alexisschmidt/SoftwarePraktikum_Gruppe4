@@ -145,12 +145,12 @@ class Module(spe.SpoElement):
     __hash__ = spe.SpoElement.__hash__
 
 
-
-
-test = Module()
+"""
+# test = Module()
 person1 = Person()
 person1.set_id(69)
 test.set_instructor(person1)
 print(test)
 print(test.json())
 print(hash(test))
+"""
