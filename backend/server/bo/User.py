@@ -12,12 +12,17 @@ class User(bo.BusinessObject):
     __firstname: str
     __lastname: str
     __email: str
+    __google_user_id: str
+    __isadmin: int
 
     def __init__(self):
         super().__init__()
         self.__firstname = ""   # Der Vorname des Nutzers
         self.__lastname = ""    # Der Nachname des Nutzers
-        self.__email = ""       # Die E-Mail des Nutzers
+        self.__email = ""   # Die E-Mail des Nutzers
+        self.__google_user_id = "" # Die Google ID des Nutzers
+        self.__isadmin = 0
+
 
 # Auslesen / des Vor-/nachnamens und Email.
 
@@ -45,12 +50,28 @@ class User(bo.BusinessObject):
         """Setzen der E-Mail"""
         self.__email = email
 
+    def get_google_user_id(self):
+        """Auslesen der E-Mail"""
+        return self.__google_user_id
+
+    def set_google_user_id(self, google_user_id):
+        """Setzen der E-Mail"""
+        self.__google_user_id = google_user_id
+
+    def get_isadmin(self):
+        return self.__isadmin
+
+    def set_isadmin(self, isadmin):
+        self.__isadmin = isadmin
+
     def __str__(self):
-        return "User: id: {}, firstname: {}, lastname: {}, email: {}".format(
+        return "User: id: {}, firstname: {}, lastname: {}, email: {}, google_user_id: {] isadmin: {}".format(
             self.get_id(),
             self.__firstname,
             self.__lastname,
-            self.__email
+            self.__email,
+            self.__google_user_id,
+            self.__isadmin
             )
 
     def json(self):
@@ -58,7 +79,9 @@ class User(bo.BusinessObject):
             'id': self.get_id(),
             'firstname': self.get_firstname(),
             'lastname': self.get_lastname(),
-            'email': self.get_email()
+            'email': self.get_email(),
+            'google_user_id': self.google_user_id(),
+            'isadmin': self.isadmin()
             })
     
     @staticmethod
@@ -70,6 +93,8 @@ class User(bo.BusinessObject):
         obj.set_firstname(dictionary["firstname"])
         obj.set_lastname(dictionary["lastname"])
         obj.set_email(dictionary["email"])
+        obj.set_google_user_id(dictionary["google_user_id"])
+        obj.set_isadmin(["isadmin"])
         return obj
 
     def __eq__(self, other):

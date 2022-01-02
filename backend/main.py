@@ -46,7 +46,8 @@ user = api.inherit('User', bo, {
     'firstname': fields.String(attribute='__firstname', description='Vorname eines Users'),
     'lastname': fields.String(attribute='__lastname', description='Nachname eines Users'),
     'email': fields.String(attribute='__email', description='Email adresse eines Users'),
-    'google_user_id': fields.String(attribute='__google_user_id', description='Google ID des Users')
+    'google_user_id': fields.String(attribute='__google_user_id', description='Google ID des Users'),
+    'isadmin': fields.Integer(attribute='__isadmin', description='Anzeige ob Adminstatus oder nicht')
 })
 
 namedbo = api.inherit('Namedbo', bo, {
