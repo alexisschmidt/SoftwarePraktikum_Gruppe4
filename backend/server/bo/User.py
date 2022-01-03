@@ -23,7 +23,6 @@ class User(bo.BusinessObject):
         self.__google_user_id = "" # Die Google ID des Nutzers
         self.__isadmin = 0
 
-
 # Auslesen / des Vor-/nachnamens und Email.
 
     def get_firstname(self):
@@ -49,6 +48,15 @@ class User(bo.BusinessObject):
     def set_email(self, email):
         """Setzen der E-Mail"""
         self.__email = email
+        
+    def get_user_id(self):
+        """Auslesen der E-Mail"""
+        return self.__user_id
+
+    def set_user_id(self, value):
+        """Setzen der E-Mail"""
+        self.__user_id = value     
+        
 
     def get_google_user_id(self):
         """Auslesen der E-Mail"""
