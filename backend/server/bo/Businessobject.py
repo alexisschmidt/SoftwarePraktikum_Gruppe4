@@ -1,39 +1,48 @@
-"""das Modul "datetime" wird importiert um das datumsformat für Variablen zu verwenden"""
+"""das Modul "datetime" wird importiert, um das datumsformat für Variablen zu verwenden"""
 import datetime
 from abc import ABC, abstractmethod
 import hashlib
 
 
-
 class BusinessObject(ABC):
-    id: int
-    creationdate: datetime.date
+    _id: int
+    _creationdate: datetime.date
 
     def __init__(self):
-        self.id = 0
-        self.creationdate = datetime.date(1, 1, 1)
+        self._id = 0
+        self._creationdate = datetime.date(1, 1, 1)
 
     def set_id(self, value):
         """Setzen der ID."""
-        self.id = value
+        self._id = value
 
     def get_id(self):
         """Auslesen der ID."""
-        return self.id
+        return self._id
 
     def set_creationdate(self, value):
         """Setzen des erstellten Datums"""
-        self.creationdate = value
+        self._creationdate = value
 
-    def get_creationDate(self):
-        """Auslesen des erstellten Datum"""
-        return self.set_creationDate
+    def get_creationdate(self):
+        """Auslesen des erstellten Datums"""
+        return self._creationdate
 
-    def hash(self):
-        encoded= self.json().encode()
-        hash= hashlib.sha256(encoded)
-        return hash.hexdigest()
+    @abstractmethod
+    def json(self):
+        """Gibt das Objekt als json aus. Wird von allen BOs überschrieben"""
+        pass
 
-    @abstractmethod 
-    def json():
-       pass
+    def __eq__(self, other):
+        """Vergleicht die einzelnen Attribute auf ihre identität und gibt nur ein Ergebnis, wenn alle übereinstimmen.
+        Wird von allen BOs erweitert"""
+        return self.get_id() == other.get_id() and self.get_creationdate() == other.get_creationdate()
+
+    def __hash__(self):
+        """
+        Gibt den Integer aus den Bits des Hash der json vom Objekt aus. Wird von allen BOs geerbt.
+        Ermöglicht die referentielle Integrität.
+        """
+
+        hashedbo = int.from_bytes(hashlib.sha256(self.json().encode()).digest(), 'big')
+        return hashedbo

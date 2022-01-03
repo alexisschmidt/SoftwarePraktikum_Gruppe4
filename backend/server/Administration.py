@@ -17,63 +17,61 @@ from server.db.UserMapper import UserMapper
 
 class Administration (object):
     def __init__(self):
-       pass
+        pass
    
     """Modul-spezifische Methoden"""
 
-    def create_module(self, name, title, requirement, examtype, instructor, outcome, type, modulepart_id, ects, edvnr, workload):
-       module = Module()
-       module.set_name(name)
-       module.set_title(title)
-       module.set_requirement(requirement)
-       module.set_examtype(examtype)
-       module.set_instructor(instructor)
-       module.set_outcome(outcome)
-       module.set_type(type)
-       module.set_modulepart_id(modulepart_id)
-       module.set_ects(ects)
-       module.set_edvnr(edvnr)
-       module.set_workload(workload)
-       module.set_id(1)
+    def create_module(self, name, title,
+                      requirement, examtype, instructor, outcome, type, modulepart_id,
+                      ects, edvnr, workload):
+        module = Module()
+        module.set_name(name)
+        module.set_title(title)
+        module.set_requirement(requirement)
+        module.set_examtype(examtype)
+        module.set_instructor(instructor)
+        module.set_outcome(outcome)
+        module.set_type(type)
+        module.set_moduleparts(modulepart_id)
+        module.set_ects(ects)
+        module.set_edvnr(edvnr)
+        module.set_workload(workload)
+        module.set_id(1)
 
-       with ModuleMapper() as mapper:
-           return mapper.insert(module)
-
+        with ModuleMapper() as mapper:
+            return mapper.insert(module)
 
     def get_module_by_name(self, name):
         """Alle Module mit Namen name auslesen."""
         with ModuleMapper() as mapper:
             return mapper.find_by_name(name)
 
-
     def get_module_by_id(self, number):
-        """Den Module mit der gegebenen ID auslesen."""
+        """Das Modul mit der gegebenen ID auslesen."""
         with ModuleMapper() as mapper:
             return mapper.find_by_key(number)
-
 
     def get_all_modules(self):
         """Alle module auslesen."""
         with ModuleMapper() as mapper:
             return mapper.find_all()
 
-
     def save_module(self, module):
         """Den gegebenen Benutzer speichern."""
         with ModuleMapper as mapper:
             mapper.update(module)
 
-
     """Modulteil-spezifische Methoden"""
 
-
-    def create_modulepart(self, name, title, language, literature, semester_id, sources, connection, description, sws, ects, edvnr, workload):
+    def create_modulepart(self, name, title,
+                          language, literature, semester, sources, connection, description, sws,
+                          ects, edvnr, workload):
         modulepart = Modulepart()
         modulepart.set_name(name)
         modulepart.set_title(title)
         modulepart.set_language(language)
         modulepart.set_literature(literature)
-        modulepart.set_semester_id(semester_id)
+        modulepart.set_semester(semester)
         modulepart.set_sources(sources)
         modulepart.set_connection(connection)
         modulepart.set_description(description)
@@ -86,30 +84,25 @@ class Administration (object):
         with ModulePartMapper() as mapper:
             return mapper.insert(modulepart)
 
-
     def get_modulepart_by_name(self, name):
         """Alle Modulteile mit Namen name auslesen."""
         with ModulePartMapper() as mapper:
             return mapper.find_by_name(name)
-
 
     def get_modulepart_by_id(self, number):
         """Den Modulteil mit der gegebenen ID auslesen."""
         with ModulePartMapper() as mapper:
             return mapper.find_by_key(number)
 
-
     def get_all_moduleparts(self):
         """Alle Modulteile auslesen."""
         with ModulePartMapper() as mapper:
             return mapper.find_all()
 
-
     def save_moduleparts(self, modulepart):
         """Den gegebenen Modulteil speichern."""
         with ModulePartMapper() as mapper:
             mapper.update(modulepart)
-
 
     def delete_modulepart(self, modulepart):
         """Den gegebenen Modulteil aus unserem System löschen."""
@@ -195,20 +188,21 @@ class Administration (object):
 
     """Spo-spezifische Methoden"""
 
-    def create_spo(self, name, title, start, end):
+    def create_spo(self, name, title, start_semester, end_semester, studycourse):
         """Eine Spo anlegen"""
         spo = Spo()
         spo.set_name(name)
         spo.set_title(title)
-        spo.set_start_date(start)
-        spo.set_end_date(end)
+        spo.set_start_semester(start_semester)
+        spo.set_end_semester(end_semester)
+        spo.set_studycourse(studycourse)
         spo.set_id(1)
 
         with SpoMapper() as mapper:
             return mapper.insert(spo)
 
     def get_spo_by_name(self, name):
-        """Alle Spo's mit Namen name auslesen."""
+        """Alle Spos mit Namen name auslesen."""
         with SpoMapper() as mapper:
             return mapper.find_by_name(name)
 
@@ -217,10 +211,20 @@ class Administration (object):
         with SpoMapper() as mapper:
             return mapper.find_by_key(number)
 
+    def get_latest_by_studycourse(self, studycourse):
+        """Die aktuelle Spo eines Studienganges auslesen"""
+        with SpoMapper() as mapper:
+            return mapper.find_by_latest_creationdate(studycourse)
+
     def get_all_spos(self):
         """Alle Spo auslesen."""
         with SpoMapper() as mapper:
             return mapper.find_all()
+
+    def get_all_by_studycourse(self, studycourse_id):
+        """Alle Spos eines Studienganges auslesen"""
+        with SpoMapper() as mapper:
+            return mapper.find_all_by_studycourse(studycourse_id)
 
     def save_spo(self, spo):
         """Die gegebene Spo speichern."""
@@ -311,20 +315,3 @@ class Administration (object):
         """Den Benutzer mit der gegebenen Google ID auslesen."""
         with UserMapper() as mapper:
             return mapper.find_by_google_user_id(id)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,4 +1,6 @@
 from server.bo import NamedBo as nbo
+import json
+
 
 class Person (nbo.NamedBo):
     __firstname: str
@@ -9,7 +11,7 @@ class Person (nbo.NamedBo):
         super().__init__()
         self.__firstname = ""   # Der Vorname der Person
         self.__lastname = ""    # Der Nachname der Person
-        self.__email = ""   # email der Person
+        self.__email = ""       # email der Person
 
 # Auslesen / des Vor-/nachnamens und Email.
 
@@ -38,11 +40,21 @@ class Person (nbo.NamedBo):
         self.__email = email
 
     def __str__(self):
-        return "Person: {}, {}, {}, {}".format(
+        return "Person: id: {}, firstname: {}, lastname: {}, email: {}".format(
             self.get_id(),
             self.__firstname,
             self.__lastname,
             self.__email)
+
+    def json(self):
+        return json.dumps({
+            'id': self.get_id(),
+            'name': self.get_name(),
+            'title': self.get_title(),
+            'firstname': self.get_firstname(),
+            'lastname': self.get_lastname(),
+            'email': self.get_email()
+            })
 
     @staticmethod
     def from_dict(dictionary=dict()):
@@ -55,3 +67,10 @@ class Person (nbo.NamedBo):
         obj.set_lastname(dictionary["lastname"])
         obj.set_email(dictionary["email"])
         return obj
+
+    def __eq__(self, other):
+        return super().__eq__(other) and self.get_firstname() == other.get_name() and \
+               self.get_lastname() == other.get_lastname() and \
+               self.get_email() == other.get_email()
+
+    __hash__ = nbo.NamedBo.__hash__

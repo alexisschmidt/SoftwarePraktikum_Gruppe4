@@ -1,5 +1,5 @@
 from server.bo import Businessobject as bo
-
+import json
 
 """Realisierung einer exemplarischen Benutzerklasse.
 
@@ -12,14 +12,16 @@ class User(bo.BusinessObject):
     __firstname: str
     __lastname: str
     __email: str
-    __user_id: str
+    __google_user_id: str
+    __isadmin: int
 
     def __init__(self):
         super().__init__()
         self.__firstname = ""   # Der Vorname des Nutzers
         self.__lastname = ""    # Der Nachname des Nutzers
         self.__email = ""   # Die E-Mail des Nutzers
-        self.__user_id = "" #Google ID des Benutzers
+        self.__google_user_id = "" # Die Google ID des Nutzers
+        self.__isadmin = 0
 
 # Auslesen / des Vor-/nachnamens und Email.
 
@@ -56,8 +58,39 @@ class User(bo.BusinessObject):
         self.__user_id = value     
         
 
+    def get_google_user_id(self):
+        """Auslesen der E-Mail"""
+        return self.__google_user_id
+
+    def set_google_user_id(self, google_user_id):
+        """Setzen der E-Mail"""
+        self.__google_user_id = google_user_id
+
+    def get_isadmin(self):
+        return self.__isadmin
+
+    def set_isadmin(self, isadmin):
+        self.__isadmin = isadmin
+
     def __str__(self):
-        return "User: {}, {}, {}, {}, {}".format(self.get_id(), self.__firstname, self.__lastname, self.__email, self.__user_id)
+        return "User: id: {}, firstname: {}, lastname: {}, email: {}, google_user_id: {] isadmin: {}".format(
+            self.get_id(),
+            self.__firstname,
+            self.__lastname,
+            self.__email,
+            self.__google_user_id,
+            self.__isadmin
+            )
+
+    def json(self):
+        return json.dumps({
+            'id': self.get_id(),
+            'firstname': self.get_firstname(),
+            'lastname': self.get_lastname(),
+            'email': self.get_email(),
+            'google_user_id': self.google_user_id(),
+            'isadmin': self.isadmin()
+            })
     
     @staticmethod
     def from_dict(dictionary=dict()):
@@ -68,10 +101,24 @@ class User(bo.BusinessObject):
         obj.set_firstname(dictionary["firstname"])
         obj.set_lastname(dictionary["lastname"])
         obj.set_email(dictionary["email"])
-        obj.set_user_id(dictionary["user_id"])
+        obj.set_google_user_id(dictionary["google_user_id"])
+        obj.set_isadmin(["isadmin"])
         return obj
 
+    def __eq__(self, other):
+        return super().__eq__(other) and self.get_firstname() == other.get_name() and\
+               self.get_lastname() == other.get_lastname() and\
+               self.get_email() == other.get_email()
 
+    __hash__ = bo.BusinessObject.__hash__
+
+
+"""
+test = User()
+print(test)
+print(test.json())
+print(test.hash())
+"""
 
 
 

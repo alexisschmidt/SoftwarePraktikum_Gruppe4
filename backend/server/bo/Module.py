@@ -1,5 +1,6 @@
 from server.bo import SpoElement as spe
 from server.bo.Person import Person
+from server.bo.Modulepart import Modulepart
 import json
 
 
@@ -8,7 +9,8 @@ class Module(spe.SpoElement):
     __requirement: str
     __outcome: str
     __examtype: str
-    __instructor: Person
+    __instructor: dict
+    __moduleparts: dict
 
     def __init__(self):
         super().__init__()
@@ -16,7 +18,8 @@ class Module(spe.SpoElement):
         self.__requirement = ""
         self.__outcome = ""
         self.__examtype = ""
-        self.__instructor = Person()
+        self.__instructor = {}
+        self.__moduleparts = {}
 
     # Auslesen
     def get_type(self):
@@ -57,42 +60,62 @@ class Module(spe.SpoElement):
 
     def set_instructor(self, instructor):
         """Setzen des Modulverantwortlichen"""
-        self.__instructor = instructor
+        if isinstance(instructor, Person):
+            self.__instructor = {hash(instructor): instructor.get_id()}
+
+    def get_moduleparts(self):
+        return self.__moduleparts
+
+    def set_moduleparts(self, moduleparts):
+        if isinstance(moduleparts, list):
+            for i in moduleparts:
+                if isinstance(i, Modulepart):
+                    self.__moduleparts.update({hash(i): i.get_id()})
+
+    """ 
+    Muss in Administration.py
+    
+    def append_moduleparts(self, module):
+        if isinstance(module, Module):
+            self.__moduleparts.append(hash(module))
+
+    def remove_moduleparts(self, modulepart):
+        if isinstance(modulepart, Module):
+            for i in self.__moduleparts:
+                if hash(modulepart) == i:
+                    self.__moduleparts.remove(i)
+    """
 
     def __str__(self):
-        return "Module: {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}".format(
-
-            self.get_id(),
-            self._name,
-            self._title,
-            self.edvnr,
-            self.ects,
-            self.workload,
-            self.__type,
-            self.__requirement,
-            self.__outcome,
-            self.__examtype,
-            self.__instructor)
+        return "Module: id: {}, name: {}, title: {}, edvnr: {}, ects: {}, workload: {}, type: {}, " \
+               "requirement: {}, outcome: {}, examtype: {}, instructor: {}".format(
+                self.get_id(),
+                self._name,
+                self._title,
+                self.edvnr,
+                self.ects,
+                self.workload,
+                self.__type,
+                self.__requirement,
+                self.__outcome,
+                self.__examtype,
+                self.__instructor
+                )
 
     def json(self):
-            modulehash=[]
-            for module in self.__module:
-                modulehash.append(module.hash())
-
-            return json.dumps({
-                'id': self.get_id(),
-                'name': self.get_name(),
-                'title': self.get_title(),
-                'edvnr': self.get_edvnr(),
-                'ects': self.get_ects(),
-                'workload': self.get_workload(),
-                'type': self.get_type(),
-                'requirement': self.get_requirement(),
-                'outcome': self.get_outcome(),
-                'examtype': self.get_examtype(),
-                'instructor': self.get_instructor()
-                })
-
+        return json.dumps({
+            'id': self.get_id(),
+            'name': self.get_name(),
+            'title': self.get_title(),
+            'edvnr': self.get_edvnr(),
+            'ects': self.get_ects(),
+            'workload': self.get_workload(),
+            'type': self.get_type(),
+            'requirement': self.get_requirement(),
+            'outcome': self.get_outcome(),
+            'examtype': self.get_examtype(),
+            'instructor': self.get_instructor()
+            })
 
     @staticmethod
     def from_dict(dictionary=dict()):
@@ -110,3 +133,24 @@ class Module(spe.SpoElement):
         obj.set_examtype(dictionary["examtype"])
         obj.set_instructor(dictionary["instructor"])
         return obj
+
+    def __eq__(self, other):
+        return super().__eq__(other) and\
+               self.get_type() == other.get_type() and\
+               self.get_requirement() == other.get_requirement() and\
+               self.get_outcome() == other.get_outcome() and\
+               self.get_examtype() == other.get_examtype() and \
+               self.get_instructor() == other.get_instructor()
+
+    __hash__ = spe.SpoElement.__hash__
+
+
+"""
+# test = Module()
+person1 = Person()
+person1.set_id(69)
+test.set_instructor(person1)
+print(test)
+print(test.json())
+print(hash(test))
+"""

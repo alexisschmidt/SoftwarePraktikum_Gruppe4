@@ -32,10 +32,11 @@ CREATE TABLE `module` (
   `instructor` varchar(45) NOT NULL,
   `outcome` varchar(45) NOT NULL,
   `type` varchar(45) NOT NULL,
-  `modulepart_id` int NOT NULL,
+  `moduleparts` varchar(60) NOT NULL,
   `ects` int DEFAULT NULL,
   `edvnr` varchar(45) DEFAULT NULL,
   `workload` varchar(45) DEFAULT NULL,
+  `module_hash` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -71,6 +72,7 @@ CREATE TABLE `modulepart` (
   `ects` varchar(45) NOT NULL,
   `edvnr` varchar(45) DEFAULT NULL,
   `workload` varchar(45) DEFAULT NULL,
+  `modulepart_hash` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -98,6 +100,7 @@ CREATE TABLE `person` (
   `firstname` varchar(45) NOT NULL,
   `lastname` varchar(45) NOT NULL,
   `email` varchar(45) NOT NULL,
+  `person_hash` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -148,8 +151,10 @@ CREATE TABLE `spo` (
   `creationdate` datetime NOT NULL,
   `name` varchar(45) NOT NULL,
   `title` varchar(45) NOT NULL,
-  `start` datetime NOT NULL,
-  `end` datetime DEFAULT NULL,
+  `start_semester` int NOT NULL,
+  `end_semester` int DEFAULT NULL,
+  `studycourse_id` int NOT NULL,
+  `spo_hash` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -160,6 +165,7 @@ CREATE TABLE `spo` (
 
 LOCK TABLES `spo` WRITE;
 /*!40000 ALTER TABLE `spo` DISABLE KEYS */;
+INSERT INTO `spo` VALUES (1,'2030-12-20 21:00:00','SPO1','labl',2,3,1,NULL),(3,'2050-10-20 00:00:00','SPO2','HALLO',3,4,1,NULL);
 /*!40000 ALTER TABLE `spo` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -202,7 +208,9 @@ CREATE TABLE `user` (
   `firstname` varchar(45) NOT NULL,
   `lastname` varchar(45) NOT NULL,
   `email` varchar(45) NOT NULL,
-  `google_user_id` varchar(128) NOT NULL DEFAULT '',
+  `google_user_id` varchar(60) NOT NULL,
+  `isadmin` tinyint(1) NOT NULL,
+  `user_hash` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -225,4 +233,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-11-26 11:55:32
+-- Dump completed on 2022-01-02 14:17:05

@@ -15,7 +15,7 @@ class ModuleMapper(Mapper):
         tuples = cursor.fetchall()
 
         for (
-                id, creationdate, name, title, requirement, examtype, instructor, outcome, type, modulepart_id, ects,
+                id, creationdate, name, title, requirement, examtype, instructor, outcome, type, moduleparts, ects,
                 edvnr,
                 workload) in tuples:
             module = Module()
@@ -27,7 +27,7 @@ class ModuleMapper(Mapper):
             module.set_instructor(instructor)
             module.set_outcome(outcome)
             module.set_type(type)
-            module.set_modulepart_id(modulepart_id)
+            module.set_moduleparts(moduleparts)
             module.set_ects(ects)
             module.set_edvnr(edvnr)
             module.set_workload(workload)
@@ -48,7 +48,7 @@ class ModuleMapper(Mapper):
         tuples = cursor.fetchall()
 
         for (
-                id, creationdate, name, title, requirement, examtype, instructor, outcome, type, modulepart_id, ects,
+                id, creationdate, name, title, requirement, examtype, instructor, outcome, type, moduleparts, ects,
                 edvnr,
                 workload) in tuples:
             module = Module()
@@ -60,7 +60,7 @@ class ModuleMapper(Mapper):
             module.set_instructor(instructor)
             module.set_outcome(outcome)
             module.set_type(type)
-            module.set_modulepart_id(modulepart_id)
+            module.set_moduleparts(moduleparts)
             module.set_ects(ects)
             module.set_edvnr(edvnr)
             module.set_workload(workload)
@@ -83,7 +83,7 @@ class ModuleMapper(Mapper):
 
         try:
             (
-                id, creationdate, name, title, requirement, examtype, instructor, outcome, type, modulepart_id, ects,
+                id, creationdate, name, title, requirement, examtype, instructor, outcome, type, moduleparts, ects,
                 edvnr,
                 workload) = tuples[0]
             module = Module()
@@ -95,7 +95,7 @@ class ModuleMapper(Mapper):
             module.set_instructor(instructor)
             module.set_outcome(outcome)
             module.set_type(type)
-            module.set_modulepart_id(modulepart_id)
+            module.set_moduleparts(moduleparts)
             module.set_ects(ects)
             module.set_edvnr(edvnr)
             module.set_workload(workload)
@@ -124,10 +124,10 @@ class ModuleMapper(Mapper):
                 module.set_id(1)
 
         command = "INSERT INTO module (id, name, title, requirement, examtype, instructor, outcome, type, " \
-                  "modulepart_id, ects, edvnr, workload) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) "
+                  "moduleparts, ects, edvnr, workload) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) "
         data = (module.get_id(), module.get_name(), module.get_title(), module.get_title(), module.get_requirement(),
                 module.get_examtype(), module.get_instructor(), module.get_outcome(), module.get_type(),
-                module.get_modulepart_id(), module.get_ects(), module.get_edvnr(), module.get_workload())
+                module.get_moduleparts(), module.get_ects(), module.get_edvnr(), module.get_workload())
         cursor.execute(command, data)
 
         self._cnx.commit()
@@ -140,11 +140,11 @@ class ModuleMapper(Mapper):
         cursor = self._cnx.cursor()
 
         command = "UPDATE module " + "SET name=%s, SET title=%s, SET requirement=%s, SET examtype=%s, " \
-                                     "SET instructor=%s, SET outcome=%s, SET type=%s, SET modulepart_id=%s, " \
+                                     "SET instructor=%s, SET outcome=%s, SET type=%s, SET moduleparts=%s, " \
                                      "SET ects=%s, SET edvnr=%s, SET workload=%s WHERE id=%s "
         data = (
             module.get_name(), module.get_title(), module.get_requirement(), module.get_examtype(),
-            module.get_instructor(), module.get_outcome(), module.get_type(), module.get_modulepart_id(),
+            module.get_instructor(), module.get_outcome(), module.get_type(), module.get_moduleparts(),
             module.get_ects(),
             module.get_edvnr(), module.get_workload(), module.get_id())
         cursor.execute(command, data)

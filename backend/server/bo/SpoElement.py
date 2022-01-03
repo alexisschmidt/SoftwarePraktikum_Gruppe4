@@ -1,6 +1,7 @@
 from abc import ABC
 from server.bo import NamedBo as nbo
 
+
 class SpoElement (nbo.NamedBo, ABC):
     edvnr: int
     ects: int
@@ -35,3 +36,11 @@ class SpoElement (nbo.NamedBo, ABC):
     def set_workload(self, workload):
         """Setzen des Arbeitsaufwands"""
         self.workload = workload
+
+    def __eq__(self, other):
+        return super().__eq__() and\
+               self.get_edvnr() == other.get_name() and\
+               self.get_ects() == other.get_title() and\
+               self.get_workload() == other.get_workload()
+
+    __hash__ = nbo.NamedBo.__hash__
