@@ -17,11 +17,11 @@ class SpoMapper(Mapper):
         for (id, creationdate, name, title, start_semester, end_semester, studycourse_id) in tuples:
             spo = Spo
             spo.set_id(id)
-            spo.set_pname(name)
+            spo.set_name(name)
             spo.set_title(title)
             spo.set_start_semester(start_semester)
             spo.set_end_semester(end_semester)
-            spo.set_studycourse_id(studycourse_id)
+            spo.set_studycourse(studycourse_id)
             result.append(spo)
 
         self._cnx.commit()
@@ -40,11 +40,11 @@ class SpoMapper(Mapper):
         for (id, creationdate, name, title, start_semester, end_semester, studycourse_id) in tuples:
             spo = Spo
             spo.set_id(id)
-            spo.set_pname(name)
+            spo.set_name(name)
             spo.set_title(title)
             spo.set_start_semester(start_semester)
             spo.set_end_semester(end_semester)
-            spo.set_studycourse_id(studycourse_id)
+            spo.set_studycourse(studycourse_id)
 
             result.append(spo)
 
@@ -66,7 +66,33 @@ class SpoMapper(Mapper):
             (id, creationdate, name, title, start_semester, end_semster, studycourse_id) = tuples[0]
             spo = Spo
             spo.set_id(id)
-            spo.set_pname(name)
+            spo.set_name(name)
+            spo.set_title(title)
+            spo.set_start_semester(start_semester)
+            spo.set_end_semester(end_semester)
+            spo.set_studycourse(studycourse_id)
+            result = spo
+        except IndexError:
+
+            result = None
+
+        self._cnx.commit()
+        cursor.close()
+
+        return result
+
+    def find_all_by_studycourse(self, studycourse_id):
+        result = []
+        cursor = self._cnx.cursor()
+        command = "SELECT * FROM spo WHERE studycourse_id LIKE '{}' ORDER BY studycourse_id".format(studycourse_id)
+        cursor.execute(command)
+        tuples = cursor.fetchall()
+
+        try:
+            (id, creationdate, name, title, start_semester, end_semster, studycourse_id) = tuples[0]
+            spo = Spo
+            spo.set_id(id)
+            spo.set_name(name)
             spo.set_title(title)
             spo.set_start_semester(start_semester)
             spo.set_end_semester(end_semester)
@@ -75,6 +101,52 @@ class SpoMapper(Mapper):
         except IndexError:
 
             result = None
+
+        self._cnx.commit()
+        cursor.close()
+
+        return result
+
+    def find_by_latest_creationdate_and_studycourse(self, studycourse_id):
+        result = []
+        cursor = self._cnx.cursor()
+        command = "SELECT * FROM spo WHERE studycourse_id = '{}' ORDER BY creationdate DESC LIMIT 1".format(studycourse_id)
+        cursor.execute(command)
+        tuples = cursor.fetchall()
+
+        for (id, creationdate, name, title, start_semester, end_semester, studycourse_id) in tuples:
+            spo = Spo
+            spo.set_id(id)
+            spo.set_name(name)
+            spo.set_title(title)
+            spo.set_start_semester(start_semester)
+            spo.set_end_semester(end_semester)
+            spo.set_studycourse_id(studycourse_id)
+
+            result.append(spo)
+
+        self._cnx.commit()
+        cursor.close()
+
+        return result
+
+    def find_by_startsemester_and_studycourse(self, studycourse_id):
+        result = []
+        cursor = self._cnx.cursor()
+        command = "SELECT * FROM spo WHERE studycourse_id='{}' AND start_semester='{}'".format(studycourse_id)
+        cursor.execute(command)
+        tuples = cursor.fetchall()
+
+        for (id, creationdate, name, title, start_semester, end_semester, studycourse_id) in tuples:
+            spo = Spo
+            spo.set_id(id)
+            spo.set_name(name)
+            spo.set_title(title)
+            spo.set_start_semester(start_semester)
+            spo.set_end_semester(end_semester)
+            spo.set_studycourse_id(studycourse_id)
+
+            result.append(spo)
 
         self._cnx.commit()
         cursor.close()
@@ -97,7 +169,7 @@ class SpoMapper(Mapper):
 
         command = "INSERT INTO spo (id, creationdate, name, title, start_semester, end_semester, studycourse_id) VALUES (%s,%s,%s,%s,%s,%s,%s) "
         data = (
-            spo.get_id(), spo.get_creationdate(), spo.get_name(), spo.get_title(), spo.get_start_semester(), spo.get_end_semester(), spo.get_studycourse_id())
+            spo.get_id(), spo.get_creationdate(), spo.get_name(), spo.get_title(), spo.get_start_semester(), spo.get_end_semester(), spo.get_studycourse())
         cursor.execute(command, data)
 
         self._cnx.commit()
@@ -110,7 +182,7 @@ class SpoMapper(Mapper):
         cursor = self._cnx.cursor()
 
         command = "UPDATE spo " + "SET name=%s, SET title=%s, SET start_semester=%s, SET end_semester=%s, SET studycourse_id=%s WHERE id=%s "
-        data = (spo.get_name(), spo.get_title(), spo.get_start_semester(), spo.get_end_semester(), spo.get_studycourse_id(), spo.get_id())
+        data = (spo.get_name(), spo.get_title(), spo.get_start_semester(), spo.get_end_semester(), spo.get_studycourse(), spo.get_id())
         cursor.execute(command, data)
 
         self._cnx.commit()

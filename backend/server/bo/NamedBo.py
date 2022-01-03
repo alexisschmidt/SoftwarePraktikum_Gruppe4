@@ -26,3 +26,10 @@ class NamedBo(bo.BusinessObject, ABC):
     def set_title(self, title):
         """Setzen des Titels"""
         self._title = title
+
+    def __eq__(self, other):
+        return super().__eq__() and\
+               self.get_name() == other.get_name() and\
+               self.get_title() == other.get_title()
+
+    __hash__ = bo.BusinessObject.__hash__

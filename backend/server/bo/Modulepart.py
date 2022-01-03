@@ -7,22 +7,22 @@ class Modulepart (spe.SpoElement):
     __SWS: str
     __language: str
     __description: str
-    __connection: str
+    __connection: dict
     __literature: str
     __sources: str
     __semester: int
-    _professor: Person
+    _professor: dict
 
     def __init__(self):
         super().__init__()
         self.__SWS = ""
         self.__language = ""
         self.__description = ""
-        self.__connection = ""
+        self.__connection = {}
         self.__literature = ""
         self.__sources = ""
         self.__semester = 1
-        self._professor = Person
+        self._professor = {}
 
         # Auslesen
 
@@ -51,12 +51,21 @@ class Modulepart (spe.SpoElement):
         self.__description = description
 
     def get_connection(self):
-        """Auslesen der Modulverknüpfung(en)"""
         return self.__connection
 
     def set_connection(self, connection):
-        """Setzen der Modulverknüpfung(en)"""
-        self.__connection = connection
+        if isinstance(connection, list):
+            for i in connection:
+                if isinstance(i, Modulepart):
+                    self.__connection.update({hash(i): i.get_id()})
+
+    def append_connection(self, other):
+        if isinstance(other, Modulepart):
+            self.__connection.update({hash(other): other.get_id()})
+
+    def remove_connection(self, other):
+        if isinstance(other, Modulepart):
+            self.__connection.pop(hash(other))
 
     def get_literature(self):
         """Auslesen der Lektüre"""
@@ -87,8 +96,9 @@ class Modulepart (spe.SpoElement):
         return self._professor
 
     def set_professor(self, professor):
-        """Setzen des Professors"""
-        self._professor = professor
+        """Setzen des Modulverantwortlichen"""
+        if isinstance(professor, Person):
+            self._professor = {hash(professor): professor.get_id()}
 
     def __str__(self):
         return "Modulepart: id: {}, name: {}, title: {}, edvnr: {}, ects: {}, workload: {}, SWS: {}, language: {}," \
@@ -106,12 +116,10 @@ class Modulepart (spe.SpoElement):
                 self.__literature,
                 self.__sources,
                 self.__semester,
-                Person.get_lastname(self._professor))
+                self._professor
+                )
 
     def json(self):
-        # modulehash = []
-        # for modulepart in self.__moduleparts:
-        # modulehash.append(modulepart.hash())
         return json.dumps({
             'id': self.get_id(),
             'sws': self.get_sws(),
@@ -124,7 +132,7 @@ class Modulepart (spe.SpoElement):
             'literature': self.get_literature(),
             'sources': self.get_sources(),
             'semester': self.get_semester(),
-            'professor': Person.hash(self.get_professor())
+            'professor': self.get_professor()
             })
 
     @staticmethod
@@ -147,13 +155,13 @@ class Modulepart (spe.SpoElement):
 
 
 """
-    Test Script
+#Test Script
 
-    test = Modulepart()
-    person1 = Person()
-    person1.set_lastname("testname")
-    test.set_professor(person1)
-    print(test)
-    print(test.json())
-    print(test.hash())
+test = Modulepart()
+person1 = Person()
+person1.set_lastname("testname")
+test.set_professor(person1)
+print(test)
+print(test.json())
+print(hash(test))
 """
