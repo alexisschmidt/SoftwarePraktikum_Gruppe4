@@ -67,7 +67,7 @@ spoelement = api.inherit('Spoelement', namedbo, {
                               description='Arbeitszeit für das Spoelement und ihre Zusammensetzung')
 })
 
-module = api.inherit('Module', namedbo, {
+module = api.inherit('Module', spoelement, {
     'type': fields.String(attribute='_type', description='Typ des Moduls'),
     'requirement': fields.String(attribute='_requirement', description='Voraussetzungen für das Modul'),
     'outcome': fields.String(attribute='_outcome', description='Outcome des Moduls'),
@@ -77,14 +77,15 @@ module = api.inherit('Module', namedbo, {
                                description='Modulteile des Moduls')
 })
 
-modulepart = api.inherit('Modulepart', namedbo, {
+modulepart = api.inherit('Modulepart', spoelement, {
     'sws': fields.String(attribute='_sws', description='Anzahl der SWS des Modulteils'),
     'language': fields.String(attribute='_language', descpription='Sprache des Modulteils'),
     'description': fields.String(attribute='_description', description='Beschreibung des Modulteils'),
-    'connection': fields.String(attribute='_connection', description='Verbindung zu anderen Modulteilen'),
+    'connection': fields.Integer(attribute='_connection', description='Verbindung zu anderen Modulteilen'),
     'literature': fields.String(attribute='_literature', description='Literatur für das Modulteil'),
     'sources': fields.String(attribute='_sources', description='Quellen'),
-    'semester': fields.Integer(attribute='_semester', description='Semester des Modulteils')
+    'semester': fields.Integer(attribute='_semester', description='Semester des Modulteils'),
+    'professor': fields.Integer(attribute='_professor', description='Prof des Modulteils')
 })
 
 studycourse = api.inherit('StudyCourse', namedbo)
@@ -114,7 +115,7 @@ class UserListOperations(Resource):
 
     @sposystem.marshal_with(user, code=200)
     @sposystem.expect(user)
-    @secured
+    # @secured
     def post(self):
 
         adm = Administration()
@@ -405,7 +406,8 @@ class ModulePartListOperations(Resource):
         return moduleparts
 
     @sposystem.marshal_with(modulepart)
-    @secured
+    @sposystem.expect(modulepart)
+    # @secured
     def post(self):
 
         adm = Administration()
@@ -415,11 +417,12 @@ class ModulePartListOperations(Resource):
                                            proposal.get_title(),
                                            proposal.get_language(),
                                            proposal.get_literature(),
-                                           proposal.get_semester_id(),
+                                           proposal.get_semester(),
                                            proposal.get_sources(),
                                            proposal.get_connection(),
                                            proposal.get_description(),
                                            proposal.get_sws(),
+                                           proposal.get_professor(),
                                            proposal.get_ects(),
                                            proposal.get_edvnr(),
                                            proposal.get_workload()
@@ -491,7 +494,7 @@ class StudycourseListOperations(Resource):
 
     @sposystem.marshal_list_with(studycourse, code=200)
     @sposystem.expect(studycourse)
-    @secured
+    # @secured
     def post(self):
         adm = Administration()
         proposal = StudyCourse.from_dict(api.payload)
