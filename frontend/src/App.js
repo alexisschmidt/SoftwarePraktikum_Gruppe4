@@ -9,6 +9,7 @@ import firebaseConfig from './firebaseconfig';
 import SignIn from './components/pages/SignIn';
 import LoadingProgress from './components/dialogs/LoadingProgress';
 import ContextErrorMessage from './components/dialogs/ContextErrorMessage';
+import DenseTable from './components/pages/Spotablestudent1';
 
 
 
