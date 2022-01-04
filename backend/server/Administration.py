@@ -64,7 +64,7 @@ class Administration (object):
     """Modulteil-spezifische Methoden"""
 
     def create_modulepart(self, name, title,
-                          language, literature, semester, sources, connection, description, sws,
+                          language, literature, semester, sources, connection, description, sws, prof,
                           ects, edvnr, workload):
         modulepart = Modulepart()
         modulepart.set_name(name)
@@ -82,7 +82,7 @@ class Administration (object):
         modulepart.set_id(1)
 
         with ModulePartMapper() as mapper:
-            return mapper.insert(modulepart)
+            return mapper.insert(modulepart, prof)
 
     def get_modulepart_by_name(self, name):
         """Alle Modulteile mit Namen name auslesen."""
@@ -275,12 +275,13 @@ class Administration (object):
 
     """User-spezifische Methoden"""
 
-    def create_user(self, firstname, lastname, email):
+    def create_user(self, firstname, lastname, email, google_user_id):
 
         user = User()
         user.set_firstname(firstname)
         user.set_lastname(lastname)
         user.set_email(email)
+        user.set_google_user_id(google_user_id)
         user.set_id(1)
 
         with UserMapper() as mapper:

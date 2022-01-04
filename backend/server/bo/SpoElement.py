@@ -3,23 +3,23 @@ from server.bo import NamedBo as nbo
 
 
 class SpoElement (nbo.NamedBo, ABC):
-    edvnr: int
+    _edvnr: int
     ects: int
     workload: str
 
     def __init__(self):
         super().__init__()
-        self.edvnr = 0      # EDV Nummer des Spo Elements
+        self._edvnr = 0      # EDV Nummer des Spo Elements
         self.ects = 0       # ECTS des Spo Elements
         self.workload = ""  # Arbeitsaufwand in Stunden des Spo Elements
 
     def get_edvnr(self):
         """Auslesen der EDV Nummer"""
-        return self.edvnr
+        return self._edvnr
 
     def set_edvnr(self, edvnr):
         """Setzen der EDV Nummer"""
-        self.edvnr = edvnr
+        self._edvnr = edvnr
 
     def get_ects(self):
         """Auslesen der ECTS"""

@@ -92,7 +92,7 @@ class Module(spe.SpoElement):
                 self.get_id(),
                 self._name,
                 self._title,
-                self.edvnr,
+                self._edvnr,
                 self.ects,
                 self.workload,
                 self.__type,
