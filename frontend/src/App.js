@@ -9,7 +9,7 @@ import firebaseConfig from './firebaseconfig';
 import SignIn from './components/pages/SignIn';
 import LoadingProgress from './components/dialogs/LoadingProgress';
 import ContextErrorMessage from './components/dialogs/ContextErrorMessage';
-import DenseTable from './components/pages/Spotablestudent1';
+import SpoStudent from './components/pages/SpoStudent';
 
 
 
@@ -121,7 +121,8 @@ Globales CSS-Reset und Browser-Normalisierung. CssBaseline startet eine elegante
 						<LoadingProgress show={authLoading} />
 						<ContextErrorMessage error={authError} contextErrorMsg={`Something went wrong during sighn in process.`} onReload={this.handleSignIn} />
 						<ContextErrorMessage error={appError} contextErrorMsg={`Something went wrong inside the app. Please reload the page.`} />
-        </Container>
+						<SpoStudent/>
+	    </Container>
       </Router>
     </ThemeProvider>
   );
