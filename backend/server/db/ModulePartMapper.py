@@ -1,5 +1,6 @@
 from server.bo.Modulepart import Modulepart
 from backend.server.db.Mapper import Mapper
+from server.bo.Person import Person
 
 
 class ModulePartMapper(Mapper):
@@ -112,7 +113,7 @@ class ModulePartMapper(Mapper):
 
         return result
 
-    def insert(self, modulepart):
+    def insert(self, modulepart, prof):
 
         cursor = self._cnx.cursor()
         cursor.execute("SELECT MAX(id) AS maxid FROM modulepart ")
@@ -121,21 +122,20 @@ class ModulePartMapper(Mapper):
         for (maxid) in tuples:
             if maxid[0] is not None:
 
-                module.set_id(maxid[0] + 1)
+                modulepart.set_id(maxid[0] + 1)
             else:
 
-                module.set_id(1)
+                modulepart.set_id(1)
 
-        command = "INSERT INTO module (id, creationdate, name, title, language, literature, semester_id, sources, connection, description, sws, ects, edvnr, workload) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) "
-        data = (modulepart.get_id(), modulepart.get_name(), modulepart.get_title(), modulepart.get_language(),
-                modulepart.get_literature(), modulepart.get_semester_id(), modulepart.get_sources(),
-                modulepart.get_connection(), modulepart.get_description(), modulepart.get_sws(), modulepart.get_ects(),
+        command = "INSERT INTO modulepart (id, creationdate, name, title, language, literature, semester, sources, connection, description, sws, professor, ects, edvnr, workload) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        data = (modulepart.get_id(), modulepart.get_creationdate(), modulepart.get_name(), modulepart.get_title(), modulepart.get_language(),
+                modulepart.get_literature(), modulepart.get_semester(), modulepart.get_sources(),
+                modulepart.get_connection(), modulepart.get_description(), modulepart.get_sws(), prof, modulepart.get_ects(),
                 modulepart.get_edvnr(), modulepart.get_workload())
         cursor.execute(command, data)
 
         self._cnx.commit()
         cursor.close()
-
         return modulepart
 
     def update(self, modulepart):
