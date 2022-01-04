@@ -87,20 +87,10 @@ class Module(spe.SpoElement):
     """
 
     def __str__(self):
-        return "Module: id: {}, name: {}, title: {}, edvnr: {}, ects: {}, workload: {}, type: {}, " \
-               "requirement: {}, outcome: {}, examtype: {}, instructor: {}".format(
-                self.get_id(),
-                self._name,
-                self._title,
-                self._edvnr,
-                self.ects,
-                self.workload,
-                self.__type,
-                self.__requirement,
-                self.__outcome,
-                self.__examtype,
-                self.__instructor
-                )
+        return f"Module: \
+               id: {self.get_id()}, name: {self._name}, title: {self._title}, edvnr: {self._edvnr}, ects: {self.ects}, \
+               workload: {self.workload}, type: {self.__type}, requirement: {self.__requirement}, \
+               outcome: {self.__outcome}, examtype: {self.__examtype}, instructor: {self.__instructor}"
 
     def json(self):
         return json.dumps({
