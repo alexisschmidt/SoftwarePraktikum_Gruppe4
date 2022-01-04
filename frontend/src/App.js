@@ -10,6 +10,7 @@ import firebaseConfig from './firebaseconfig';
 
 
 
+
 class App extends React.Component {
 
 	/** Konstrukteur der App, Firebase initialisiert */
