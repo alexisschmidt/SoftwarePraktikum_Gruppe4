@@ -76,13 +76,14 @@ class Administration (object):
         modulepart.set_connection(connection)
         modulepart.set_description(description)
         modulepart.set_sws(sws)
+        modulepart.set_professor(prof)
         modulepart.set_ects(ects)
         modulepart.set_edvnr(edvnr)
         modulepart.set_workload(workload)
         modulepart.set_id(1)
 
         with ModulePartMapper() as mapper:
-            return mapper.insert(modulepart, prof)
+            return mapper.insert(modulepart)
 
     def get_modulepart_by_name(self, name):
         """Alle Modulteile mit Namen name auslesen."""

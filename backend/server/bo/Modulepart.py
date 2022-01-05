@@ -101,23 +101,21 @@ class Modulepart (spe.SpoElement):
             self._professor = {hash(professor): professor.get_id()}
 
     def __str__(self):
-        return "Modulepart: id: {}, name: {}, title: {}, edvnr: {}, ects: {}, workload: {}, SWS: {}, language: {}," \
-               "description: {}, connection: {}, literature: {}, sources: {}, semester: {}, professor: {}".format(
-                self.get_id(),
-                self._name,
-                self._title,
-                self._edvnr,
-                self.ects,
-                self.workload,
-                self.__sws,
-                self.__language,
-                self.__description,
-                self.__connection,
-                self.__literature,
-                self.__sources,
-                self.__semester,
-                self._professor
-                )
+        return f"Modulepart: \
+               id: {self.get_id()}, \
+               name: {self._name}, \
+               title: {self._title}, \
+               edvnr: {self._edvnr}, \
+               ects: {self.ects}, \
+               workload: {self.workload}, \
+               SWS: {self.__sws}, \
+               language: {self.__language}, \
+               description: {self.__description}, \
+               connection: {self.__connection}, \
+               literature: {self.__literature}, \
+               sources: {self.__sources}, \
+               semester: {self.__semester}, \
+               professor: {self._professor}"
 
     def json(self):
         return json.dumps({

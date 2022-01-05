@@ -40,11 +40,11 @@ class Person (nbo.NamedBo):
         self.__email = email
 
     def __str__(self):
-        return "Person: id: {}, firstname: {}, lastname: {}, email: {}".format(
-            self.get_id(),
-            self.__firstname,
-            self.__lastname,
-            self.__email)
+        return f"Person: \
+               id: {self.get_id()}, \
+               firstname: {self.__firstname}, \
+               lastname: {self.__lastname}, \
+               email: {self.__email}"
 
     def json(self):
         return json.dumps({
