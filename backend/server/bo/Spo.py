@@ -68,14 +68,11 @@ class Spo (nbo.NamedBo):
             self._studycourse = {hash(studycourse): studycourse.get_id()}
 
     def __str__(self):
-        return "Spo: id: {}, name: {}, title: {}, start Semester: {}, end Semester: {}, studycourse: {}".format(
-            self.get_id(),
-            self._name,
-            self._title,
-            self.get_start_semester(),
-            self.get_end_semester(),
-            self.get_studycourse()
-            )
+        return f"Spo: id: {self.get_id()}, \
+               name: {self._name}, title: {self._title}, \
+               start Semester: {self.get_start_semester()}, \
+               end Semester: {self.get_end_semester()}, \
+               studycourse: {self.get_studycourse()}"
 
     def json(self):
         return json.dumps({
