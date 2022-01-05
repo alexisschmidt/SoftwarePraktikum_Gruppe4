@@ -129,12 +129,13 @@ class ModulePartMapper(Mapper):
                 modulepart.set_id(1)
 
         mopart = json.dumps(modulepart.get_professor(), indent=4)
+        con = json.dumps(modulepart.get_connection())
 
         command = "INSERT INTO modulepart (id, creationdate, name, title, language, literature, semester, sources, connection, description, sws, professor, ects, edvnr, workload) " \
                   "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
         data = (modulepart.get_id(), modulepart.get_creationdate(), modulepart.get_name(), modulepart.get_title(),
                 modulepart.get_language(), modulepart.get_literature(), modulepart.get_semester(),
-                modulepart.get_sources(), modulepart.get_connection(), modulepart.get_description(),
+                modulepart.get_sources(), con, modulepart.get_description(),
                 modulepart.get_sws(), mopart,
                 modulepart.get_ects(), modulepart.get_edvnr(), modulepart.get_workload())
         cursor.execute(command, data)
