@@ -1,5 +1,7 @@
 from server.bo.Modulepart import Modulepart
 from backend.server.db.Mapper import Mapper
+from server.bo.Person import Person
+import json
 
 
 class ModulePartMapper(Mapper):
@@ -18,13 +20,13 @@ class ModulePartMapper(Mapper):
                 ects,
                 edvnr, workload) \
                 in tuples:
-            modulepart = ModulePart()
+            modulepart = Modulepart()
             modulepart.set_id(id)
             modulepart.set_name(name)
             modulepart.set_title(title)
             modulepart.set_language(language)
             modulepart.set_literature(literature)
-            modulepart.set_semester_id(semester_id)
+            modulepart.set_semester(semester_id)
             modulepart.set_sources(sources)
             modulepart.set_connection(connection)
             modulepart.set_description(description)
@@ -48,21 +50,21 @@ class ModulePartMapper(Mapper):
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for (
-                id, creationdate, name, title, language, literature, semester_id, sources, connection, description, sws,
-                ects,
-                edvnr, workload) in tuples:
-            modulepart = ModulePart()
+        for (id, creationdate, name, title,
+             language, literature, semester, sources, connection, description, sws, professor,
+             ects, edvnr, workload) in tuples:
+            modulepart = Modulepart()
             modulepart.set_id(id)
             modulepart.set_name(name)
             modulepart.set_title(title)
             modulepart.set_language(language)
             modulepart.set_literature(literature)
-            modulepart.set_semester_id(semester_id)
+            modulepart.set_semester(semester)
             modulepart.set_sources(sources)
             modulepart.set_connection(connection)
             modulepart.set_description(description)
             modulepart.set_sws(sws)
+            modulepart.set_professor(professor)
             modulepart.set_ects(ects)
             modulepart.set_edvnr(edvnr)
             modulepart.set_workload(workload)
@@ -88,13 +90,13 @@ class ModulePartMapper(Mapper):
                 id, creationdate, name, title, language, literature, semester_id, sources, connection, description, sws,
                 ects,
                 edvnr, workload) = tuples[0]
-            modulepart = ModulePart()
+            modulepart = Modulepart()
             modulepart.set_id(id)
             modulepart.set_name(name)
             modulepart.set_title(title)
             modulepart.set_language(language)
             modulepart.set_literature(literature)
-            modulepart.set_semester_id(semester_id)
+            modulepart.set_semester(semester_id)
             modulepart.set_sources(sources)
             modulepart.set_connection(connection)
             modulepart.set_description(description)
@@ -121,21 +123,25 @@ class ModulePartMapper(Mapper):
         for (maxid) in tuples:
             if maxid[0] is not None:
 
-                module.set_id(maxid[0] + 1)
+                modulepart.set_id(maxid[0] + 1)
             else:
 
-                module.set_id(1)
+                modulepart.set_id(1)
 
-        command = "INSERT INTO module (id, creationdate, name, title, language, literature, semester_id, sources, connection, description, sws, ects, edvnr, workload) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) "
-        data = (modulepart.get_id(), modulepart.get_name(), modulepart.get_title(), modulepart.get_language(),
-                modulepart.get_literature(), modulepart.get_semester_id(), modulepart.get_sources(),
-                modulepart.get_connection(), modulepart.get_description(), modulepart.get_sws(), modulepart.get_ects(),
-                modulepart.get_edvnr(), modulepart.get_workload())
+        mopart = json.dumps(modulepart.get_professor(), indent=4)
+        con = json.dumps(modulepart.get_connection())
+
+        command = "INSERT INTO modulepart (id, creationdate, name, title, language, literature, semester, sources, connection, description, sws, professor, ects, edvnr, workload) " \
+                  "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        data = (modulepart.get_id(), modulepart.get_creationdate(), modulepart.get_name(), modulepart.get_title(),
+                modulepart.get_language(), modulepart.get_literature(), modulepart.get_semester(),
+                modulepart.get_sources(), con, modulepart.get_description(),
+                modulepart.get_sws(), mopart,
+                modulepart.get_ects(), modulepart.get_edvnr(), modulepart.get_workload())
         cursor.execute(command, data)
 
         self._cnx.commit()
         cursor.close()
-
         return modulepart
 
     def update(self, modulepart):
