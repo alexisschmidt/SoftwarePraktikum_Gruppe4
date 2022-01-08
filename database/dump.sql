@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.27, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.21, for Win64 (x86_64)
 --
--- Host: localhost    Database: spoverwaltung
+-- Host: 127.0.0.1    Database: spoverwaltung
 -- ------------------------------------------------------
--- Server version	8.0.27
+-- Server version	8.0.21
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -29,15 +29,19 @@ CREATE TABLE `module` (
   `title` varchar(45) NOT NULL,
   `requirement` varchar(45) DEFAULT NULL,
   `examtype` varchar(45) NOT NULL,
-  `instructor` json NOT NULL,
+  `instructor` int NOT NULL,
   `outcome` varchar(45) NOT NULL,
   `type` varchar(45) NOT NULL,
-  `moduleparts` json NOT NULL,
-  `ects` int DEFAULT NULL,
+  `moduleparts` int NOT NULL,
+  `ects` int NOT NULL,
   `edvnr` varchar(45) NOT NULL,
   `workload` varchar(45) NOT NULL,
   `module_hash` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `instructor_idx` (`instructor`),
+  KEY `moduleparts_idx` (`moduleparts`),
+  CONSTRAINT `instructor` FOREIGN KEY (`instructor`) REFERENCES `person` (`id`),
+  CONSTRAINT `moduleparts` FOREIGN KEY (`moduleparts`) REFERENCES `modulepart` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -66,15 +70,19 @@ CREATE TABLE `modulepart` (
   `literature` varchar(45) DEFAULT NULL,
   `semester` int NOT NULL,
   `sources` varchar(45) DEFAULT NULL,
-  `connection` json DEFAULT NULL,
+  `connection` varchar(600) NOT NULL,
   `description` varchar(45) NOT NULL,
   `sws` varchar(45) NOT NULL,
-  `professor` json NOT NULL,
+  `professor` int NOT NULL,
   `ects` varchar(45) NOT NULL,
   `edvnr` varchar(45) NOT NULL,
   `workload` varchar(45) NOT NULL,
   `modulepart_hash` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `semester_idx` (`semester`),
+  KEY `professor_idx` (`professor`),
+  CONSTRAINT `professor` FOREIGN KEY (`professor`) REFERENCES `person` (`id`),
+  CONSTRAINT `semester` FOREIGN KEY (`semester`) REFERENCES `semester` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -152,11 +160,15 @@ CREATE TABLE `spo` (
   `creationdate` datetime NOT NULL,
   `name` varchar(45) NOT NULL,
   `title` varchar(45) NOT NULL,
-  `start_semester` json NOT NULL,
-  `end_semester` json DEFAULT NULL,
-  `studycourse_id` json NOT NULL,
+  `start_semester` int NOT NULL,
+  `end_semester` int DEFAULT NULL,
+  `studycourse` int NOT NULL,
   `spo_hash` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `studycourse_idx1` (`studycourse`),
+  KEY `start_semester_idx` (`start_semester`),
+  KEY `end_semester_idx` (`end_semester`),
+  CONSTRAINT `studycourse` FOREIGN KEY (`studycourse`) REFERENCES `studycourse` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -166,7 +178,7 @@ CREATE TABLE `spo` (
 
 LOCK TABLES `spo` WRITE;
 /*!40000 ALTER TABLE `spo` DISABLE KEYS */;
-INSERT INTO `spo` VALUES (1,'2030-12-20 21:00:00','SPO1','labl','2','3','1',NULL),(3,'2050-10-20 00:00:00','SPO2','HALLO','3','4','1',NULL);
+INSERT INTO `spo` VALUES (1,'2030-12-20 21:00:00','SPO1','labl',2,3,1,NULL),(3,'2050-10-20 00:00:00','SPO2','HALLO',3,4,1,NULL);
 /*!40000 ALTER TABLE `spo` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -235,4 +247,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-01-04 14:55:05
+-- Dump completed on 2022-01-08 13:27:16
