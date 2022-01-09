@@ -84,8 +84,7 @@ modulepart = api.inherit('Modulepart', spoelement, {
     'sws': fields.String(attribute='_sws', description='Anzahl der SWS des Modulteils'),
     'language': fields.String(attribute='_language', descpription='Sprache des Modulteils'),
     'description': fields.String(attribute='_description', description='Beschreibung des Modulteils'),
-    'connection': fields.List(attribute='_connection',
-                              cls_or_instance=int, description='Verbindung zu anderen Modulteilen'),
+    'connection': fields.String(attribute='_connection', description='Verbindung zu anderen Modulteilen'),
     'literature': fields.String(attribute='_literature', description='Literatur für das Modulteil'),
     'sources': fields.String(attribute='_sources', description='Quellen'),
     'semester': fields.Integer(attribute='_semester', description='Semester des Modulteils'),
@@ -126,7 +125,7 @@ class UserListOperations(Resource):
         proposal = User.from_dict(api.payload)
 
         if proposal is not None:
-            c = adm.create_user(proposal.get_firstname(), proposal.get_lastname(), proposal.get_email())
+            c = adm.create_user(proposal.get_firstname(), proposal.get_lastname(), proposal.get_email(), proposal.get_google_user_id())
             return c, 200
         else:
             return '', 500
@@ -575,7 +574,7 @@ class PersonListOperations(Resource):
 
     @sposystem.marshal_list_with(person, code=200)
     @sposystem.expect(person)
-    @secured
+    # @secured
     def post(self):
         adm = Administration()
         proposal = Person.from_dict(api.payload)

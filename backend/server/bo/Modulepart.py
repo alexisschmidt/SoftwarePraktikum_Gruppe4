@@ -7,7 +7,7 @@ class Modulepart (spe.SpoElement):
     __sws: str
     __language: str
     __description: str
-    __connection: list[object]
+    __connection: str
     __literature: str
     __sources: str
     __semester: int
@@ -18,7 +18,7 @@ class Modulepart (spe.SpoElement):
         self.__sws = ""
         self.__language = ""
         self.__description = ""
-        self.__connection = []
+        self.__connection = ""
         self.__literature = ""
         self.__sources = ""
         self.__semester = 0
@@ -51,10 +51,9 @@ class Modulepart (spe.SpoElement):
     def get_connection(self):
         return self.__connection
 
-    def set_connection(self, connection):
+    def set_connection(self, connection: str):
         """Setzten der Verbindung"""
-        if isinstance(connection, Modulepart):
-            self.__connection = [connection]
+        self.__connection = connection
 
     def get_literature(self):
         """Auslesen der Lektüre"""
@@ -84,10 +83,9 @@ class Modulepart (spe.SpoElement):
         """Auslesen des Professors"""
         return self._professor
 
-    def set_professor(self, professor):
+    def set_professor(self, professor: Person):
         """Setzen des Modulverantwortlichen"""
-        if isinstance(professor, Person):
-            self._professor = professor
+        self._professor = professor
 
     def __str__(self):
         return f"Modulepart: \
