@@ -12,8 +12,8 @@ export default class SpoElementbo extends BusinessObject{
    constructor(aEdvnr, aEcts, aWorkload) {
     super();
     this.edvnr = aEdvnr;
-	this.ects = aEcts;
-	this.workload = aWorkload;
+	  this.ects = aEcts;
+	  this.workload = aWorkload;
   }
 
   /**

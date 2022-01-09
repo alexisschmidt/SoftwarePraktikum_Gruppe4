@@ -12,8 +12,8 @@ export default class Personbo extends BusinessObject{
    constructor(aFirstname, aLastname, aEmail) {
     super();
     this.firstname = aFirstname;
-	this.lastname = aLastname;
-	this.email = aEmail;
+	  this.lastname = aLastname;
+	  this.email = aEmail;
   }
 
   /**

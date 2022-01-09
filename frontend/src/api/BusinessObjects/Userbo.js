@@ -13,10 +13,10 @@ export default class Userbo extends BusinessObject{
    constructor(aFirstname, aLastname, aEmail, aGoogle_user_id, aIsadmin) {
     super();
     this.firstname = aFirstname;
-	this.lastname = aLastname;
-	this.email = aEmail;
-	this.google_user_id = aGoogle_user_id;
-	this.isadmin = aIsadmin;
+	  this.lastname = aLastname;
+	  this.email = aEmail;
+	  this.google_user_id = aGoogle_user_id;
+	  this.isadmin = aIsadmin;
   }
 
   /**

@@ -7,11 +7,6 @@ import SpoElementbo from './SpoElementbo';
 import StudyCoursebo from './StudyCoursebo';
 import Userbo from './Userbo';
 
-
-
-
-
-
 export default class API{
 	//Singleton instance
 		static #api = null;

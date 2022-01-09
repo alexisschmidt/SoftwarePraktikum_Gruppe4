@@ -13,9 +13,9 @@ export default class Spobo extends BusinessObject{
    constructor(aStart_semester, aEnd_semester, aModules, aStudycourse) {
     super();
     this.start_semester = aStart_semester;
-	this.end_semester = aEnd_semester;
-	this.modules = aModules;
-	this.studycourse = aStudycourse;
+	  this.end_semester = aEnd_semester;
+	  this.modules = aModules;
+	  this.studycourse = aStudycourse;
   }
 
   /**

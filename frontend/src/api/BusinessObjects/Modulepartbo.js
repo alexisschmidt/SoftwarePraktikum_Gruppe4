@@ -16,13 +16,13 @@ export default class Modulepartbo extends BusinessObject{
    constructor(aSws, aLanguage, aDescription, aConnection, aLiterature, aSources, aSemester, aProfessor) {
     super();
     this.sws = aSws;
-	this.language = aLanguage;
-	this.description = aDescription;
-	this.connection = aConnection;
-	this.literature = aLiterature;
-	this.sources = aSources;
-	this.semester = aSemester;
-	this.professor = aProfessor;
+	  this.language = aLanguage;
+	  this.description = aDescription;
+	  this.connection = aConnection;
+	  this.literature = aLiterature;
+	  this.sources = aSources;
+	  this.semester = aSemester;
+	  this.professor = aProfessor;
   }
 
   /**
