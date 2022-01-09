@@ -17,10 +17,10 @@ class User(bo.BusinessObject):
 
     def __init__(self):
         super().__init__()
-        self.__firstname = ""   # Der Vorname des Nutzers
-        self.__lastname = ""    # Der Nachname des Nutzers
-        self.__email = ""   # Die E-Mail des Nutzers
-        self.__google_user_id = "" # Die Google ID des Nutzers
+        self.__firstname = ""       # Der Vorname des Nutzers
+        self.__lastname = ""        # Der Nachname des Nutzers
+        self.__email = ""           # Die E-Mail des Nutzers
+        self.__google_user_id = ""  # Die Google ID des Nutzers
         self.__isadmin = 0
 
 # Auslesen / des Vor-/nachnamens und Email.
@@ -48,22 +48,13 @@ class User(bo.BusinessObject):
     def set_email(self, email):
         """Setzen der E-Mail"""
         self.__email = email
-        
-    def get_user_id(self):
-        """Auslesen der E-Mail"""
-        return self.__user_id
-
-    def set_user_id(self, value):
-        """Setzen der E-Mail"""
-        self.__user_id = value     
-        
 
     def get_google_user_id(self):
-        """Auslesen der E-Mail"""
+        """Auslesen der Google User ID"""
         return self.__google_user_id
 
     def set_google_user_id(self, google_user_id):
-        """Setzen der E-Mail"""
+        """Setzen der Google User ID"""
         self.__google_user_id = google_user_id
 
     def get_isadmin(self):
@@ -87,8 +78,8 @@ class User(bo.BusinessObject):
             'firstname': self.get_firstname(),
             'lastname': self.get_lastname(),
             'email': self.get_email(),
-            'google_user_id': self.google_user_id(),
-            'isadmin': self.isadmin()
+            'google_user_id': self.get_google_user_id(),
+            'isadmin': self.get_isadmin()
             })
     
     @staticmethod
