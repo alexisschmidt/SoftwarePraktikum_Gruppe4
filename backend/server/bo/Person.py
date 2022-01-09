@@ -61,8 +61,6 @@ class Person (bo.BusinessObject):
         """Umwandeln eines Python dict() in eine Person()."""
         obj = Person()
         obj.set_id(dictionary["id"])                # Teil von BusinessObject!
-        obj.set_name(dictionary["name"])            # Teil von NamedBo!
-        obj.set_title(dictionary["title"])          # Teil von NamedBo!
         obj.set_firstname(dictionary["firstname"])
         obj.set_lastname(dictionary["lastname"])
         obj.set_email(dictionary["email"])
@@ -73,4 +71,4 @@ class Person (bo.BusinessObject):
                self.get_lastname() == other.get_lastname() and \
                self.get_email() == other.get_email()
 
-    __hash__ = nbo.NamedBo.__hash__
+    __hash__ = bo.BusinessObject.__hash__
