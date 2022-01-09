@@ -9,8 +9,8 @@ class Module(spe.SpoElement):
     __requirement: str
     __outcome: str
     __examtype: str
-    __instructor: dict
-    __moduleparts: dict
+    __instructor: Person
+    __moduleparts: list[Modulepart]                 # Soll eine Liste an Objekten sein
 
     def __init__(self):
         super().__init__()
@@ -18,8 +18,8 @@ class Module(spe.SpoElement):
         self.__requirement = ""
         self.__outcome = ""
         self.__examtype = ""
-        self.__instructor = {}
-        self.__moduleparts = {}
+        self.__instructor = Person()
+        self.__moduleparts = []
 
     # Auslesen
     def get_type(self):
@@ -61,38 +61,23 @@ class Module(spe.SpoElement):
     def set_instructor(self, instructor):
         """Setzen des Modulverantwortlichen"""
         if isinstance(instructor, Person):
-            self.__instructor = {hash(instructor): instructor.get_id()}
+            self.__instructor = instructor
 
     def get_moduleparts(self):
         return self.__moduleparts
 
-    def set_moduleparts(self, moduleparts):
-        if isinstance(moduleparts, list):
-            for i in moduleparts:
-                if isinstance(i, Modulepart):
-                    self.__moduleparts.update({hash(i): i.get_id()})
-
-    """ 
-    Muss in Administration.py
-    
-    def append_moduleparts(self, module):
-        if isinstance(module, Module):
-            self.__moduleparts.append(hash(module))
-
-    def remove_moduleparts(self, modulepart):
-        if isinstance(modulepart, Module):
-            for i in self.__moduleparts:
-                if hash(modulepart) == i:
-                    self.__moduleparts.remove(i)
-    """
+    def set_moduleparts(self, moduleparts_as_list):
+        if isinstance(moduleparts_as_list, list):
+            self.__moduleparts = moduleparts_as_list
 
     def __str__(self):
-        return f"Module: \
-               id: {self.get_id()}, name: {self._name}, title: {self._title}, edvnr: {self._edvnr}, ects: {self.ects}, \
-               workload: {self.workload}, type: {self.__type}, requirement: {self.__requirement}, \
-               outcome: {self.__outcome}, examtype: {self.__examtype}, instructor: {self.__instructor}"
+        return f"Module: id: {self.get_id()}, name: {self._name}, title: {self._title}, edvnr: {self._edvnr}, ects: {self.ects}, workload: {self.workload}, type: {self.__type}, requirement: {self.__requirement}, outcome: {self.__outcome}, examtype: {self.__examtype}, instructor: {self.__instructor}"
 
     def json(self):
+        inst = hash(self.get_instructor())
+        plist = ""
+        for part in self.get_moduleparts():
+            plist += str(hash(part))+", "
         return json.dumps({
             'id': self.get_id(),
             'name': self.get_name(),
@@ -104,7 +89,8 @@ class Module(spe.SpoElement):
             'requirement': self.get_requirement(),
             'outcome': self.get_outcome(),
             'examtype': self.get_examtype(),
-            'instructor': self.get_instructor()
+            'instructor': inst,
+            'moduleparts': plist
             })
 
     @staticmethod
@@ -121,7 +107,7 @@ class Module(spe.SpoElement):
         obj.set_requirement(dictionary["requirement"])
         obj.set_outcome(dictionary["outcome"])
         obj.set_examtype(dictionary["examtype"])
-        obj.set_instructor(dictionary["instructor"])
+        obj.set_instructor(dictionary["instructor"])    # könnte geändert werden müssen
         return obj
 
     def __eq__(self, other):
@@ -136,10 +122,13 @@ class Module(spe.SpoElement):
 
 
 """
-# test = Module()
+# test script
+test = Module()
 person1 = Person()
 person1.set_id(69)
 test.set_instructor(person1)
+testpart = Modulepart()
+test.set_moduleparts([testpart])
 print(test)
 print(test.json())
 print(hash(test))
