@@ -4,7 +4,7 @@ import json
 
 
 class Modulepart (spe.SpoElement):
-    __SWS: str
+    __sws: str
     __language: str
     __description: str
     __connection: dict
@@ -15,7 +15,7 @@ class Modulepart (spe.SpoElement):
 
     def __init__(self):
         super().__init__()
-        self.__SWS = ""
+        self.__sws = ""
         self.__language = ""
         self.__description = ""
         self.__connection = {}
@@ -28,11 +28,11 @@ class Modulepart (spe.SpoElement):
 
     def get_sws(self):
         """Auslesen der Semesterwochenstunden"""
-        return self.__SWS
+        return self.__sws
 
     def set_sws(self, sws):
         """Setzen der Semesterwochenstunden"""
-        self.__SWS = sws
+        self.__sws = sws
 
     def get_language(self):
         """Auslesen der Modulteilsprache"""
@@ -101,23 +101,21 @@ class Modulepart (spe.SpoElement):
             self._professor = {hash(professor): professor.get_id()}
 
     def __str__(self):
-        return "Modulepart: id: {}, name: {}, title: {}, edvnr: {}, ects: {}, workload: {}, SWS: {}, language: {}," \
-               "description: {}, connection: {}, literature: {}, sources: {}, semester: {}, professor: {}".format(
-                self.get_id(),
-                self._name,
-                self._title,
-                self.edvnr,
-                self.ects,
-                self.workload,
-                self.__SWS,
-                self.__language,
-                self.__description,
-                self.__connection,
-                self.__literature,
-                self.__sources,
-                self.__semester,
-                self._professor
-                )
+        return f"Modulepart: \
+               id: {self.get_id()}, \
+               name: {self._name}, \
+               title: {self._title}, \
+               edvnr: {self._edvnr}, \
+               ects: {self.ects}, \
+               workload: {self.workload}, \
+               SWS: {self.__sws}, \
+               language: {self.__language}, \
+               description: {self.__description}, \
+               connection: {self.__connection}, \
+               literature: {self.__literature}, \
+               sources: {self.__sources}, \
+               semester: {self.__semester}, \
+               professor: {self._professor}"
 
     def json(self):
         return json.dumps({
@@ -140,7 +138,7 @@ class Modulepart (spe.SpoElement):
         """Umwandeln eines Python dict() in ein Modulepart()."""
         obj = Modulepart()
         obj.set_id(dictionary["id"])                    # Teil von BusinessObject!
-        obj.set_sws(dictionary["SWS"])                  # Teil von NamedBo!
+        obj.set_sws(dictionary["sws"])                  # Teil von NamedBo!
         obj.set_language(dictionary["language"])        # Teil von NamedBo!
         obj.set_edvnr(dictionary["edvnr"])              # Teil von SpoElement!
         obj.set_ects(dictionary["ects"])                # Teil von SpoElement!

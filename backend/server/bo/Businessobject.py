@@ -10,7 +10,7 @@ class BusinessObject(ABC):
 
     def __init__(self):
         self._id = 0
-        self._creationdate = datetime.date(1, 1, 1)
+        self._creationdate = datetime.date.today() # immer aktuelles Datum
 
     def set_id(self, value):
         """Setzen der ID."""

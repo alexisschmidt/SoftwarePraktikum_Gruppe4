@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.21, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.27, for Win64 (x86_64)
 --
--- Host: 127.0.0.1    Database: spoverwaltung
+-- Host: localhost    Database: spoverwaltung
 -- ------------------------------------------------------
--- Server version	8.0.21
+-- Server version	8.0.27
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -27,15 +27,15 @@ CREATE TABLE `module` (
   `creationdate` datetime NOT NULL,
   `name` varchar(45) NOT NULL,
   `title` varchar(45) NOT NULL,
-  `requirement` varchar(45) NOT NULL,
+  `requirement` varchar(45) DEFAULT NULL,
   `examtype` varchar(45) NOT NULL,
-  `instructor` varchar(45) NOT NULL,
+  `instructor` json NOT NULL,
   `outcome` varchar(45) NOT NULL,
   `type` varchar(45) NOT NULL,
-  `moduleparts` varchar(60) NOT NULL,
+  `moduleparts` json NOT NULL,
   `ects` int DEFAULT NULL,
-  `edvnr` varchar(45) DEFAULT NULL,
-  `workload` varchar(45) DEFAULT NULL,
+  `edvnr` varchar(45) NOT NULL,
+  `workload` varchar(45) NOT NULL,
   `module_hash` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -63,15 +63,16 @@ CREATE TABLE `modulepart` (
   `name` varchar(45) NOT NULL,
   `title` varchar(45) NOT NULL,
   `language` varchar(45) NOT NULL,
-  `literature` varchar(45) NOT NULL,
-  `semester_id` int NOT NULL,
-  `sources` varchar(45) NOT NULL,
-  `connection` int NOT NULL,
+  `literature` varchar(45) DEFAULT NULL,
+  `semester` int NOT NULL,
+  `sources` varchar(45) DEFAULT NULL,
+  `connection` json DEFAULT NULL,
   `description` varchar(45) NOT NULL,
   `sws` varchar(45) NOT NULL,
+  `professor` json NOT NULL,
   `ects` varchar(45) NOT NULL,
-  `edvnr` varchar(45) DEFAULT NULL,
-  `workload` varchar(45) DEFAULT NULL,
+  `edvnr` varchar(45) NOT NULL,
+  `workload` varchar(45) NOT NULL,
   `modulepart_hash` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -96,7 +97,7 @@ DROP TABLE IF EXISTS `person`;
 CREATE TABLE `person` (
   `id` int NOT NULL,
   `creationdate` datetime NOT NULL,
-  `title` varchar(45) NOT NULL,
+  `title` varchar(45) DEFAULT NULL,
   `firstname` varchar(45) NOT NULL,
   `lastname` varchar(45) NOT NULL,
   `email` varchar(45) NOT NULL,
@@ -151,9 +152,9 @@ CREATE TABLE `spo` (
   `creationdate` datetime NOT NULL,
   `name` varchar(45) NOT NULL,
   `title` varchar(45) NOT NULL,
-  `start_semester` int NOT NULL,
-  `end_semester` int DEFAULT NULL,
-  `studycourse_id` int NOT NULL,
+  `start_semester` json NOT NULL,
+  `end_semester` json DEFAULT NULL,
+  `studycourse_id` json NOT NULL,
   `spo_hash` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -165,7 +166,7 @@ CREATE TABLE `spo` (
 
 LOCK TABLES `spo` WRITE;
 /*!40000 ALTER TABLE `spo` DISABLE KEYS */;
-INSERT INTO `spo` VALUES (1,'2030-12-20 21:00:00','SPO1','labl',2,3,1,NULL),(3,'2050-10-20 00:00:00','SPO2','HALLO',3,4,1,NULL);
+INSERT INTO `spo` VALUES (1,'2030-12-20 21:00:00','SPO1','labl','2','3','1',NULL),(3,'2050-10-20 00:00:00','SPO2','HALLO','3','4','1',NULL);
 /*!40000 ALTER TABLE `spo` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -191,6 +192,7 @@ CREATE TABLE `studycourse` (
 
 LOCK TABLES `studycourse` WRITE;
 /*!40000 ALTER TABLE `studycourse` DISABLE KEYS */;
+INSERT INTO `studycourse` VALUES (1,'2022-01-04 00:00:00','WI','Wirtschaftsinformatik'),(2,'2022-01-04 00:00:00','OMM','Online Medien mAnagaement');
 /*!40000 ALTER TABLE `studycourse` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -204,7 +206,6 @@ DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `id` int NOT NULL,
   `creationdate` datetime NOT NULL,
-  `title` varchar(45) NOT NULL,
   `firstname` varchar(45) NOT NULL,
   `lastname` varchar(45) NOT NULL,
   `email` varchar(45) NOT NULL,
@@ -221,6 +222,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
+INSERT INTO `user` VALUES (1,'0001-01-01 00:00:00','Sebastian','Hennich','sh@hdm-de','',0,NULL),(2,'2022-01-04 00:00:00','deniz','gazitepe','dz@hdm.de','',0,NULL);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -233,4 +235,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-01-02 14:17:05
+-- Dump completed on 2022-01-04 14:55:05

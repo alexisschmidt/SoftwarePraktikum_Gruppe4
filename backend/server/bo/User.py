@@ -73,14 +73,13 @@ class User(bo.BusinessObject):
         self.__isadmin = isadmin
 
     def __str__(self):
-        return "User: id: {}, firstname: {}, lastname: {}, email: {}, google_user_id: {] isadmin: {}".format(
-            self.get_id(),
-            self.__firstname,
-            self.__lastname,
-            self.__email,
-            self.__google_user_id,
-            self.__isadmin
-            )
+        return f"User: \
+               id: {self.get_id()}, \
+               firstname: {self.__firstname}, \
+               lastname: {self.__lastname}, \
+               email: {self.__email}, \
+               google_user_id: {self.__google_user_id}, \
+               isadmin: {self.__isadmin}"
 
     def json(self):
         return json.dumps({
