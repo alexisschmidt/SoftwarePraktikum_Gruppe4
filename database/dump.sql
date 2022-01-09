@@ -32,16 +32,13 @@ CREATE TABLE `module` (
   `instructor` int NOT NULL,
   `outcome` varchar(45) NOT NULL,
   `type` varchar(45) NOT NULL,
-  `moduleparts` int NOT NULL,
   `ects` int NOT NULL,
   `edvnr` varchar(45) NOT NULL,
   `workload` varchar(45) NOT NULL,
   `module_hash` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `instructor_idx` (`instructor`),
-  KEY `moduleparts_idx` (`moduleparts`),
-  CONSTRAINT `instructor` FOREIGN KEY (`instructor`) REFERENCES `person` (`id`),
-  CONSTRAINT `moduleparts` FOREIGN KEY (`moduleparts`) REFERENCES `modulepart` (`id`)
+  CONSTRAINT `instructor` FOREIGN KEY (`instructor`) REFERENCES `person` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -74,15 +71,16 @@ CREATE TABLE `modulepart` (
   `description` varchar(45) NOT NULL,
   `sws` varchar(45) NOT NULL,
   `professor` int NOT NULL,
+  `module_id` int NOT NULL,
   `ects` varchar(45) NOT NULL,
   `edvnr` varchar(45) NOT NULL,
   `workload` varchar(45) NOT NULL,
   `modulepart_hash` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `semester_idx` (`semester`),
   KEY `professor_idx` (`professor`),
-  CONSTRAINT `professor` FOREIGN KEY (`professor`) REFERENCES `person` (`id`),
-  CONSTRAINT `semester` FOREIGN KEY (`semester`) REFERENCES `semester` (`id`)
+  KEY `module_id_idx` (`module_id`),
+  CONSTRAINT `module_id` FOREIGN KEY (`module_id`) REFERENCES `module` (`id`),
+  CONSTRAINT `professor` FOREIGN KEY (`professor`) REFERENCES `person` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -105,7 +103,6 @@ DROP TABLE IF EXISTS `person`;
 CREATE TABLE `person` (
   `id` int NOT NULL,
   `creationdate` datetime NOT NULL,
-  `title` varchar(45) DEFAULT NULL,
   `firstname` varchar(45) NOT NULL,
   `lastname` varchar(45) NOT NULL,
   `email` varchar(45) NOT NULL,
@@ -166,8 +163,6 @@ CREATE TABLE `spo` (
   `spo_hash` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `studycourse_idx1` (`studycourse`),
-  KEY `start_semester_idx` (`start_semester`),
-  KEY `end_semester_idx` (`end_semester`),
   CONSTRAINT `studycourse` FOREIGN KEY (`studycourse`) REFERENCES `studycourse` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -247,4 +242,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-01-08 13:27:16
+-- Dump completed on 2022-01-09 17:39:33

@@ -580,7 +580,7 @@ class PersonListOperations(Resource):
         proposal = Person.from_dict(api.payload)
 
         if proposal is not None:
-            pe = adm.create_person(proposal.get_name(), proposal.get_title(), proposal.get_firstname(),
+            pe = adm.create_person(proposal.get_firstname(),
                                    proposal.get_lastname(), proposal.get_email())
             return pe, 200
         else:

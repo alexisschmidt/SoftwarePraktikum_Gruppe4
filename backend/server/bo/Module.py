@@ -10,7 +10,7 @@ class Module(spe.SpoElement):
     __outcome: str
     __examtype: str
     __instructor: Person
-    __moduleparts: list[Modulepart]                 # Soll eine Liste an Objekten sein
+    # __moduleparts: list[Modulepart]                 # Soll eine Liste an Objekten sein
 
     def __init__(self):
         super().__init__()

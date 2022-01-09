@@ -9,7 +9,7 @@ import json
 class Spo (nbo.NamedBo):
     _start_semester: Semester
     _end_semester: Semester
-    _modules: list[Module]
+    # _modules: list[Module]
     _studycourse: StudyCourse
 
     def __init__(self):
