@@ -1,8 +1,8 @@
-from server.bo import NamedBo as nbo
+from server.bo import Businessobject as bo
 import json
 
 
-class Person (nbo.NamedBo):
+class Person (bo.BusinessObject):
     __firstname: str
     __lastname: str
     __email: str

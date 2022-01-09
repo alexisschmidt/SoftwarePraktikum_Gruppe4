@@ -167,9 +167,12 @@ class SpoMapper(Mapper):
 
                 spo.set_id(1)
 
-        command = "INSERT INTO spo (id, creationdate, name, title, start_semester, end_semester, studycourse_id) VALUES (%s,%s,%s,%s,%s,%s,%s) "
+        ss = spo.get_start_semester().get_id()
+        es = spo.get_end_semester().get_id()
+        sc = spo.get_studycourse().get_id()
+        command = "INSERT INTO spo (id, creationdate, name, title, start_semester, end_semester, studycourse) VALUES (%s,%s,%s,%s,%s,%s,%s) "
         data = (
-            spo.get_id(), spo.get_creationdate(), spo.get_name(), spo.get_title(), spo.get_start_semester(), spo.get_end_semester(), spo.get_studycourse())
+            spo.get_id(), spo.get_creationdate(), spo.get_name(), spo.get_title(), ss, es, sc)
         cursor.execute(command, data)
 
         self._cnx.commit()

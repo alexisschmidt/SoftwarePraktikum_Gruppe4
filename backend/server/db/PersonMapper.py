@@ -90,14 +90,12 @@ class PersonMapper(Mapper):
 
         for (maxid) in tuples:
             if maxid[0] is not None:
-
                 person.set_id(maxid[0] + 1)
             else:
-
                 person.set_id(1)
 
-        command = "INSERT INTO person (id, creationdate, name, title, firstname, lastname, email) VALUES (%s,%s,%s,%s,%s,%s,%s) "
-        data = (person.get_id(), person.get_creationdate(), person.get_name(), person.get_title(), person.get_firstname(), person.get_lastname(), person.get_email())
+        command = "INSERT INTO person (id, creationdate, firstname, lastname, email) VALUES (%s,%s,%s,%s,%s)"
+        data = (person.get_id(), person.get_creationdate(), person.get_firstname(), person.get_lastname(), person.get_email())
         cursor.execute(command, data)
 
         self._cnx.commit()
@@ -110,7 +108,7 @@ class PersonMapper(Mapper):
         cursor = self._cnx.cursor()
 
         command = "UPDATE person " + "SET name=%s, SET title=%s, SET firstname=%s, SET lastname=%s, SET email=%s WHERE id=%s "
-        data = (person.get_name(), person.get_title(), person.get_firstname(), person_get.lastname(), person_getemail(), person.get_id())
+        data = (person.get_name(), person.get_title(), person.get_firstname(), person.get_lastname(), person.get_email(), person.get_id())
         cursor.execute(command, data)
 
         self._cnx.commit()

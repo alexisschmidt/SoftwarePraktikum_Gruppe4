@@ -30,8 +30,8 @@ class Mapper (AbstractContextManager, ABC):
             installierten mySQL-Datenbank her."""
 
             self._cnx = connector.connect(user='root', password='Einhorn100?',
-                                  host='127.0.0.1',
-                                  database='spoverwaltung')
+                                          host='127.0.0.1',
+                                          database='spoverwaltung')
 
         return self
 
