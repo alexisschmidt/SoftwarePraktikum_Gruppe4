@@ -110,7 +110,7 @@ class UserMapper(Mapper):
         cursor = self._cnx.cursor()
 
         command = "UPDATE user " + "SET firstname=%s, SET lastname=%s, SET email=%s, google_user_id=%s, isadmin=%s WHERE id=%s "
-        data = (user.get_firstname(), user_get.lastname(), user_get.email(), user.get_google_user_id(), user.get_isadmin, user.get_id())
+        data = (user.get_firstname(), user.get.lastname(), user.get.email(), user.get_google_user_id(), user.get_isadmin, user.get_id())
         cursor.execute(command, data)
 
         self._cnx.commit()
