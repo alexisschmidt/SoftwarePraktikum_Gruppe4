@@ -29,7 +29,7 @@ const rows = [
   createData('* je nach individueller Belegung','', '', '','', '', '')
 ];
 
-export default function DenseTable() {
+export default function SpoTableStudent2 () {
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 500 }} size="small" aria-label="a dense table">
@@ -66,3 +66,4 @@ export default function DenseTable() {
     </TableContainer>
   );
 }
+
