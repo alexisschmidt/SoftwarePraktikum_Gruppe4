@@ -115,8 +115,8 @@ Globales CSS-Reset und Browser-Normalisierung. CssBaseline startet eine elegante
 							currentUser ?
 								<>
 									<Route path="/">
-										<SpoStudent/>
 										<Admin/>
+										
 									</Route>
 									<Route path="/about">
 										<About />
@@ -125,6 +125,10 @@ Globales CSS-Reset und Browser-Normalisierung. CssBaseline startet eine elegante
 								:
 								// else show the sign in page
 								<>
+								
+								<Route path="/student">
+									<SpoStudent />
+									</Route>
 
 									<SignIn onSignIn={this.handleSignIn} />
 								</>
