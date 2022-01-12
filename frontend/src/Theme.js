@@ -1,61 +1,61 @@
-import { createMuiTheme } from '@material-ui/core/styles';
-import { colors } from '@material-ui/core';
+import { createTheme } from '@mui/material/styles'
+import { indigo, blue, red, green, grey, orange, blueGrey } from '@mui/material/colors';
 
-const blue = '#9fc3e6';
+
 const black = '#000000';
 
 // Ein benutzerdefiniertes Thema für diese App
-const theme = createMuiTheme({
+const theme = createTheme({
   palette: {
     black,
     blue,
     primary: {
       contrastText: blue,
-      dark: colors.indigo[900],
-      main: colors.indigo[500],
-      light: colors.indigo[100]
+      dark: indigo[900],
+      main: indigo[500],
+      light:indigo[100]
     },
     secondary: {
       contrastText: blue,
-      dark: colors.blue[900],
-      main: colors.blue['A400'],
-      light: colors.blue['A400']
+      dark: blue[900],
+      main: blue['A400'],
+      light: blue['A400']
     },
     success: {
       contrastText: blue,
-      dark: colors.green[900],
-      main: colors.green[600],
-      light: colors.green[400]
+      dark: green[900],
+      main: green[600],
+      light: green[400]
     },
     info: {
       contrastText: blue,
-      dark: colors.blue[900],
-      main: colors.blue[600],
-      light: colors.blue[400]
+      dark: blue[900],
+      main: blue[600],
+      light: blue[400]
     },
     warning: {
       contrastText: blue,
-      dark: colors.orange[900],
-      main: colors.orange[600],
-      light: colors.orange[400]
+      dark: orange[900],
+      main: orange[600],
+      light: orange[400]
     },
     error: {
       contrastText: blue,
-      dark: colors.red[900],
-      main: colors.red[600],
-      light: colors.red[400]
+      dark: red[900],
+      main: red[600],
+      light: red[400]
     },
     text: {
-      primary: colors.blueGrey[800],
-      secondary: colors.blueGrey[600],
-      link: colors.blue[600]
+      primary: blueGrey[800],
+      secondary: blueGrey[600],
+      link: blue[600]
     },
     background: {
       default: '#F4F6F8',
       paper: blue
     },
-    icon: colors.blueGrey[600],
-    divider: colors.grey[200]
+    icon: blueGrey[600],
+    divider: grey[200]
   }, 
 });
 
