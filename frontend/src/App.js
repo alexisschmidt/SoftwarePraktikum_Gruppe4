@@ -10,7 +10,8 @@ import SignIn from './components/pages/SignIn';
 import LoadingProgress from './components/dialogs/LoadingProgress';
 import ContextErrorMessage from './components/dialogs/ContextErrorMessage';
 import SpoStudent from './components/pages/SpoStudent';
-import About from './components/pages/About'
+import About from './components/pages/About';
+import Admin from './components/pages/Admin';
 
 // import List from './components/pages/List'
 // import DateAndTime from './components/content/DateAndTime';
@@ -115,6 +116,7 @@ Globales CSS-Reset und Browser-Normalisierung. CssBaseline startet eine elegante
 								<>
 									<Route path="/">
 										<SpoStudent/>
+										<Admin/>
 									</Route>
 									<Route path="/about">
 										<About />
