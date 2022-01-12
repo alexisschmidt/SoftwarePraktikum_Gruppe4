@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Navigate, Redirect } from 'react-router-dom';
+import { BrowserRouter as Router, Navigate, Redirect, Route } from 'react-router-dom';
 import { Container, ThemeProvider, CssBaseline } from '@material-ui/core'; //um Material-UI-Komponente nutzen zu können
 import firebase from 'firebase/app';
 import Header from './components/layout/Header';
@@ -10,7 +10,11 @@ import SignIn from './components/pages/SignIn';
 import LoadingProgress from './components/dialogs/LoadingProgress';
 import ContextErrorMessage from './components/dialogs/ContextErrorMessage';
 import SpoStudent from './components/pages/SpoStudent';
+import About from './components/pages/About';
+import Admin from './components/pages/Admin';
 
+// import List from './components/pages/List'
+// import DateAndTime from './components/content/DateAndTime';
 
 
 class App extends React.Component {
@@ -110,10 +114,21 @@ Globales CSS-Reset und Browser-Normalisierung. CssBaseline startet eine elegante
 							// Is a user signed in?
 							currentUser ?
 								<>
+									<Route path="/">
+										<Admin/>
+										
+									</Route>
+									<Route path="/about">
+										<About />
+									</Route>
 								</>
 								:
 								// else show the sign in page
 								<>
+								
+								<Route path="/student">
+									<SpoStudent />
+									</Route>
 
 									<SignIn onSignIn={this.handleSignIn} />
 								</>
@@ -121,7 +136,8 @@ Globales CSS-Reset und Browser-Normalisierung. CssBaseline startet eine elegante
 						<LoadingProgress show={authLoading} />
 						<ContextErrorMessage error={authError} contextErrorMsg={`Something went wrong during sighn in process.`} onReload={this.handleSignIn} />
 						<ContextErrorMessage error={appError} contextErrorMsg={`Something went wrong inside the app. Please reload the page.`} />
-						<SpoStudent/>
+						{/* <List/> */}
+						{/* <DateAndTime/> */}
 	    </Container>
       </Router>
     </ThemeProvider>
