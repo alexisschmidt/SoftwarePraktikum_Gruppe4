@@ -9,7 +9,7 @@ class SpoElement (nbo.NamedBo, ABC):
 
     def __init__(self):
         super().__init__()
-        self._edvnr = 0      # EDV Nummer des Spo Elements
+        self._edvnr = 0     # EDV Nummer des Spo Elements
         self.ects = 0       # ECTS des Spo Elements
         self.workload = ""  # Arbeitsaufwand in Stunden des Spo Elements
 

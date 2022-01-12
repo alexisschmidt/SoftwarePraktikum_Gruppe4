@@ -49,8 +49,6 @@ class Person (bo.BusinessObject):
     def json(self):
         return json.dumps({
             'id': self.get_id(),
-            'name': self.get_name(),
-            'title': self.get_title(),
             'firstname': self.get_firstname(),
             'lastname': self.get_lastname(),
             'email': self.get_email()
