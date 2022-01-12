@@ -55,14 +55,17 @@ namedbo = api.inherit('Namedbo', bo, {
 })
 
 spo = api.inherit('Spo', namedbo, {
-    'start_semester': fields.Date(attribute='_start_semester', description='Anfangssemester der SPO-gültigkeit'),
-    'end_semester': fields.Date(attribute='_end_semester', description='Endsemester der SPO-gültigkeit'),
-    'studycourse_id': fields.String(attribute='_studycourse_id', description='Studycourse der SPO')
+    'start_semester': fields.Integer(attribute='_start_semester', description='Anfangssemester der SPO-gültigkeit'),
+    'end_semester': fields.Integer(attribute='_end_semester', description='Endsemester der SPO-gültigkeit'),
+    'modules': fields.List(attribute='_modules',
+                           cls_or_instance=fields.Integer, description='Liste der Module der SPO'),
+    'studycourse': fields.Integer(attribute='_studycourse_id', description='Studycourse der SPO')
+
 })
 
 spoelement = api.inherit('Spoelement', namedbo, {
-    'edvnr': fields.String(attribute='_edvnr', description='EDV nr des Spoelements'),
-    'ects': fields.String(attribute='_ects', description=''),
+    'edvnr': fields.Integer(attribute='_edvnr', description='EDV nr des Spoelements'),
+    'ects': fields.Integer(attribute='_ects', description='Die Anzahl der ECTS des Moduls'),
     'workload': fields.String(attribute='_workload',
                               description='Arbeitszeit für das Spoelement und ihre Zusammensetzung')
 })
@@ -72,7 +75,7 @@ module = api.inherit('Module', spoelement, {
     'requirement': fields.String(attribute='_requirement', description='Voraussetzungen für das Modul'),
     'outcome': fields.String(attribute='_outcome', description='Outcome des Moduls'),
     'examtype': fields.String(attribute='_examtype', description='Prüfungstyp des Moduls'),
-    'instructor': fields.String(attribute='_instructor', description='Modulverantwortlicher'),
+    'instructor': fields.Integer(attribute='_instructor', description='Modulverantwortlicher'),
     'moduleparts': fields.List(attribute='__moduleparts', cls_or_instance=fields.Integer,
                                description='Modulteile des Moduls')
 })
@@ -81,7 +84,7 @@ modulepart = api.inherit('Modulepart', spoelement, {
     'sws': fields.String(attribute='_sws', description='Anzahl der SWS des Modulteils'),
     'language': fields.String(attribute='_language', descpription='Sprache des Modulteils'),
     'description': fields.String(attribute='_description', description='Beschreibung des Modulteils'),
-    'connection': fields.Integer(attribute='_connection', description='Verbindung zu anderen Modulteilen'),
+    'connection': fields.String(attribute='_connection', description='Verbindung zu anderen Modulteilen'),
     'literature': fields.String(attribute='_literature', description='Literatur für das Modulteil'),
     'sources': fields.String(attribute='_sources', description='Quellen'),
     'semester': fields.Integer(attribute='_semester', description='Semester des Modulteils'),
@@ -122,7 +125,7 @@ class UserListOperations(Resource):
         proposal = User.from_dict(api.payload)
 
         if proposal is not None:
-            c = adm.create_user(proposal.get_firstname(), proposal.get_lastname(), proposal.get_email())
+            c = adm.create_user(proposal.get_firstname(), proposal.get_lastname(), proposal.get_email(), proposal.get_google_user_id())
             return c, 200
         else:
             return '', 500
@@ -571,13 +574,13 @@ class PersonListOperations(Resource):
 
     @sposystem.marshal_list_with(person, code=200)
     @sposystem.expect(person)
-    @secured
+    # @secured
     def post(self):
         adm = Administration()
         proposal = Person.from_dict(api.payload)
 
         if proposal is not None:
-            pe = adm.create_person(proposal.get_name(), proposal.get_title(), proposal.get_firstname(),
+            pe = adm.create_person(proposal.get_firstname(),
                                    proposal.get_lastname(), proposal.get_email())
             return pe, 200
         else:
