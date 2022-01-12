@@ -1,5 +1,5 @@
 from server.bo.StudyCourse import StudyCourse
-from backend.server.db.Mapper import Mapper
+from server.db.Mapper import Mapper
 
 
 class StudyCourseMapper(Mapper):
