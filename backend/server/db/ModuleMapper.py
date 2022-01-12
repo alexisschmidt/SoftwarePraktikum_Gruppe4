@@ -123,11 +123,12 @@ class ModuleMapper(Mapper):
 
                 module.set_id(1)
 
+        inst = module.get_instructor().get_id()
         command = "INSERT INTO module (id, name, title, requirement, examtype, instructor, outcome, type, " \
-                  "moduleparts, ects, edvnr, workload) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) "
+                  "ects, edvnr, workload) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) "
         data = (module.get_id(), module.get_name(), module.get_title(), module.get_title(), module.get_requirement(),
-                module.get_examtype(), module.get_instructor(), module.get_outcome(), module.get_type(),
-                module.get_moduleparts(), module.get_ects(), module.get_edvnr(), module.get_workload())
+                module.get_examtype(), inst, module.get_outcome(), module.get_type(),
+                module.get_ects(), module.get_edvnr(), module.get_workload())
         cursor.execute(command, data)
 
         self._cnx.commit()

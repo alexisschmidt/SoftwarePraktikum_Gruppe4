@@ -1,7 +1,7 @@
 from server.bo.Modulepart import Modulepart
 from backend.server.db.Mapper import Mapper
+from server.bo.Module import Module
 from server.bo.Person import Person
-import json
 
 
 class ModulePartMapper(Mapper):
@@ -114,7 +114,7 @@ class ModulePartMapper(Mapper):
 
         return result
 
-    def insert(self, modulepart):
+    def insert(self, modulepart: Modulepart):
 
         cursor = self._cnx.cursor()
         cursor.execute("SELECT MAX(id) AS maxid FROM modulepart ")
@@ -128,15 +128,13 @@ class ModulePartMapper(Mapper):
 
                 modulepart.set_id(1)
 
-        mopart = json.dumps(modulepart.get_professor(), indent=4)
-        con = json.dumps(modulepart.get_connection())
-
-        command = "INSERT INTO modulepart (id, creationdate, name, title, language, literature, semester, sources, connection, description, sws, professor, ects, edvnr, workload) " \
-                  "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        profid = modulepart.get_professor().get_id()
+        command = "INSERT INTO modulepart (id, creationdate, name, title, language, literature, semester, sources, connection, description, sws, professor, module_id, ects, edvnr, workload) " \
+                  "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
         data = (modulepart.get_id(), modulepart.get_creationdate(), modulepart.get_name(), modulepart.get_title(),
                 modulepart.get_language(), modulepart.get_literature(), modulepart.get_semester(),
-                modulepart.get_sources(), con, modulepart.get_description(),
-                modulepart.get_sws(), mopart,
+                modulepart.get_sources(), modulepart.get_connection(), modulepart.get_description(),
+                modulepart.get_sws(),
                 modulepart.get_ects(), modulepart.get_edvnr(), modulepart.get_workload())
         cursor.execute(command, data)
 

@@ -1,0 +1,9 @@
+export {default as API} from './API';
+export {default as Modulebo} from './Mdoulebo';
+export {default as Modulepartsbo} from './Modulepartsbo';
+export {default as Personbo} from './Personbo';
+export {default as Semesterbo} from './Semesterbo';
+export {default as Spobo} from './Spobo';
+export {default as SpoElementbo} from './SpoElementbo';
+export {default as StudyCoursebo} from './StudyCoursebo';
+export {default as Userbo} from './Userbo';

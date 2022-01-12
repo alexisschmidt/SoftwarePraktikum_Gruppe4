@@ -112,11 +112,9 @@ class Administration (object):
 
     """Person-spezifische Methoden"""
 
-    def create_person(self, name, title, firstname, lastname, email):
+    def create_person(self, firstname, lastname, email):
         """Eine Person anlegen"""
         person = Person()
-        person.set_name(name)
-        person.set_title(title)
         person.set_firstname(firstname)
         person.set_lastname(lastname)
         person.set_email(email)
