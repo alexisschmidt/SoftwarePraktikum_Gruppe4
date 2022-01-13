@@ -12,6 +12,7 @@ class Modulepart (spe.SpoElement):
     __sources: str
     __semester: int
     _professor: Person
+    _module_id: int
 
     def __init__(self):
         super().__init__()
@@ -22,6 +23,7 @@ class Modulepart (spe.SpoElement):
         self.__literature = ""
         self.__sources = ""
         self.__semester = 0
+        self._module_id = 0
         self._professor = Person()
 
     def get_sws(self):
@@ -86,6 +88,12 @@ class Modulepart (spe.SpoElement):
     def set_professor(self, professor: Person):
         """Setzen des Modulverantwortlichen"""
         self._professor = professor
+        
+    def get_module_id(self):
+        return self._module_id
+    
+    def set_module_id(self, module_id):
+        self._module_id = module_id
 
     def __str__(self):
         return f"Modulepart: \
@@ -102,6 +110,7 @@ class Modulepart (spe.SpoElement):
                literature: {self.__literature}, \
                sources: {self.__sources}, \
                semester: {self.__semester}, \
+               module_id: {self._module_id}, \
                professor: {self._professor}"
 
     def json(self):
@@ -118,6 +127,7 @@ class Modulepart (spe.SpoElement):
             'literature': self.get_literature(),
             'sources': self.get_sources(),
             'semester': self.get_semester(),
+            'module_id': self.get_semester(),
             'professor': prof
             })
 
@@ -137,6 +147,7 @@ class Modulepart (spe.SpoElement):
         obj.set_sources(dictionary["sources"])
         obj.set_semester(dictionary["semester"])
         obj.set_professor(dictionary["professor"])
+        obj.set_module_id(dictionary["module_id"])
         return obj
 
 

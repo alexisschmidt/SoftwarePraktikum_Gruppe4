@@ -57,10 +57,8 @@ namedbo = api.inherit('Namedbo', bo, {
 spo = api.inherit('Spo', namedbo, {
     'start_semester': fields.Integer(attribute='_start_semester', description='Anfangssemester der SPO-gültigkeit'),
     'end_semester': fields.Integer(attribute='_end_semester', description='Endsemester der SPO-gültigkeit'),
-    'modules': fields.List(attribute='_modules',
-                           cls_or_instance=fields.Integer, description='Liste der Module der SPO'),
     'studycourse': fields.Integer(attribute='_studycourse_id', description='Studycourse der SPO')
-
+    #Modules
 })
 
 spoelement = api.inherit('Spoelement', namedbo, {
@@ -76,8 +74,9 @@ module = api.inherit('Module', spoelement, {
     'outcome': fields.String(attribute='_outcome', description='Outcome des Moduls'),
     'examtype': fields.String(attribute='_examtype', description='Prüfungstyp des Moduls'),
     'instructor': fields.Integer(attribute='_instructor', description='Modulverantwortlicher'),
-    'moduleparts': fields.List(attribute='__moduleparts', cls_or_instance=fields.Integer,
-                               description='Modulteile des Moduls')
+    #'spo_id': 
+    #'moduleparts': fields.List(attribute='__moduleparts', cls_or_instance=fields.Integer,
+    #                           description='Modulteile des Moduls')
 })
 
 modulepart = api.inherit('Modulepart', spoelement, {
@@ -88,7 +87,10 @@ modulepart = api.inherit('Modulepart', spoelement, {
     'literature': fields.String(attribute='_literature', description='Literatur für das Modulteil'),
     'sources': fields.String(attribute='_sources', description='Quellen'),
     'semester': fields.Integer(attribute='_semester', description='Semester des Modulteils'),
-    'professor': fields.Integer(attribute='_professor', description='Prof des Modulteils')
+    'professor': fields.Integer(attribute='_professor', description='Prof des Modulteils'),
+    'module_id': fields.Integer(attribute='_module_id', description='Zugehöriges Modul')
+
+    
 })
 
 studycourse = api.inherit('StudyCourse', namedbo)
@@ -211,17 +213,13 @@ class SpoListOperations(Resource):
 
     @sposystem.marshal_with(spo, code=200)
     @sposystem.expect(spo, validate=True)
-    @secured
+    #@secured
     def post(self):
         adm = Administration()
         proposal = Spo.from_dict(api.payload)
 
         if proposal is not None:
-            newspo = adm.create_spo(proposal.get_name(),
-                                    proposal.get_title(),
-                                    proposal.get_start_semester(),
-                                    proposal.get_end_semester(),
-                                    proposal.get_studycourse())
+            newspo = adm.create_spo(proposal)
             return newspo, 200
         else:
             return '', 500
@@ -314,25 +312,17 @@ class ModuleListOperations(Resource):
         modules = adm.get_all_modules()
         return modules
 
-    @sposystem.marshal_with(module)
-    @secured
+    @sposystem.marshal_with(module, code=200)
+    @sposystem.expect(module)
+    #@secured
     def post(self):
-
+ 
         adm = Administration()
         proposal = Module.from_dict(api.payload)
+        print("post-method")
+        print(proposal)
         if proposal is not None:
-            mo = adm.create_module(proposal.get_name(),
-                                   proposal.get_title(),
-                                   proposal.get_requirement(),
-                                   proposal.get_examtype(),
-                                   proposal.get_instructor(),
-                                   proposal.get_outcome(),
-                                   proposal.get_type(),
-                                   proposal.get_modulepart_id(),
-                                   proposal.get_ects(),
-                                   proposal.get_edvnr(),
-                                   proposal.get_workload()
-                                   )
+            mo = adm.create_module(proposal)
             return mo, 200
         else:
             return '', 500
@@ -416,20 +406,7 @@ class ModulePartListOperations(Resource):
         adm = Administration()
         proposal = Modulepart.from_dict(api.payload)
         if proposal is not None:
-            mopart = adm.create_modulepart(proposal.get_name(),
-                                           proposal.get_title(),
-                                           proposal.get_language(),
-                                           proposal.get_literature(),
-                                           proposal.get_semester(),
-                                           proposal.get_sources(),
-                                           proposal.get_connection(),
-                                           proposal.get_description(),
-                                           proposal.get_sws(),
-                                           proposal.get_professor(),
-                                           proposal.get_ects(),
-                                           proposal.get_edvnr(),
-                                           proposal.get_workload()
-                                           )
+            mopart = adm.create_modulepart(proposal)
             return mopart, 200
         else:
             return '', 500
