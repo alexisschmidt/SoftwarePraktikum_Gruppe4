@@ -21,7 +21,7 @@ class SignIn extends Component {
 					<Grid item>
 						<Button variant='contained' color='primary' onClick={this.handleSignInButtonClicked}>
 							Sign in with Google
-      			</Button>
+      					</Button>
 					</Grid>
 				</Grid>
 			</div>
