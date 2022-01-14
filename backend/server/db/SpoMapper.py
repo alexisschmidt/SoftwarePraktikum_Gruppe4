@@ -1,5 +1,5 @@
 from server.bo.Spo import Spo
-from backend.server.db.Mapper import Mapper
+from server.db.Mapper import Mapper
 
 
 class SpoMapper(Mapper):
@@ -153,7 +153,7 @@ class SpoMapper(Mapper):
 
         return result
 
-    def insert(self, spo):
+    def insert(self, spo: Spo):
 
         cursor = self._cnx.cursor()
         cursor.execute("SELECT MAX(id) AS maxid FROM spo ")

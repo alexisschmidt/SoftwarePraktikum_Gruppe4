@@ -1,5 +1,5 @@
 from server.bo.User import User
-from backend.server.db.Mapper import Mapper
+from server.db.Mapper import Mapper
 
 
 class UserMapper(Mapper):

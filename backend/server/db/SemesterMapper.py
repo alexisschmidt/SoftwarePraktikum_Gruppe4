@@ -1,5 +1,5 @@
 from server.bo.Semester import Semester
-from backend.server.db.Mapper import Mapper
+from .Mapper import Mapper
 
 
 class SemesterMapper(Mapper):

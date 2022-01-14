@@ -21,25 +21,9 @@ class Administration (object):
    
     """Modul-spezifische Methoden"""
 
-    def create_module(self, name, title,
-                      requirement, examtype, instructor, outcome, type, modulepart_id,
-                      ects, edvnr, workload):
-        module = Module()
-        module.set_name(name)
-        module.set_title(title)
-        module.set_requirement(requirement)
-        module.set_examtype(examtype)
-        module.set_instructor(instructor)
-        module.set_outcome(outcome)
-        module.set_type(type)
-        module.set_moduleparts(modulepart_id)
-        module.set_ects(ects)
-        module.set_edvnr(edvnr)
-        module.set_workload(workload)
-        module.set_id(1)
-
+    def create_module(self, proposal):
         with ModuleMapper() as mapper:
-            return mapper.insert(module)
+            return mapper.insert(proposal)
 
     def get_module_by_name(self, name):
         """Alle Module mit Namen name auslesen."""
@@ -63,27 +47,9 @@ class Administration (object):
 
     """Modulteil-spezifische Methoden"""
 
-    def create_modulepart(self, name, title,
-                          language, literature, semester, sources, connection, description, sws, prof,
-                          ects, edvnr, workload):
-        modulepart = Modulepart()
-        modulepart.set_name(name)
-        modulepart.set_title(title)
-        modulepart.set_language(language)
-        modulepart.set_literature(literature)
-        modulepart.set_semester(semester)
-        modulepart.set_sources(sources)
-        modulepart.set_connection(connection)
-        modulepart.set_description(description)
-        modulepart.set_sws(sws)
-        modulepart.set_professor(prof)
-        modulepart.set_ects(ects)
-        modulepart.set_edvnr(edvnr)
-        modulepart.set_workload(workload)
-        modulepart.set_id(1)
-
+    def create_modulepart(self, proposal):
         with ModulePartMapper() as mapper:
-            return mapper.insert(modulepart)
+            return mapper.insert(proposal)
 
     def get_modulepart_by_name(self, name):
         """Alle Modulteile mit Namen name auslesen."""
@@ -187,18 +153,10 @@ class Administration (object):
 
     """Spo-spezifische Methoden"""
 
-    def create_spo(self, name, title, start_semester, end_semester, studycourse):
+    def create_spo(self, proposal):
         """Eine Spo anlegen"""
-        spo = Spo()
-        spo.set_name(name)
-        spo.set_title(title)
-        spo.set_start_semester(start_semester)
-        spo.set_end_semester(end_semester)
-        spo.set_studycourse(studycourse)
-        spo.set_id(1)
-
         with SpoMapper() as mapper:
-            return mapper.insert(spo)
+            return mapper.insert(proposal)
 
     def get_spo_by_name(self, name):
         """Alle Spos mit Namen name auslesen."""

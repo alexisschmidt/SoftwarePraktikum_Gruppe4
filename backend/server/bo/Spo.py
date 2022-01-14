@@ -16,7 +16,7 @@ class Spo (nbo.NamedBo):
         super().__init__()
         self._start_semester = Semester()   # Anfangssemester der SPO Gültigkeit
         self._end_semester = Semester()     # Endsemester der SPO Gültigkeit
-        self._modules = []                  # Module, die die SPO bilden
+        #self._modules = []                  # Module, die die SPO bilden
         self._studycourse = StudyCourse()   # Studiengang der SPO
 
     def get_start_semester(self):
@@ -95,7 +95,7 @@ class Spo (nbo.NamedBo):
         obj.set_title(dictionary["title"])                  # Teil von NamedBo!
         obj.set_start_semester(dictionary["start_semester"])
         obj.set_end_semester(dictionary["end_semester"])
-        obj.set_studycourse(dictionary["studycourse_id"])
+        obj.set_studycourse(dictionary["studycourse"])
         return obj
 
     def __eq__(self, other):
