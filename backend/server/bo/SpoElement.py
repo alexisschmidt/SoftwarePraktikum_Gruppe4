@@ -1,8 +1,8 @@
 from abc import ABC
-from server.bo import NamedBo as nbo
+from server.bo import NamedBo as Nbo
 
 
-class SpoElement (nbo.NamedBo, ABC):
+class SpoElement(Nbo.NamedBo, ABC):
     _edvnr: int
     _ects: int
     workload: str
@@ -10,7 +10,7 @@ class SpoElement (nbo.NamedBo, ABC):
     def __init__(self):
         super().__init__()
         self._edvnr = 0     # EDV Nummer des Spo Elements
-        self._ects = 0       # ECTS des Spo Elements
+        self._ects = 0      # ECTS des Spo Elements
         self.workload = ""  # Arbeitsaufwand in Stunden des Spo Elements
 
     def get_edvnr(self):
@@ -38,9 +38,10 @@ class SpoElement (nbo.NamedBo, ABC):
         self.workload = workload
 
     def __eq__(self, other):
-        return super().__eq__() and\
-               self.get_edvnr() == other.get_name() and\
-               self.get_ects() == other.get_title() and\
+        return super().__eq__() and \
+               self.get_edvnr() == other.get_name() and \
+               self.get_ects() == other.get_title() and \
                self.get_workload() == other.get_workload()
 
-    __hash__ = nbo.NamedBo.__hash__
+    def __hash__(self):
+        super().__hash__()
