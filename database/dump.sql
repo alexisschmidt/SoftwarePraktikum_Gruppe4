@@ -35,7 +35,7 @@ CREATE TABLE `module` (
   `ects` int NOT NULL,
   `edvnr` varchar(45) NOT NULL,
   `workload` varchar(45) NOT NULL,
-  `module_hash` varchar(45) DEFAULT NULL,
+  `module_hash` varchar(45) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `instructor_idx` (`instructor`),
   CONSTRAINT `instructor` FOREIGN KEY (`instructor`) REFERENCES `person` (`id`)
@@ -49,6 +49,35 @@ CREATE TABLE `module` (
 LOCK TABLES `module` WRITE;
 /*!40000 ALTER TABLE `module` DISABLE KEYS */;
 /*!40000 ALTER TABLE `module` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `modulelist`
+--
+
+DROP TABLE IF EXISTS `modulelist`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `modulelist` (
+  `id` int NOT NULL,
+  `creationdate` varchar(45) NOT NULL,
+  `module` int NOT NULL,
+  `modulepart` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `module_idx` (`module`),
+  KEY `modulepart_idx` (`modulepart`),
+  CONSTRAINT `module` FOREIGN KEY (`module`) REFERENCES `module` (`id`),
+  CONSTRAINT `modulepart` FOREIGN KEY (`modulepart`) REFERENCES `modulepart` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `modulelist`
+--
+
+LOCK TABLES `modulelist` WRITE;
+/*!40000 ALTER TABLE `modulelist` DISABLE KEYS */;
+/*!40000 ALTER TABLE `modulelist` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -117,6 +146,7 @@ CREATE TABLE `person` (
 
 LOCK TABLES `person` WRITE;
 /*!40000 ALTER TABLE `person` DISABLE KEYS */;
+INSERT INTO `person` VALUES (1,'2022-01-09 00:00:00','string','string','string',NULL),(2,'2022-01-11 00:00:00','strgfdhing','fdgdfg','fdhfdhdfs',NULL);
 /*!40000 ALTER TABLE `person` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -163,6 +193,7 @@ CREATE TABLE `spo` (
   `spo_hash` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `studycourse_idx1` (`studycourse`),
+  KEY `start_semester_idx` (`start_semester`),
   CONSTRAINT `studycourse` FOREIGN KEY (`studycourse`) REFERENCES `studycourse` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -242,4 +273,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-01-09 17:39:33
+-- Dump completed on 2022-01-14 12:40:41
