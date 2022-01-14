@@ -1,4 +1,4 @@
-import * as React from 'react';
+/* import * as React from 'react';
 import Box from '@mui/material/Box';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -33,4 +33,19 @@ export default function VirtualizedList() {
       </FixedSizeList>
     </Box>
   );
-}
+} */
+
+
+/* import { List } from '@material-ui/core';
+import React from 'react';   
+import ReactDOM from 'react-dom';   
+  
+const myList = ['Peter', 'Sachin', 'Kevin', 'Dhoni', 'Alisa'];   
+const listItems = myList.map((myList)=>{   
+    return <li>{myList}</li>;   
+});   
+ReactDOM.render(   
+    <ul> {listItems} </ul>,   
+    document.getElementById('app')   
+);   
+export default List;   */
