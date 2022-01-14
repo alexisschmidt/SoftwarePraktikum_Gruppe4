@@ -41,3 +41,4 @@ class ModuleList(bo.BusinessObject):
         obj.set_module(dictionary["module"])
         obj.set_modulepart(dictionary["modulepart"])
         return obj
+
