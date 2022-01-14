@@ -2,7 +2,7 @@ from server.bo.ModuleList import ModuleList
 from server.db.Mapper import Mapper
 
 
-class ModuleListMapper (Mapper):
+class ModuleListMapper(Mapper):
 
     def __init__(self):
         super().__init__()
@@ -21,7 +21,6 @@ class ModuleListMapper (Mapper):
             modulelist.set_modulepart(modulepart)
             modulelist.set_module(module)
             result.append(modulelist)
-
 
         self._cnx.commit()
         cursor.close()
@@ -110,14 +109,14 @@ class ModuleListMapper (Mapper):
                 modulelist.set_id(1)
 
         command = "INSERT INTO modulelist (id, creationdate, modulepart, module) VALUES (%s,%s,%s,%s) "
-        data = (modulelist.get_id(), modulelist.get_creationdate(), modulelist.get_modulepart(), modulelist.get_module())
+        data = (
+        modulelist.get_id(), modulelist.get_creationdate(), modulelist.get_modulepart(), modulelist.get_module())
         cursor.execute(command, data)
 
         self._cnx.commit()
         cursor.close()
 
         return modulelist
-
 
     def update(self, modulelist):
         cursor = self._cnx.cursor()
