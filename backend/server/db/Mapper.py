@@ -29,7 +29,7 @@ class Mapper (AbstractContextManager, ABC):
             also auf einem Local Development Server. Hierbei stellen wir eine einfache Verbindung zu einer lokal
             installierten mySQL-Datenbank her."""
 
-            self._cnx = connector.connect(user='root', password='Einhorn100?',
+            self._cnx = connector.connect(user='root', password='x10609230020Y',
                                           host='127.0.0.1',
                                           database='spoverwaltung')
 

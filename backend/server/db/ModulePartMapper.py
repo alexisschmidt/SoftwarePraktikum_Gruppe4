@@ -1,5 +1,5 @@
 from server.bo.Modulepart import Modulepart
-from backend.server.db.Mapper import Mapper
+from .Mapper import Mapper
 from server.bo.Module import Module
 from server.bo.Person import Person
 
@@ -128,13 +128,13 @@ class ModulePartMapper(Mapper):
 
                 modulepart.set_id(1)
 
-        profid = modulepart.get_professor().get_id()
+        #profid = modulepart.get_professor().get_id()
         command = "INSERT INTO modulepart (id, creationdate, name, title, language, literature, semester, sources, connection, description, sws, professor, module_id, ects, edvnr, workload) " \
-                  "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+                  "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
         data = (modulepart.get_id(), modulepart.get_creationdate(), modulepart.get_name(), modulepart.get_title(),
                 modulepart.get_language(), modulepart.get_literature(), modulepart.get_semester(),
                 modulepart.get_sources(), modulepart.get_connection(), modulepart.get_description(),
-                modulepart.get_sws(),
+                modulepart.get_sws(), modulepart.get_professor(), modulepart.get_module_id(),
                 modulepart.get_ects(), modulepart.get_edvnr(), modulepart.get_workload())
         cursor.execute(command, data)
 
