@@ -25,6 +25,8 @@ class Semester(nbo.NamedBo):
         obj.set_title(dictionary["title"])
         return obj
 
-    __eq__ = nbo.NamedBo.__eq__
+    def __eq__(self, other):
+        super().__eq__(other)
 
-    __hash__ = nbo.NamedBo.__hash__
+    def __hash__(self):
+        super().__hash__()

@@ -59,7 +59,6 @@ spo = api.inherit('Spo', namedbo, {
     'start_semester': fields.Integer(attribute='_start_semester', description='Anfangssemester der SPO-gültigkeit'),
     'end_semester': fields.Integer(attribute='_end_semester', description='Endsemester der SPO-gültigkeit'),
     'studycourse': fields.Integer(attribute='_studycourse_id', description='Studycourse der SPO')
-    #Modules
 })
 
 spoelement = api.inherit('Spoelement', namedbo, {
@@ -75,9 +74,6 @@ module = api.inherit('Module', spoelement, {
     'outcome': fields.String(attribute='_outcome', description='Outcome des Moduls'),
     'examtype': fields.String(attribute='_examtype', description='Prüfungstyp des Moduls'),
     'instructor': fields.Integer(attribute='_instructor', description='Modulverantwortlicher'),
-    #'spo_id': 
-    #'moduleparts': fields.List(attribute='__moduleparts', cls_or_instance=fields.Integer,
-    #                           description='Modulteile des Moduls')
 })
 
 modulepart = api.inherit('Modulepart', spoelement, {
@@ -89,12 +85,11 @@ modulepart = api.inherit('Modulepart', spoelement, {
     'sources': fields.String(attribute='_sources', description='Quellen'),
     'semester': fields.Integer(attribute='_semester', description='Semester des Modulteils'),
     'professor': fields.Integer(attribute='_professor', description='Prof des Modulteils'),
-    'module_id': fields.Integer(attribute='_module_id', description='Zugehöriges Modul')
-
-    
 })
 
 studycourse = api.inherit('StudyCourse', namedbo)
+
+semester = api.inherit('Semester', namedbo)
 
 person = api.inherit('Person', namedbo, {
     'firstname': fields.String(attribute='__firstname', description='Vorname einer Person'),

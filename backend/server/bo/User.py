@@ -1,4 +1,4 @@
-from server.bo import Businessobject as bo
+from server.bo import Businessobject as Bo
 import json
 
 """
@@ -10,7 +10,7 @@ unseres Systems verwaltete User ID (z.B. die Google ID).
 """
 
 
-class User(bo.BusinessObject):
+class User(Bo.BusinessObject):
     __firstname: str
     __lastname: str
     __email: str
@@ -102,7 +102,8 @@ class User(bo.BusinessObject):
                self.get_lastname() == other.get_lastname() and\
                self.get_email() == other.get_email()
 
-    __hash__ = bo.BusinessObject.__hash__
+    def __hash__(self):
+        super().__hash__()
 
 
 """
