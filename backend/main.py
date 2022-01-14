@@ -12,6 +12,7 @@ from server.bo.Module import Module
 from server.bo.Modulepart import Modulepart
 from server.bo.StudyCourse import StudyCourse
 from server.bo.Person import Person
+from server.bo.Semester import Semester
 
 """
 from server.bo.Module import Module
@@ -609,6 +610,76 @@ class PersonOperations(Resource):
             return'', 200
         else:
             return'', 500
+
+
+@sposystem.route('/semesters')
+@sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
+class SemesterListOperations(Resource):
+    @sposystem.marshal_list_with(semester, code=200)
+    @secured
+    def get(self):
+
+        adm = Administration()
+        semesters = adm.get_all_semester()
+        return semesters
+
+    @sposystem.marshal_with(semester, code=200)
+    @sposystem.expect(semester)
+    # @secured
+    def post(self):
+
+        adm = Administration()
+        proposal = Semester.from_dict(api.payload)
+        if proposal is not None:
+            se = adm.create_semester(proposal)
+            return se, 200
+        else:
+            return '', 500
+
+
+@sposystem.route('/semesters/<int:id>')
+@sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
+@sposystem.param("id", "Die ID des Semesters")
+class SemesterOperations(Resource):
+    @sposystem.marshal_with(semester)
+    @secured
+    def get(self, id):
+        """Auslesen eines bestimmten Semester-Objekts"""
+        adm = Administration()
+        se = adm.get_semester_by_id(id)
+        return se
+
+    @sposystem.marshal_with(semester)
+    @sposystem.expect(semester, validate=True)
+    @secured
+    def put(self, id):
+        """Update eines bestimmten Semester-Objekts.
+        **ACHTUNG: ** relevante id ist die id, die mittels URI bereitgestellt und somit als Methodenparameter
+        verwendet wird. Dieser Parameter überschreibt das ID-Attribut des im Payload der Anfrage übermittelten
+        Semester-Objekts."""
+
+        adm = Administration()
+        se = Semester.from_dict(api.payload)
+
+        if se is not None:
+            """Hierdurch wird die id des zu überschreibenden (vgl. Update)Semester-Objekts gesetzt.
+            Siehe Hinweise oben."""
+
+            se.set_id(id)
+            adm.save_semester(se)
+            return '', 200
+        else:
+            return '', 500
+
+    @secured
+    def delete(self, id):
+        """Löschen eines bestimmten Semester-Objekts.
+        Das zu löschende Objekt wird durch die ```id``` in dem URI bestimmt."""
+
+        adm = Administration()
+        se = adm.get_semester_by_id(id)
+        adm.delete_semester(se)
+        return '', 200
 
 
 """**ACHTUNG:** Diese Zeile wird nur in der lokalen Entwicklungsumgebung ausgeführt und hat in der Cloud keine Wirkung!
