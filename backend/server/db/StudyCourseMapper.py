@@ -87,8 +87,8 @@ class StudyCourseMapper(Mapper):
 
                 studycourse.set_id(1)
 
-        command = "INSERT INTO studycourse (id, creationdate, name, title) VALUES (%s,%s,%s,%s) "
-        data = (studycourse.get_id(), studycourse.get_creationdate(), studycourse.get_name(), studycourse.get_title())
+        command = "INSERT INTO studycourse (id, creationdate, name, title, studycourse_hash) VALUES (%s,%s,%s,%s,%s) "
+        data = (studycourse.get_id(), studycourse.get_creationdate(), studycourse.get_name(), studycourse.get_title(), hash(studycourse))
         cursor.execute(command, data)
 
         self._cnx.commit()
