@@ -1,11 +1,13 @@
 from server.bo import Businessobject as bo
 import json
 
-"""Realisierung einer exemplarischen Benutzerklasse.
+"""
+Realisierung einer exemplarischen Benutzerklasse.
 
-    Aus Gründen der Vereinfachung besitzt der Student in diesem Demonstrator
-    lediglich einen einfachen Namen, eine E_Mail-Adresse sowie eine außerhalb
-    unseres Systems verwaltete User ID (z.B. die Google ID). """
+Aus Gründen der Vereinfachung besitzt der Student in diesem Demonstrator
+lediglich einen einfachen Namen, eine E_Mail-Adresse sowie eine außerhalb
+unseres Systems verwaltete User ID (z.B. die Google ID).
+"""
 
 
 class User(bo.BusinessObject):

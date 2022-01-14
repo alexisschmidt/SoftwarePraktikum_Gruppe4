@@ -5,7 +5,7 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 
-export default function SpoAuswählenWI() {
+export default function Spowi() {
   return (
     <Box sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
       <nav aria-label="secondary mailbox folders">
@@ -25,5 +25,3 @@ export default function SpoAuswählenWI() {
     </Box>
   );
 }
-
-
