@@ -12,6 +12,7 @@ import ContextErrorMessage from './components/dialogs/ContextErrorMessage';
 import SpoStudent from './components/pages/SpoStudent';
 import About from './components/pages/About';
 import Admin from './components/pages/Admin';
+import AdminStudiengangAuswahl from './components/pages/AdminStudiengangAuswahl';
 
 // import List from './components/pages/List'
 // import DateAndTime from './components/content/DateAndTime';
@@ -111,13 +112,14 @@ Globales CSS-Reset und Browser-Normalisierung. CssBaseline startet eine elegante
         <Container maxWidth='md'>
           <Header user={currentUser} />
 		  {
-							// Is a user signed in?
+							// Is a user (Admin) signed in?
 							currentUser ?
 								<>
 									<Route path="/">
 										<Admin/>
-										
 									</Route>
+
+
 									<Route path="/about">
 										<About />
 									</Route>

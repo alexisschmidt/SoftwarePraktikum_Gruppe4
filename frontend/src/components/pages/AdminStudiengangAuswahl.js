@@ -3,6 +3,8 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
+// import SpOAuswählenOMM from './components/pages/SpOAuswählenOMM';
+// import SpOAuswählenWI from './components/pages/SpOAuswählenWI';
 
 export default function AdminStudiengangAuswahl() {
   return (

@@ -27,7 +27,11 @@ const useStyles = makeStyles(theme => ({
           <br />
           <Typography>
            Programm von Gruppe 4 erstellt <Link href='https://github.com/Theresa17'>Theresa Kottmann</Link> &ensp;,
-           <Link href='https://github.com/sr168'>Sarah Rowan</Link>
+                                          <Link href='https://github.com/sr168'>Sarah Rowan</Link> &ensp;,
+                                          <Link href='https://github.com/sr168'>Sarah Rowan</Link> &ensp;,
+                                          <Link href='https://github.com/sr168'>Sarah Rowan</Link> &ensp;,
+                                          <Link href='https://github.com/sr168'>Sarah Rowan</Link>
+
           </Typography>
           <br />
           <Typography variant='body2'>
