@@ -96,8 +96,8 @@ class UserMapper(Mapper):
 
                 user.set_id(1)
 
-        command = "INSERT INTO user (id, creationdate, firstname, lastname, email, google_user_id, isadmin) VALUES (%s,%s,%s,%s,%s,%s,%s)"
-        data = (user.get_id(), user.get_creationdate(), user.get_firstname(), user.get_lastname(), user.get_email(), user.get_google_user_id(), user.get_isadmin())
+        command = "INSERT INTO user (id, creationdate, firstname, lastname, email, google_user_id, isadmin, user_hash) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
+        data = (user.get_id(), user.get_creationdate(), user.get_firstname(), user.get_lastname(), user.get_email(), user.get_google_user_id(), user.get_isadmin(), hash(user))
         cursor.execute(command, data)
 
         self._cnx.commit()

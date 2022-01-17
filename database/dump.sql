@@ -35,10 +35,10 @@ CREATE TABLE `module` (
   `ects` int NOT NULL,
   `edvnr` varchar(45) NOT NULL,
   `workload` varchar(45) NOT NULL,
-  `module_hash` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`id`),
+  `module_hash` int NOT NULL,
+  PRIMARY KEY (`module_hash`),
   KEY `instructor_idx` (`instructor`),
-  CONSTRAINT `instructor` FOREIGN KEY (`instructor`) REFERENCES `person` (`id`)
+  CONSTRAINT `instructor` FOREIGN KEY (`instructor`) REFERENCES `person` (`person_hash`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -49,6 +49,35 @@ CREATE TABLE `module` (
 LOCK TABLES `module` WRITE;
 /*!40000 ALTER TABLE `module` DISABLE KEYS */;
 /*!40000 ALTER TABLE `module` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `modulelist`
+--
+
+DROP TABLE IF EXISTS `modulelist`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `modulelist` (
+  `id` int NOT NULL,
+  `creationdate` varchar(45) NOT NULL,
+  `module` int NOT NULL,
+  `modulepart` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `module_idx` (`module`),
+  KEY `modulepart_idx` (`modulepart`),
+  CONSTRAINT `module` FOREIGN KEY (`module`) REFERENCES `module` (`module_hash`),
+  CONSTRAINT `modulepart` FOREIGN KEY (`modulepart`) REFERENCES `modulepart` (`modulepart_hash`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `modulelist`
+--
+
+LOCK TABLES `modulelist` WRITE;
+/*!40000 ALTER TABLE `modulelist` DISABLE KEYS */;
+/*!40000 ALTER TABLE `modulelist` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -71,16 +100,13 @@ CREATE TABLE `modulepart` (
   `description` varchar(45) NOT NULL,
   `sws` varchar(45) NOT NULL,
   `professor` int NOT NULL,
-  `module_id` int NOT NULL,
   `ects` varchar(45) NOT NULL,
   `edvnr` varchar(45) NOT NULL,
   `workload` varchar(45) NOT NULL,
-  `modulepart_hash` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`id`),
+  `modulepart_hash` int NOT NULL,
+  PRIMARY KEY (`modulepart_hash`),
   KEY `professor_idx` (`professor`),
-  KEY `module_id_idx` (`module_id`),
-  CONSTRAINT `module_id` FOREIGN KEY (`module_id`) REFERENCES `module` (`id`),
-  CONSTRAINT `professor` FOREIGN KEY (`professor`) REFERENCES `person` (`id`)
+  CONSTRAINT `professor` FOREIGN KEY (`professor`) REFERENCES `person` (`person_hash`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -106,8 +132,8 @@ CREATE TABLE `person` (
   `firstname` varchar(45) NOT NULL,
   `lastname` varchar(45) NOT NULL,
   `email` varchar(45) NOT NULL,
-  `person_hash` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  `person_hash` int NOT NULL,
+  PRIMARY KEY (`person_hash`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -132,7 +158,8 @@ CREATE TABLE `semester` (
   `creationdate` datetime NOT NULL,
   `name` varchar(45) NOT NULL,
   `title` varchar(45) NOT NULL,
-  PRIMARY KEY (`id`)
+  `semester_hash` int NOT NULL,
+  PRIMARY KEY (`semester_hash`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -160,10 +187,14 @@ CREATE TABLE `spo` (
   `start_semester` int NOT NULL,
   `end_semester` int DEFAULT NULL,
   `studycourse` int NOT NULL,
-  `spo_hash` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `studycourse_idx1` (`studycourse`),
-  CONSTRAINT `studycourse` FOREIGN KEY (`studycourse`) REFERENCES `studycourse` (`id`)
+  `spo_hash` int NOT NULL,
+  PRIMARY KEY (`spo_hash`),
+  KEY `studycourse_idx` (`studycourse`),
+  KEY `start_semester_idx` (`start_semester`),
+  KEY `end_semester_idx` (`end_semester`),
+  CONSTRAINT `end_semester` FOREIGN KEY (`end_semester`) REFERENCES `semester` (`semester_hash`),
+  CONSTRAINT `start_semester` FOREIGN KEY (`start_semester`) REFERENCES `semester` (`semester_hash`),
+  CONSTRAINT `studycourse` FOREIGN KEY (`studycourse`) REFERENCES `studycourse` (`studycourse_hash`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -173,7 +204,6 @@ CREATE TABLE `spo` (
 
 LOCK TABLES `spo` WRITE;
 /*!40000 ALTER TABLE `spo` DISABLE KEYS */;
-INSERT INTO `spo` VALUES (1,'2030-12-20 21:00:00','SPO1','labl',2,3,1,NULL),(3,'2050-10-20 00:00:00','SPO2','HALLO',3,4,1,NULL);
 /*!40000 ALTER TABLE `spo` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -189,7 +219,8 @@ CREATE TABLE `studycourse` (
   `creationdate` datetime NOT NULL,
   `name` varchar(45) NOT NULL,
   `title` varchar(45) NOT NULL,
-  PRIMARY KEY (`id`)
+  `studycourse_hash` int NOT NULL,
+  PRIMARY KEY (`studycourse_hash`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -199,7 +230,6 @@ CREATE TABLE `studycourse` (
 
 LOCK TABLES `studycourse` WRITE;
 /*!40000 ALTER TABLE `studycourse` DISABLE KEYS */;
-INSERT INTO `studycourse` VALUES (1,'2022-01-04 00:00:00','WI','Wirtschaftsinformatik'),(2,'2022-01-04 00:00:00','OMM','Online Medien mAnagaement');
 /*!40000 ALTER TABLE `studycourse` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -218,8 +248,8 @@ CREATE TABLE `user` (
   `email` varchar(45) NOT NULL,
   `google_user_id` varchar(60) NOT NULL,
   `isadmin` tinyint(1) NOT NULL,
-  `user_hash` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  `user_hash` int NOT NULL,
+  PRIMARY KEY (`user_hash`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -229,7 +259,6 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'0001-01-01 00:00:00','Sebastian','Hennich','sh@hdm-de','',0,NULL),(2,'2022-01-04 00:00:00','deniz','gazitepe','dz@hdm.de','',0,NULL);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -242,4 +271,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-01-09 17:39:33
+-- Dump completed on 2022-01-14 16:27:02

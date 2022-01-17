@@ -1,9 +1,8 @@
-from server.bo import SpoElement as spe
-from server.bo.Person import Person
+from server.bo import SpoElement as Spe
 import json
 
 
-class Modulepart (spe.SpoElement):
+class Modulepart(Spe.SpoElement):
     __sws: str
     __language: str
     __description: str
@@ -11,8 +10,7 @@ class Modulepart (spe.SpoElement):
     __literature: str
     __sources: str
     __semester: int
-    _professor: Person
-    _module_id: int
+    __professor: int
 
     def __init__(self):
         super().__init__()
@@ -23,8 +21,7 @@ class Modulepart (spe.SpoElement):
         self.__literature = ""
         self.__sources = ""
         self.__semester = 0
-        self._module_id = 0
-        self._professor = Person()
+        self.__professor = 0
 
     def get_sws(self):
         """Auslesen der Semesterwochenstunden"""
@@ -83,38 +80,32 @@ class Modulepart (spe.SpoElement):
 
     def get_professor(self):
         """Auslesen des Professors"""
-        return self._professor
+        return self.__professor
 
-    def set_professor(self, professor: Person):
+    def set_professor(self, professor):
         """Setzen des Modulverantwortlichen"""
-        self._professor = professor
-        
-    def get_module_id(self):
-        return self._module_id
-    
-    def set_module_id(self, module_id):
-        self._module_id = module_id
+        self.__professor = professor
 
     def __str__(self):
-        return f"Modulepart: \
-               id: {self.get_id()}, \
-               name: {self._name}, \
-               title: {self._title}, \
-               edvnr: {self._edvnr}, \
-               ects: {self.ects}, \
-               workload: {self.workload}, \
-               SWS: {self.__sws}, \
-               language: {self.__language}, \
-               description: {self.__description}, \
-               connection: {self.__connection}, \
-               literature: {self.__literature}, \
-               sources: {self.__sources}, \
-               semester: {self.__semester}, \
-               module_id: {self._module_id}, \
-               professor: {self._professor}"
+        astring = (f"Modulepart:"
+                   f"id: {self.get_id()}, "
+                   f"name: {self._name}, "
+                   f"title: {self._title}, "
+                   f"edvnr: {self._edvnr}, "
+                   f"ects: {self._ects}, "
+                   f"workload: {self.workload}, "
+                   f"SWS: {self.__sws}, "
+                   f"language: {self.__language}, "
+                   f"description: {self.__description}, "
+                   f"connection: {self.__connection}, "
+                   f"literature: {self.__literature}, "
+                   f"sources: {self.__sources}, "
+                   f"semester: {self.__semester}, "
+                   f"professor: {self.__professor}"
+                   )
+        return astring
 
     def json(self):
-        prof = hash(self.get_professor())               # könnte auch ID sein!
         return json.dumps({
             'id': self.get_id(),
             'sws': self.get_sws(),
@@ -127,28 +118,29 @@ class Modulepart (spe.SpoElement):
             'literature': self.get_literature(),
             'sources': self.get_sources(),
             'semester': self.get_semester(),
-            'module_id': self.get_semester(),
-            'professor': prof
-            })
+            'professor': self.get_professor()
+        })
 
     @staticmethod
     def from_dict(dictionary=dict()):
         """Umwandeln eines Python dict() in ein Modulepart()."""
         obj = Modulepart()
-        obj.set_id(dictionary["id"])                    # Teil von BusinessObject!
-        obj.set_sws(dictionary["sws"])                  # Teil von NamedBo!
-        obj.set_language(dictionary["language"])        # Teil von NamedBo!
-        obj.set_edvnr(dictionary["edvnr"])              # Teil von SpoElement!
-        obj.set_ects(dictionary["ects"])                # Teil von SpoElement!
-        obj.set_workload(dictionary["workload"])        # Teil von SpoElement!
+        obj.set_id(dictionary["id"])  # Teil von BusinessObject!
+        obj.set_sws(dictionary["sws"])  # Teil von NamedBo!
+        obj.set_language(dictionary["language"])  # Teil von NamedBo!
+        obj.set_edvnr(dictionary["edvnr"])  # Teil von SpoElement!
+        obj.set_ects(dictionary["ects"])  # Teil von SpoElement!
+        obj.set_workload(dictionary["workload"])  # Teil von SpoElement!
         obj.set_description(dictionary["description"])
         obj.set_connection(dictionary["connection"])
         obj.set_literature(dictionary["literature"])
         obj.set_sources(dictionary["sources"])
         obj.set_semester(dictionary["semester"])
         obj.set_professor(dictionary["professor"])
-        obj.set_module_id(dictionary["module_id"])
         return obj
+
+    def __hash__(self):
+        super().__hash__()
 
 
 """

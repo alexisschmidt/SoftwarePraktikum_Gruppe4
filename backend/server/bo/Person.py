@@ -2,18 +2,18 @@ from server.bo import Businessobject as bo
 import json
 
 
-class Person (bo.BusinessObject):
+class Person(bo.BusinessObject):
     __firstname: str
     __lastname: str
     __email: str
 
     def __init__(self):
         super().__init__()
-        self.__firstname = ""   # Der Vorname der Person
-        self.__lastname = ""    # Der Nachname der Person
-        self.__email = ""       # email der Person
+        self.__firstname = ""  # Der Vorname der Person
+        self.__lastname = ""  # Der Nachname der Person
+        self.__email = ""  # email der Person
 
-# Auslesen / des Vor-/nachnamens und Email.
+    # Auslesen / des Vor-/nachnamens und Email.
 
     def get_firstname(self):
         """Auslesen des Vornamens"""
@@ -40,27 +40,27 @@ class Person (bo.BusinessObject):
         self.__email = email
 
     def __str__(self):
-        return f"Person: \
-               id: {self.get_id()}, \
-               firstname: {self.__firstname}, \
-               lastname: {self.__lastname}, \
-               email: {self.__email}"
+        astring = (f"Person: "
+                   f"id: {self.get_id()}, "
+                   f"firstname: {self.__firstname}, "
+                   f"lastname: {self.__lastname}, "
+                   f"email: {self.__email}"
+                   )
+        return astring
 
     def json(self):
         return json.dumps({
             'id': self.get_id(),
-            'name': self.get_name(),
-            'title': self.get_title(),
             'firstname': self.get_firstname(),
             'lastname': self.get_lastname(),
             'email': self.get_email()
-            })
+        })
 
     @staticmethod
     def from_dict(dictionary=dict()):
         """Umwandeln eines Python dict() in eine Person()."""
         obj = Person()
-        obj.set_id(dictionary["id"])                # Teil von BusinessObject!
+        obj.set_id(dictionary["id"])  # Teil von BusinessObject!
         obj.set_firstname(dictionary["firstname"])
         obj.set_lastname(dictionary["lastname"])
         obj.set_email(dictionary["email"])
@@ -71,4 +71,5 @@ class Person (bo.BusinessObject):
                self.get_lastname() == other.get_lastname() and \
                self.get_email() == other.get_email()
 
-    __hash__ = bo.BusinessObject.__hash__
+    def __hash__(self):
+        super().__hash__()

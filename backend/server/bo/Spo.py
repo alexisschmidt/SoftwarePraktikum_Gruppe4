@@ -1,89 +1,59 @@
-from server.bo import NamedBo as nbo
-"""das Modul "datetime" wird importiert um das datumsformat für Variablen zu verwenden"""
-from server.bo.Semester import Semester
-from server.bo.Module import Module
-from server.bo.StudyCourse import StudyCourse
+from server.bo import NamedBo as Nbo
 import json
 
 
-class Spo (nbo.NamedBo):
-    _start_semester: Semester
-    _end_semester: Semester
-    # _modules: list[Module]
-    _studycourse: StudyCourse
+class Spo (Nbo.NamedBo):
+    _start_semester: int
+    _end_semester: int
+    _studycourse: int
 
     def __init__(self):
         super().__init__()
-        self._start_semester = Semester()   # Anfangssemester der SPO Gültigkeit
-        self._end_semester = Semester()     # Endsemester der SPO Gültigkeit
-        #self._modules = []                  # Module, die die SPO bilden
-        self._studycourse = StudyCourse()   # Studiengang der SPO
+        self._start_semester = 0  # Anfangssemester der SPO Gültigkeit
+        self._end_semester = 0    # Endsemester der SPO Gültigkeit
+        self._studycourse = 0     # Studiengang der SPO
 
     def get_start_semester(self):
         """Auslesen des Anfangsdatums der SPO Gültigkeit """
         return self._start_semester
 
-    def set_start_semester(self, start_semester):
+    def set_start_semester(self, start_semester: int):
         """Setzen des Anfangsdatums der SPO Gültigkeit """
-        if isinstance(start_semester, Semester):
-            self._start_semester = start_semester
+        self._start_semester = start_semester
 
     def get_end_semester(self):
         """Auslesen des Enddatums der SPO Gültigkeit """
         return self._end_semester
 
-    def set_end_semester(self, end_semester):
+    def set_end_semester(self, end_semester: int):
         """Setzen des Enddatums der SPO Gültigkeit """
-        if isinstance(end_semester, Semester):
-            self._end_semester = end_semester
-
-    def get_modules(self):
-        return self._modules
-
-    def set_modules(self, modulelist):
-        if isinstance(modulelist, list):
-            self._modules = modulelist
-
-    def append_modules(self, module):
-        if isinstance(module, Module):
-            self._modules.append(module)
-
-    def remove_modules(self, module):
-        if isinstance(module, Module) and module in self._modules:
-            self._modules.remove(module)
+        self._end_semester = end_semester
 
     def get_studycourse(self):
         """Auslesen des Studienganges"""
         return self._studycourse
 
-    def set_studycourse(self, studycourse):
+    def set_studycourse(self, studycourse: int):
         """Setzen des Studiengangs"""
-        if isinstance(studycourse, StudyCourse):
-            self._studycourse = studycourse
+        self._studycourse = studycourse
 
     def __str__(self):
-        return f"Spo: id: {self.get_id()}, \
-               name: {self._name}, title: {self._title}, \
-               start Semester: {self.get_start_semester()}, \
-               end Semester: {self.get_end_semester()}, \
-               studycourse: {self.get_studycourse()}"
+        astring = (f'Spo: id: {self.get_id()}, '
+                   f'name: {self._name}, title: {self._title}, '
+                   f'start Semester: {self.get_start_semester()}, '
+                   f'end Semester: {self.get_end_semester()}, '
+                   f'studycourse: {self.get_studycourse()}'
+                   )
+        return astring
 
     def json(self):
-        ss = hash(self.get_start_semester())
-        es = hash(self.get_end_semester())
-        sc = hash(self.get_studycourse())
-        mlist = ""
-        for module in self.get_modules():
-            mlist += str(hash(module))+", "
-
         return json.dumps({
             'id': self.get_id(),
             'name': self.get_name(),
             'title': self.get_title(),
-            'start_semester': ss,
-            'end_semester': es,
-            'modules': mlist,
-            'studycourse_id': sc
+            'start_semester': self.get_start_semester(),
+            'end_semester': self.get_end_semester(),
+            'studycourse_id': self.get_studycourse()
             })
 
     @staticmethod
@@ -103,7 +73,8 @@ class Spo (nbo.NamedBo):
                self.get_end_semester() == other.get_endsemester() and \
                self.get_studycourse() == other.get_studycourse()
 
-    __hash__ = nbo.NamedBo.__hash__
+    def __hash__(self):
+        super().__hash__()
 
 
 """
