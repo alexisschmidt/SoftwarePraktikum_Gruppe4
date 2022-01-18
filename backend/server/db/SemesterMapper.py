@@ -13,8 +13,7 @@ class SemesterMapper(Mapper):
         cursor.execute("SELECT * from semester")
         tuples = cursor.fetchall()
 
-        for (
-                id, creationdate, name, title,) \
+        for (id, creationdate, name, title,) \
                 in tuples:
             semester = Semester()
             semester.set_id(id)
@@ -58,8 +57,32 @@ class SemesterMapper(Mapper):
         tuples = cursor.fetchall()
 
         try:
-            (
-                id, creationdate, name, title) = tuples[0]
+            (id, creationdate, name, title) = tuples[0]
+            semester = Semester()
+            semester.set_id(id)
+            semester.set_name(name)
+            semester.set_title(title)
+            result = semester
+
+        except IndexError:
+            result = None
+
+        self._cnx.commit()
+        cursor.close()
+
+        return result
+
+    def find_by_hash(self, hashcode):
+
+        result = None
+
+        cursor = self._cnx.cursor()
+        command = "SELECT * semester WHERE semester_hash={}".format(hashcode)
+        cursor.execute(command)
+        tuples = cursor.fetchall()
+
+        try:
+            (id, creationdate, name, title) = tuples[0]
             semester = Semester()
             semester.set_id(id)
             semester.set_name(name)
@@ -77,7 +100,7 @@ class SemesterMapper(Mapper):
     def insert(self, semester):
 
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT MAX(id) AS maxid FROM semester ")
+        cursor.execute("SELECT MAX(id) AS maxid FROM semester")
         tuples = cursor.fetchall()
 
         for (maxid) in tuples:
