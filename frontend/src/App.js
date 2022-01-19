@@ -1,7 +1,7 @@
 import React from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter, BrowserRouter as Router, Route } from 'react-router-dom';
 //import PrivateRoute from './Privateroute'
-import { Container, ThemeProvider, CssBaseline } from '@material-ui/core'; //um Material-UI-Komponente nutzen zu können
+import { Container, ThemeProvider, CssBaseline, Switch } from '@material-ui/core'; //um Material-UI-Komponente nutzen zu können
 import firebase from 'firebase/app';
 import Header from './components/layout/Header';
 import 'firebase/auth';
@@ -11,16 +11,16 @@ import SignIn from './components/pages/SignIn';
 import LoadingProgress from './components/dialogs/LoadingProgress';
 import ContextErrorMessage from './components/dialogs/ContextErrorMessage';
 import SpoStudent from './components/pages/SpoStudent';
-import About from './components/pages/About';
+// import About from './components/pages/About';
 import Admin from './components/pages/AdminSpoAnsicht';
 // import List from './components/pages/List';
 //import Spoliste from './components/pages/Spoliste';
 // import DateAndTime from './components/content/DateAndTime';
-// import StudyCourses from './components/pages/StudyCourses';
+import StudyCourses from './components/pages/StudyCourses';
 import AdminStudiengangAuswahl from './components/pages/AdminStudiengangAuswahl';
-import SpoAuswählenOMM from './components/pages/SpOAuswählenOMM';
+/* import SpoAuswählenOMM from './components/pages/SpOAuswählenOMM';
 import Spowi from './components/pages/Spowi';
-
+ */
 
 
 
@@ -121,14 +121,19 @@ Globales CSS-Reset und Browser-Normalisierung. CssBaseline startet eine elegante
 							// Is a user signed in?
 							currentUser ?
 								<>
-									<Route path="/" exact component={About} />
-									{/* <Route path="/Studiengangauswahl" exact component={StudyCourses}/> */}
+								<BrowserRouter>
+									<Switch>
+									{/* <Route path="/About" exact component={About} /> */}
+									<Route path="/Studycourses" exact component={StudyCourses}/>
 									<Route path="/AdminStudiengangAuswahl" exact component={AdminStudiengangAuswahl}/>
-									<Route path="/Spoauswahl2" exact comonent={SpoAuswählenOMM}/>
-									<Route path="/Spoauswahl" exact comonent={Spowi}/>
+									{/* <Route path="/Spoauswahl2" exact comonent={SpoAuswählenOMM}/>
+									<Route path="/Spoauswahl" exact comonent={Spowi}/> */}
 									{/*<Route path="/Altespo" exact component ={}/>*/}
 									<Route path="/Spoerstellen" exact component={Admin}/>
-									{/* <Route path="/Spo" exact component={SpoStudent}/> */}
+									{/* <Route path="/Spo" exact component={SpoStudent}/> */} 
+									</Switch>
+								</BrowserRouter>
+
 								</>
 								:
 								// else show the sign in page
@@ -139,6 +144,8 @@ Globales CSS-Reset und Browser-Normalisierung. CssBaseline startet eine elegante
 									</Route>
 
 									<SignIn onSignIn={this.handleSignIn} />
+									
+
 								</>
 						}
 						<LoadingProgress show={authLoading} />

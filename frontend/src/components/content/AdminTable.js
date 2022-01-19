@@ -8,6 +8,8 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button'
 import Input from '@mui/material/Input'
+import { Accordion } from '@material-ui/core';
+
 
 function createData(semester, edvnr, modul, sws, ects, prüfung) {
   return { semester, edvnr, modul, sws, ects, prüfung };
@@ -18,7 +20,9 @@ const rows = [
     createData(<strong>1</strong>, <strong>VS: 33500</strong>, <strong>Einstufungstest Englisch</strong>, <strong>0</strong>, <strong>0</strong>, <strong>VS: LÜ</strong>),
    
   
-    createData(<b>1</b>, <b>PL: 335120</b>, <b>Marketing & Organisation</b>,<b>4</b>,<b>5</b>,<b>PL: KMP</b>),
+    createData(<b>1</b>, <b>PL: 335120</b>, <Accordion><b>Marketing & Organisation</b></Accordion> ,<b>4</b>,<b>5</b>,<b>PL: KMP</b>),
+    
+    
     createData('','335120a','Marketing',2,2,'' ),
     createData('','335120b','Organisation',2,3,''),
     createData('', '', '', '', '',''),
