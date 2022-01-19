@@ -14,9 +14,9 @@ class StudyCourseMapper(Mapper):
         tuples = cursor.fetchall()
 
         for (id, creationdate, name, title) in tuples:
-            studycourse = StudyCourse
+            studycourse = StudyCourse()
             studycourse.set_id(id)
-            studycourse.set_pname(name)
+            studycourse.set_name(name)
             studycourse.set_title(title)
 
             result.append(studycourse)
@@ -35,7 +35,7 @@ class StudyCourseMapper(Mapper):
         tuples = cursor.fetchall()
 
         for (id, creationdate, name, title) in tuples:
-            studycourse = Studycourse()
+            studycourse = StudyCourse()
             studycourse.set_id(id)
             studycourse.set_name(name)
             studycourse.set_title(title)
@@ -58,7 +58,7 @@ class StudyCourseMapper(Mapper):
 
         try:
             (id, creationdate, name, title) = tuples[0]
-            studycourse = Studycourse()
+            studycourse = StudyCourse()
             studycourse.set_id(id)
             studycourse.set_name(name)
             studycourse.set_title(title)

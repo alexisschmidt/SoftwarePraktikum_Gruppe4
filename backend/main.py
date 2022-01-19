@@ -87,7 +87,10 @@ modulepart = api.inherit('Modulepart', spoelement, {
     'professor': fields.Integer(attribute='_professor', description='Prof des Modulteils'),
 })
 
-studycourse = api.inherit('StudyCourse', namedbo)
+studycourse = api.inherit('StudyCourse', namedbo, {
+    'id': fields.Integer(attribute='_studycourseId', description='ID des Studycourses'),
+
+})
 
 semester = api.inherit('Semester', namedbo)
 
@@ -197,7 +200,7 @@ class UserByNameOperations(Resource):
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
 class SpoListOperations(Resource):
     @sposystem.marshal_list_with(spo)
-    @secured
+    #@secured
     def get(self):
         """
         Auslesen aller SPO-Objekte.
@@ -228,7 +231,7 @@ class SpoOperations(Resource):
 
     @sposystem.marshal_with(spo)
     @secured
-    def get_by_id(self, id):
+    def get(self, id):
         """
         Auslesen eines bestimmten SPO-Objekts.
         Das auszulesende Objekt wird durch die ```id``` in dem URI bestimmt.
@@ -283,6 +286,17 @@ class SpoOperations(Resource):
         s = adm.get_spo_by_id(id)
         molist = adm.get_all_modules(s)
         return molist
+    
+@sposystem.route('/spos/studycourse/<int:id>')
+@sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
+@sposystem.param('id', 'Die ID des SPO-Objekts')
+class SpoOperations(Resource):
+    @sposystem.marshal_list_with(spo)
+    #@secured
+    def get(self, id):
+        adm = Administration()
+        spo = adm.get_all_by_studycourse(id)
+        return spo
 
 
 """
@@ -457,7 +471,7 @@ class ModulePartOperations(Resource):
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
 class StudycourseListOperations(Resource):
     @sposystem.marshal_list_with(studycourse)
-    @secured
+    #@secured
     def get(self):
         """
         Auslesen aller SPO-Objekte.

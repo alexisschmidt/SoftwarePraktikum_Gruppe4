@@ -1,11 +1,11 @@
-import Modulebo from './Modulebo';
-import Modulepartbo from './Modulepartbo';
-import Personbo from './Personbo';
-import Semesterbo from './Semesterbo';
-import Spobo from './Spobo';
-import SpoElementbo from './SpoElementbo';
-import StudyCoursebo from './StudyCoursebo';
-import Userbo from './Userbo';
+import Modulebo from './BusinessObjects/Modulebo';
+import Modulepartbo from './BusinessObjects/Modulepartbo';
+import Personbo from './BusinessObjects/Personbo';
+import Semesterbo from './BusinessObjects/Semesterbo';
+import Spobo from './BusinessObjects/Spobo';
+import SpoElementbo from './BusinessObjects/SpoElementbo';
+import StudyCoursebo from './BusinessObjects/StudyCoursebo';
+import Userbo from './BusinessObjects/Userbo';
 
 export default class API{
 	//Singleton instance
@@ -25,8 +25,8 @@ export default class API{
 		#addSpoURL = () => `${this.#serverBaseURL}/spo` //Spo erstellen
 
 		//Admin Ansicht - Liste aller SPOs
-		#getAllSpoRelatedURL = (id) => `${this.#serverBaseURL}/spo/${id}`; //Alle Spos die zu einem Sudiengang gehören gelistet nach WS20, SS21...
-
+		#getAllSpoRelatedURL = (id) => `${this.#serverBaseURL}/spos/studycourse/${id}`; //Alle Spos die zu einem Sudiengang gehören gelistet nach WS20, SS21...
+		
 		//Admin Ansicht - Studiengänge
 		#getAllStudycoursesURL = () => `${this.#serverBaseURL}/studycourses`;
 
@@ -75,7 +75,7 @@ export default class API{
 					'Content-type': 'application/json',
 				},
 				body: JSON.stringify(modulepartbo)
-			}).then((responsejSON) => {
+			}).then((responseJSON) => {
 				let responseModulepartbo = Modulepartbo.fromJSON(responseJSON)[0];
 				return new Promise(function (resolve) {
 					resolve(responseModulepartbo);
@@ -138,25 +138,21 @@ export default class API{
 			  })
 		}
 
-		getAllSpoRelated(spoId){
-			return this.#fetchAdvanced(this.#getAllSpoRelatedURL(spoId)).then((responseJSON) => {
-				let responseSpobo = Spobo.fromJSON(responseJSON)[0];
-				// console.info(responseSpobo);
-				return new Promise(function (resolve) {
-					resolve(responseSpobo);
-			  	})
-			})
+		async getAllSpoRelated(studyCourseId) {
+			return this.#fetchAdvanced(this.#getAllSpoRelatedURL(studyCourseId));
 		}
 
-		getAllStudycourses(){
-			return this.#fetchAdvanced(this.#getAllStudycoursesURL()).then((responseJSON) => {
-				let studycourseBo = StudyCoursebo.fromJSON(responseJSON);
-				// console.info(studycourseBo);
-				return new Promise(function (resolve) {
-				  resolve(studycourseBo);
-				})
-			  })
+		async getAllStudycourses() {
+			return this.#fetchAdvanced(this.#getAllStudycoursesURL());
 		}
 
+		/**
+		 * Beispiel für alexis mit json parsing 
+		 
+		async getAllStudycourses() {
+			const apidaten = await this.#fetchAdvanced(this.#getAllStudycoursesURL());
+			return Spobo.fromJSON(apidaten);
+		}
+		*/
 
 	}

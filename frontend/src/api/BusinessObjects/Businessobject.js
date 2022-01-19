@@ -1,8 +1,8 @@
 export default class BusinessObject {
 
-	constructor() {
-	  this.id = 0;
-	  this._creationdate = datetime.date.today() //aktuelles Datum
+	constructor(aId, aCreationdate) {
+	  this.id = aId;
+	  this._creationdate = aCreationdate //aktuelles Datum
 	}
   
 	/**
@@ -19,12 +19,12 @@ export default class BusinessObject {
 	  return this.id;
 	}
 
-	setCreationdate(){
+	setCreationdate(aCreationdate){
 		this._creationdate = aCreationdate;
 	}
 
 	getCreationdate(){
-		return this.creationdate;
+		return this._creationdate;
 	}
   
 	toString() {
