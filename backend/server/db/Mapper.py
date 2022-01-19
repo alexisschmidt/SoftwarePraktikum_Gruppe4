@@ -52,6 +52,11 @@ class Mapper (AbstractContextManager, ABC):
         pass
 
     @abstractmethod
+    def find_by_hash(self, hashcode):
+        """Lies ein Tupel mit dem angegebenen hashcode aus. """
+        pass
+
+    @abstractmethod
     def insert(self, object):
         """Füge das folgende Objekt als Datensatz in die DB ein."""
         pass

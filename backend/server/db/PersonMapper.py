@@ -14,11 +14,9 @@ class PersonMapper(Mapper):
         cursor.execute("SELECT * from person")
         tuples = cursor.fetchall()
 
-        for (id, creationdate, name, title, firstname, lastname, email) in tuples:
+        for (id, creationdate, firstname, lastname, email) in tuples:
             person = Person()
             person.set_id(id)
-            person.set_name(name)
-            person.set_title(title)
             person.set_firstname(firstname)
             person.set_lastname(lastname)
             person.set_email(email)
@@ -38,11 +36,9 @@ class PersonMapper(Mapper):
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for (id, creationdate, name, title, firstname, lastname, email) in tuples:
+        for (id, creationdate, firstname, lastname, email) in tuples:
             person = Person()
             person.set_id(id)
-            person.set_name(name)
-            person.set_title(title)
             person.set_firstname(firstname)
             person.set_lastname(lastname)
             person.set_email(email)
@@ -64,11 +60,35 @@ class PersonMapper(Mapper):
         tuples = cursor.fetchall()
 
         try:
-            (id, creationdate, name, title, firstname, lastname, email) = tuples[0]
+            (id, creationdate, name, firstname, lastname, email) = tuples[0]
             person = Person()
             person.set_id(id)
-            person.set_name(name)
-            person.set_title(title)
+            person.set_firstname(firstname)
+            person.set_lastname(lastname)
+            person.set_email(email)
+            result = person
+        except IndexError:
+
+            result = None
+
+        self._cnx.commit()
+        cursor.close()
+
+        return result
+
+    def find_by_hash(self, hashcode):
+
+        result = None
+
+        cursor = self._cnx.cursor()
+        command = "SELECT * person WHERE person_hash={}".format(hashcode)
+        cursor.execute(command)
+        tuples = cursor.fetchall()
+
+        try:
+            (id, creationdate, firstname, lastname, email) = tuples[0]
+            person = Person()
+            person.set_id(id)
             person.set_firstname(firstname)
             person.set_lastname(lastname)
             person.set_email(email)
@@ -123,5 +143,3 @@ class PersonMapper(Mapper):
 
         self._cnx.commit()
         cursor.close()
-
-

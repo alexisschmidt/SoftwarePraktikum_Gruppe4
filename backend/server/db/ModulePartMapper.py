@@ -114,6 +114,44 @@ class ModulePartMapper(Mapper):
 
         return result
 
+    def find_by_hash(self, hashcode):
+
+        result = None
+
+        cursor = self._cnx.cursor()
+        command = "SELECT * modulepart WHERE modulepart_hash={}".format(hashcode)
+        cursor.execute(command)
+        tuples = cursor.fetchall()
+
+        try:
+            (id, creationdate, name, title,
+             language, literature, semester_id, sources, connection, description, sws,
+             ects, edvnr, workload) = tuples[0]
+            modulepart = Modulepart()
+            modulepart.set_id(id)
+            modulepart.set_name(name)
+            modulepart.set_title(title)
+            modulepart.set_language(language)
+            modulepart.set_literature(literature)
+            modulepart.set_semester(semester_id)
+            modulepart.set_sources(sources)
+            modulepart.set_connection(connection)
+            modulepart.set_description(description)
+            modulepart.set_sws(sws)
+            modulepart.set_ects(ects)
+            modulepart.set_edvnr(edvnr)
+            modulepart.set_workload(workload)
+            result = modulepart
+        except IndexError:
+
+            result = None
+
+        self._cnx.commit()
+        cursor.close()
+
+        return result
+
+
     def insert(self, modulepart: Modulepart):
 
         cursor = self._cnx.cursor()
