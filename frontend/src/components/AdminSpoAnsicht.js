@@ -13,14 +13,16 @@ import AllStudycoursesEntry from './AllStudycoursesEntry';
 import { useNavigate } from "react-router-dom";
 
 
-class AllStudyCourses extends Component {
+class AdminSpoAnsicht extends Component {
 
     constructor(props) {
         super(props);
 
         this.state = {
             studycourses: [],
-            studycoursesFilter: [],
+			modules: [],
+			moduleparts: [],
+			semester: [],
             loadingProgress: false,
             error: null,
             //showStudiengangAnlegenForm: false
@@ -51,6 +53,69 @@ class AllStudyCourses extends Component {
         });
     }
 
+	getAllModules = () => {
+        API.getAPI().getAllModules().then(modulebo => {            
+            this.setState({
+                modules: modulebo,
+                loadingProgress: false,
+                error: null
+            });
+        }).catch(e => {
+            this.setState({
+                modules: [],
+                loadingProgress: false,
+                error: e
+            });
+        });
+        
+        this.setState({
+            loadingProgress: true,
+            error: null
+        });
+    }
+
+	getAllModuleParts = () => {
+        API.getAPI().getAllModuleParts().then(modulepartbo => {            
+            this.setState({
+                moduleparts: modulepartbo,
+                loadingProgress: false,
+                error: null
+            });
+        }).catch(e => {
+            this.setState({
+                moduleparts: [],
+                loadingProgress: false,
+                error: e
+            });
+        });
+        
+        this.setState({
+            loadingProgress: true,
+            error: null
+        });
+    }
+
+	getAllSemester = () => {
+        API.getAPI().getAllSemester().then(semesterbo => {            
+            this.setState({
+                semester: semesterbo,
+                loadingProgress: false,
+                error: null
+            });
+        }).catch(e => {
+            this.setState({
+                semester: [],
+                loadingProgress: false,
+                error: e
+            });
+        });
+        
+        this.setState({
+            loadingProgress: true,
+            error: null
+        });
+    }
+
     CreateStudycoursesFormClosed = event => {
         this.setState({
             showCreateStudycoursesForm: false,
@@ -67,7 +132,7 @@ class AllStudyCourses extends Component {
 
     render() {
         const { classes } = this.props;
-        const { loadingProgress, error, studycourses} = this.state;
+        const { loadingProgress, error, studycourses, modules, moduleparts, semester, } = this.state;
         return (
 
             <Box sx={{ width: '100%', maxWidth: 650 }}>
@@ -87,6 +152,21 @@ class AllStudyCourses extends Component {
                                 {studycourse.title}
                         </Button>
                         ))
+						
+                    }
+                </Stack>
+				<Stack spacing={2} direction="column">
+                    {
+                        modules.map((module) => (
+                        <Button
+                            variant="contained"
+                            key={module.id}
+                            onClick={this.buttonNavigateToCourseClicked.bind(this, module.id)}
+                            show ={this.props.show}>
+                                {module.title}
+                        </Button>
+                        ))
+						
                     }
                 </Stack>
             </Box>
@@ -121,7 +201,7 @@ const styles = theme => ({
 });
 
 /** PropTypes */
-AllStudyCourses.propTypes = {
+AdminSpoAnsicht.propTypes = {
     /** @ignore */
     classes: PropTypes.object.isRequired,
     /** @ignore */
@@ -130,4 +210,4 @@ AllStudyCourses.propTypes = {
 }
 
 
-export default withRouter(withStyles(styles)(AllStudyCourses));
+export default withRouter(withStyles(styles)(AdminSpoAnsicht));

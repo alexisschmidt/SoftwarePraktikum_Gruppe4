@@ -82,7 +82,7 @@ class UserMapper(Mapper):
 
         return result
 
-    def insert(self, user):
+    def insert(self, user: User):
 
         cursor = self._cnx.cursor()
         cursor.execute("SELECT MAX(id) AS maxid FROM user ")
