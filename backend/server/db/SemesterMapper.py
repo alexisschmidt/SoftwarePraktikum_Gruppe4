@@ -88,8 +88,8 @@ class SemesterMapper(Mapper):
 
                 semester.set_id(1)
 
-        command = "INSERT INTO semester (id, creationdate, name, title) VALUES (%s,%s,%s,%s) "
-        data = (semester.get_id(), semester.get_name(), semester.get_title())
+        command = "INSERT INTO semester (id, creationdate, name, title, semester_hash) VALUES (%s,%s,%s,%s,%s) "
+        data = (semester.get_id(), semester.get_name(), semester.get_title(), hash(semester))
         cursor.execute(command, data)
 
         self._cnx.commit()

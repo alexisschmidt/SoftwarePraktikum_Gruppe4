@@ -1,16 +1,13 @@
-from server.bo import SpoElement as spe
-from server.bo.Person import Person
-from server.bo.Modulepart import Modulepart
+from server.bo import SpoElement as Spe
 import json
 
 
-class Module(spe.SpoElement):
+class Module(Spe.SpoElement):
     __type: str
     __requirement: str
     __outcome: str
     __examtype: str
     __instructor: int
-    # __moduleparts: list[Modulepart]                 # Soll eine Liste an Objekten sein
 
     def __init__(self):
         super().__init__()
@@ -19,7 +16,6 @@ class Module(spe.SpoElement):
         self.__outcome = ""
         self.__examtype = ""
         self.__instructor = 0
-        #self.__moduleparts = []
 
     # Auslesen
     def get_type(self):
@@ -62,21 +58,24 @@ class Module(spe.SpoElement):
         """Setzen des Modulverantwortlichen"""
         self.__instructor = instructor
 
-    #def get_moduleparts(self):
-    #    return self.__moduleparts
-
-    #def set_moduleparts(self, moduleparts_as_list):
-    #    if isinstance(moduleparts_as_list, list):
-    ##        self.__moduleparts = moduleparts_as_list
-
     def __str__(self):
-        return f"Module: id: {self.get_id()}, name: {self._name}, title: {self._title}, edvnr: {self._edvnr}, ects: {self._ects}, workload: {self.workload}, type: {self.__type}, requirement: {self.__requirement}, outcome: {self.__outcome}, examtype: {self.__examtype}, instructor: {self.__instructor}"
+        astring = (
+            f"Module: "
+            f"id: {self.get_id()}, "
+            f"name: {self._name}, "
+            f"title: {self._title}, "
+            f"edvnr: {self._edvnr}, "
+            f"ects: {self._ects}, "
+            f"workload: {self.workload}, "
+            f"type: {self.__type}, "
+            f"requirement: {self.__requirement}, "
+            f"outcome: {self.__outcome}, "
+            f"examtype: {self.__examtype}, "
+            f"instructor: {self.__instructor}"
+        )
+        return astring
 
     def json(self):
-        #inst = hash(self.get_instructor())
-        #plist = ""
-        #for part in self.get_moduleparts():
-        #    plist += str(hash(part))+", "
         return json.dumps({
             'id': self.get_id(),
             'name': self.get_name(),
@@ -89,7 +88,6 @@ class Module(spe.SpoElement):
             'outcome': self.get_outcome(),
             'examtype': self.get_examtype(),
             'instructor': self.get_instructor(),
-            #'moduleparts': plist
             })
 
     @staticmethod
@@ -117,7 +115,8 @@ class Module(spe.SpoElement):
                self.get_examtype() == other.get_examtype() and \
                self.get_instructor() == other.get_instructor()
 
-    __hash__ = spe.SpoElement.__hash__
+    def __hash__(self):
+        super().__hash__()
 
 
 """

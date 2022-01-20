@@ -121,10 +121,10 @@ class ModuleMapper(Mapper):
             else:
                 module.set_id(1)
         #inst = module.get_instructor().get_id()
-        command = "INSERT INTO module (id, creationdate, name, title, requirement, examtype, outcome, type, ects, edvnr, workload, instructor) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) "
+        command = "INSERT INTO module (id, creationdate, name, title, requirement, examtype, outcome, type, ects, edvnr, workload, instructor, module_hash) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) "
         data = (module.get_id(), module.get_creationdate(), module.get_name(), module.get_title(), module.get_requirement(),
                 module.get_examtype(), module.get_outcome(), module.get_type(),
-                0, module.get_edvnr(), module.get_workload(), module.get_instructor())
+                0, module.get_edvnr(), module.get_workload(), module.get_instructor(), hash(module))
         cursor.execute(command, data)
 
         self._cnx.commit()
