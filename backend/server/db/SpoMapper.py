@@ -11,7 +11,7 @@ class SpoMapper(Mapper):
 
         result = []
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT * from spo")
+        cursor.execute("SELECT id, creationdate, name, title, start_semester, end_semester, studycourse from spo")
         tuples = cursor.fetchall()
 
         for (id, creationdate, name, title, start_semester, end_semester, studycourse_id) in tuples:
@@ -195,11 +195,12 @@ class SpoMapper(Mapper):
 
                 spo.set_id(1)
 
-        ss = spo.get_start_semester().get_id()
-        es = spo.get_end_semester().get_id()
-        sc = spo.get_studycourse().get_id()
+        ss = spo.get_start_semester()
+        es = spo.get_end_semester()
+        sc = spo.get_studycourse()
         command = "INSERT INTO spo (id, creationdate, name, title, start_semester, end_semester, studycourse, spo_hash) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
-        data = (spo.get_id(), spo.get_creationdate(), spo.get_name(), spo.get_title(), ss, es, sc, hash(spo))
+        data = (spo.get_id(), spo.get_creationdate(), spo.get_name(), spo.get_title(), ss, es, sc, hash(spo.get_title()))
+        print(data)
         cursor.execute(command, data)
 
         self._cnx.commit()
