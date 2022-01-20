@@ -5,6 +5,10 @@ node_modules
 .pnp
 .pnp.js
 /env
+/venv
+/Lib
+/Scripts
+.pyvenv.cfg
 
 # testing
 coverage
