@@ -82,7 +82,36 @@ class UserMapper(Mapper):
 
         return result
 
-    def insert(self, user: User):
+    def find_by_hash(self, hashcode):
+	
+        result = None
+
+        cursor = self._cnx.cursor()
+        command = "SELECT * user WHERE user_hash={}".format(hashcode)
+        cursor.execute(command)
+        tuples = cursor.fetchall()
+
+        try:
+            (id, creationdate, firstname, lastname, email, google_user_id, isadmin) = tuples[0]
+            user = User()
+            user.set_id(id)
+            user.set_creationdate(creationdate)
+            user.set_firstname(firstname)
+            user.set_lastname(lastname)
+            user.set_email(email)
+            user.set_google_user_id(google_user_id)
+            user.set_isadmin(isadmin)
+            result = user
+        except IndexError:
+
+            result = None
+
+        self._cnx.commit()
+        cursor.close()
+
+        return result
+
+    def insert(self, user):
 
         cursor = self._cnx.cursor()
         cursor.execute("SELECT MAX(id) AS maxid FROM user ")

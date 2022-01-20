@@ -14,10 +14,9 @@ class ModuleMapper(Mapper):
         cursor.execute("SELECT * from module")
         tuples = cursor.fetchall()
 
-        for (
-                id, creationdate, name, title, requirement, examtype, instructor, outcome, type, moduleparts, ects,
-                edvnr,
-                workload) in tuples:
+        for (id, creationdate, name, title,
+             requirement, examtype, instructor, outcome, type, moduleparts,
+             ects, edvnr, workload) in tuples:
             module = Module()
             module.set_id(id)
             module.set_name(name)
@@ -27,10 +26,9 @@ class ModuleMapper(Mapper):
             module.set_instructor(instructor)
             module.set_outcome(outcome)
             module.set_type(type)
-            module.set_moduleparts(moduleparts)
             module.set_ects(ects)
             module.set_edvnr(edvnr)
-            #module.set_workload(workload)
+            module.set_workload(workload)
 
             result.append(module)
 
@@ -60,7 +58,6 @@ class ModuleMapper(Mapper):
             module.set_instructor(instructor)
             module.set_outcome(outcome)
             module.set_type(type)
-            module.set_moduleparts(moduleparts)
             module.set_ects(ects)
             module.set_edvnr(edvnr)
             module.set_workload(workload)
@@ -72,20 +69,18 @@ class ModuleMapper(Mapper):
 
         return result
 
-    def find_by_key(self, key):
+    def find_by_key(self, key: int):
 
         result = None
-
-        cursor = self._cnx.cursor()
         command = "SELECT * module WHERE id={}".format(key)
+        cursor = self._cnx.cursor()
         cursor.execute(command)
         tuples = cursor.fetchall()
 
         try:
-            (
-                id, creationdate, name, title, requirement, examtype, instructor, outcome, type, moduleparts, ects,
-                edvnr,
-                workload) = tuples[0]
+            (id, creationdate, name, title,
+             requirement, examtype, instructor, outcome, type, moduleparts,
+             ects, edvnr, workload) = tuples[0]
             module = Module()
             module.set_id(id)
             module.set_name(name)
@@ -95,7 +90,40 @@ class ModuleMapper(Mapper):
             module.set_instructor(instructor)
             module.set_outcome(outcome)
             module.set_type(type)
-            module.set_moduleparts(moduleparts)
+            module.set_ects(ects)
+            module.set_edvnr(edvnr)
+            module.set_workload(workload)
+            result = module
+        except IndexError:
+
+            result = None
+
+        self._cnx.commit()
+        cursor.close()
+
+        return result
+
+    def find_by_hash(self, hashcode: int):
+        result = None
+
+        command = "SELECT * module WHERE module_hash={}".format(hashcode)
+        cursor = self._cnx.cursor()
+        cursor.execute(command)
+        tuples = cursor.fetchall()
+
+        try:
+            (id, creationdate, name, title,
+             requirement, examtype, instructor, outcome, type, moduleparts,
+             ects, edvnr, workload) = tuples[0]
+            module = Module()
+            module.set_id(id)
+            module.set_name(name)
+            module.set_title(title)
+            module.set_requirement(requirement)
+            module.set_examtype(examtype)
+            module.set_instructor(instructor)
+            module.set_outcome(outcome)
+            module.set_type(type)
             module.set_ects(ects)
             module.set_edvnr(edvnr)
             module.set_workload(workload)
@@ -120,11 +148,11 @@ class ModuleMapper(Mapper):
                 module.set_id(maxid[0] + 1)
             else:
                 module.set_id(1)
-        #inst = module.get_instructor().get_id()
         command = "INSERT INTO module (id, creationdate, name, title, requirement, examtype, outcome, type, ects, edvnr, workload, instructor, module_hash) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) "
-        data = (module.get_id(), module.get_creationdate(), module.get_name(), module.get_title(), module.get_requirement(),
-                module.get_examtype(), module.get_outcome(), module.get_type(),
-                0, module.get_edvnr(), module.get_workload(), module.get_instructor(), hash(module))
+        data = (
+        module.get_id(), module.get_creationdate(), module.get_name(), module.get_title(), module.get_requirement(),
+        module.get_examtype(), module.get_outcome(), module.get_type(),
+        0, module.get_edvnr(), module.get_workload(), module.get_instructor(), hash(module))
         cursor.execute(command, data)
 
         self._cnx.commit()
@@ -141,7 +169,7 @@ class ModuleMapper(Mapper):
                                      "SET ects=%s, SET edvnr=%s, SET workload=%s WHERE id=%s "
         data = (
             module.get_name(), module.get_title(), module.get_requirement(), module.get_examtype(),
-            module.get_instructor(), module.get_outcome(), module.get_type(), module.get_moduleparts(),
+            module.get_instructor(), module.get_outcome(), module.get_type(),
             module.get_ects(),
             module.get_edvnr(), module.get_workload(), module.get_id())
         cursor.execute(command, data)

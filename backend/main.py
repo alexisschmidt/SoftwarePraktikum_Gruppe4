@@ -200,7 +200,7 @@ class UserByNameOperations(Resource):
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
 class SpoListOperations(Resource):
     @sposystem.marshal_list_with(spo)
-    #@secured
+    # @secured
     def get(self):
         """
         Auslesen aller SPO-Objekte.
