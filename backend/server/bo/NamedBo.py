@@ -28,9 +28,8 @@ class NamedBo(bo.BusinessObject, ABC):
         self._title = title
 
     def __eq__(self, other):
-        return super().__eq__() and\
-               self.get_name() == other.get_name() and\
+        return super().__eq__() and \
+               self.get_name() == other.get_name() and \
                self.get_title() == other.get_title()
 
-    def __hash__(self):
-        super().__hash__()
+    __hash__ = bo.__hash__()

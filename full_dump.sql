@@ -10,6 +10,7 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,N
 -- -----------------------------------------------------
 -- Schema spoverwaltung
 -- -----------------------------------------------------
+DROP SCHEMA IF EXISTS `spoverwaltung` ;
 
 -- -----------------------------------------------------
 -- Schema spoverwaltung
@@ -28,8 +29,8 @@ CREATE TABLE IF NOT EXISTS `spoverwaltung`.`person` (
   `firstname` VARCHAR(45) NOT NULL,
   `lastname` VARCHAR(45) NOT NULL,
   `email` VARCHAR(45) NOT NULL,
-  `person_hash` VARCHAR(45) NULL DEFAULT NULL,
-  PRIMARY KEY (`id`))
+  `person_hash` INT NOT NULL,
+  PRIMARY KEY (`id`, `person_hash`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -47,18 +48,21 @@ CREATE TABLE IF NOT EXISTS `spoverwaltung`.`module` (
   `title` VARCHAR(45) NOT NULL,
   `requirement` VARCHAR(45) NULL DEFAULT NULL,
   `examtype` VARCHAR(45) NOT NULL,
-  `instructor` INT NOT NULL,
   `outcome` VARCHAR(45) NOT NULL,
   `type` VARCHAR(45) NOT NULL,
   `ects` INT NOT NULL,
   `edvnr` VARCHAR(45) NOT NULL,
   `workload` VARCHAR(45) NOT NULL,
-  `module_hash` VARCHAR(45) NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  INDEX `instructor_idx` (`instructor` ASC) VISIBLE,
-  CONSTRAINT `instructor`
-    FOREIGN KEY (`instructor`)
-    REFERENCES `spoverwaltung`.`person` (`id`))
+  `module_hash` INT NOT NULL,
+  `person_id` INT NOT NULL,
+  `person_person_hash` INT NOT NULL,
+  PRIMARY KEY (`id`, `module_hash`),
+  INDEX `fk_module_person1_idx` (`person_id` ASC, `person_person_hash` ASC) VISIBLE,
+  CONSTRAINT `fk_module_person1`
+    FOREIGN KEY (`person_id` , `person_person_hash`)
+    REFERENCES `spoverwaltung`.`person` (`id` , `person_hash`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -81,21 +85,19 @@ CREATE TABLE IF NOT EXISTS `spoverwaltung`.`modulepart` (
   `connection` VARCHAR(600) NOT NULL,
   `description` VARCHAR(45) NOT NULL,
   `sws` VARCHAR(45) NOT NULL,
-  `professor` INT NOT NULL,
-  `module_id` INT NOT NULL,
   `ects` VARCHAR(45) NOT NULL,
   `edvnr` VARCHAR(45) NOT NULL,
   `workload` VARCHAR(45) NOT NULL,
-  `modulepart_hash` VARCHAR(45) NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  INDEX `professor_idx` (`professor` ASC) VISIBLE,
-  INDEX `module_id_idx` (`module_id` ASC) VISIBLE,
-  CONSTRAINT `module_id`
-    FOREIGN KEY (`module_id`)
-    REFERENCES `spoverwaltung`.`module` (`id`),
-  CONSTRAINT `professor`
-    FOREIGN KEY (`professor`)
-    REFERENCES `spoverwaltung`.`person` (`id`))
+  `modulepart_hash` INT NOT NULL,
+  `person_id` INT NOT NULL,
+  `person_person_hash` INT NOT NULL,
+  PRIMARY KEY (`id`, `modulepart_hash`, `person_id`, `person_person_hash`),
+  INDEX `fk_modulepart_person1_idx` (`person_id` ASC, `person_person_hash` ASC) VISIBLE,
+  CONSTRAINT `fk_modulepart_person1`
+    FOREIGN KEY (`person_id` , `person_person_hash`)
+    REFERENCES `spoverwaltung`.`person` (`id` , `person_hash`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -111,7 +113,8 @@ CREATE TABLE IF NOT EXISTS `spoverwaltung`.`semester` (
   `creationdate` DATETIME NOT NULL,
   `name` VARCHAR(45) NOT NULL,
   `title` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`id`))
+  `semester_hash` INT NOT NULL,
+  PRIMARY KEY (`id`, `semester_hash`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -127,7 +130,8 @@ CREATE TABLE IF NOT EXISTS `spoverwaltung`.`studycourse` (
   `creationdate` DATETIME NOT NULL,
   `name` VARCHAR(45) NOT NULL,
   `title` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`id`))
+  `studycourse_hash` INT NOT NULL,
+  PRIMARY KEY (`id`, `studycourse_hash`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -146,8 +150,8 @@ CREATE TABLE IF NOT EXISTS `spoverwaltung`.`spo` (
   `start_semester` INT NOT NULL,
   `end_semester` INT NULL DEFAULT NULL,
   `studycourse` INT NOT NULL,
-  `spo_hash` VARCHAR(45) NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
+  `spo_hash` INT NOT NULL,
+  PRIMARY KEY (`id`, `spo_hash`),
   INDEX `studycourse_idx1` (`studycourse` ASC) VISIBLE,
   CONSTRAINT `studycourse`
     FOREIGN KEY (`studycourse`)
@@ -170,8 +174,37 @@ CREATE TABLE IF NOT EXISTS `spoverwaltung`.`user` (
   `email` VARCHAR(45) NOT NULL,
   `google_user_id` VARCHAR(60) NOT NULL,
   `isadmin` TINYINT(1) NOT NULL,
-  `user_hash` VARCHAR(45) NULL DEFAULT NULL,
-  PRIMARY KEY (`id`))
+  `user_hash` INT NOT NULL,
+  PRIMARY KEY (`id`, `user_hash`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `spoverwaltung`.`modulelist`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `spoverwaltung`.`modulelist` ;
+
+CREATE TABLE IF NOT EXISTS `spoverwaltung`.`modulelist` (
+  `id` INT NOT NULL,
+  `modulepart_id` INT NOT NULL,
+  `modulepart_modulepart_hash` INT NOT NULL,
+  `module_id` INT NOT NULL,
+  `module_module_hash` INT NOT NULL,
+  PRIMARY KEY (`id`, `modulepart_id`, `modulepart_modulepart_hash`, `module_id`, `module_module_hash`),
+  INDEX `fk_modulepart_has_module_module1_idx` (`module_id` ASC, `module_module_hash` ASC) VISIBLE,
+  INDEX `fk_modulepart_has_module_modulepart1_idx` (`modulepart_id` ASC, `modulepart_modulepart_hash` ASC) VISIBLE,
+  CONSTRAINT `fk_modulepart_has_module_modulepart1`
+    FOREIGN KEY (`modulepart_id` , `modulepart_modulepart_hash`)
+    REFERENCES `spoverwaltung`.`modulepart` (`id` , `modulepart_hash`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_modulepart_has_module_module1`
+    FOREIGN KEY (`module_id` , `module_module_hash`)
+    REFERENCES `spoverwaltung`.`module` (`id` , `module_hash`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
