@@ -28,5 +28,4 @@ class StudyCourse (nbo.NamedBo):
     def __eq__(self, other):
         return super().__eq__(other)
 
-    def __hash__(self):
-        super().__hash__()
+    __hash__ = nbo.__hash__

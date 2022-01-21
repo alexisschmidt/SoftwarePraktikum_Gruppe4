@@ -151,7 +151,6 @@ class ModulePartMapper(Mapper):
 
         return result
 
-
     def insert(self, modulepart: Modulepart):
 
         cursor = self._cnx.cursor()
@@ -166,14 +165,14 @@ class ModulePartMapper(Mapper):
 
                 modulepart.set_id(1)
 
-        #profid = modulepart.get_professor().get_id()
-        command = "INSERT INTO modulepart (id, creationdate, name, title, language, literature, semester, sources, connection, description, sws, professor, module_id, ects, edvnr, workload, modulepart_hash) " \
+        command = "INSERT INTO modulepart (id, creationdate, name, title, language, literature, semester, sources, connection, description, sws, professor, ects, edvnr, workload, modulepart_hash) " \
                   "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
         data = (modulepart.get_id(), modulepart.get_creationdate(), modulepart.get_name(), modulepart.get_title(),
                 modulepart.get_language(), modulepart.get_literature(), modulepart.get_semester(),
                 modulepart.get_sources(), modulepart.get_connection(), modulepart.get_description(),
-                modulepart.get_sws(), modulepart.get_professor(), modulepart.get_module_id(),
-                modulepart.get_ects(), modulepart.get_edvnr(), modulepart.get_workload(), hash(modulepart))
+                modulepart.get_sws(), modulepart.get_professor(),
+                modulepart.get_ects(), modulepart.get_edvnr(), modulepart.get_workload(),
+                hash(modulepart))
         cursor.execute(command, data)
 
         self._cnx.commit()
