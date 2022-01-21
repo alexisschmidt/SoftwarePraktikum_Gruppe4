@@ -43,5 +43,4 @@ class SpoElement(Nbo.NamedBo, ABC):
                self.get_ects() == other.get_title() and \
                self.get_workload() == other.get_workload()
 
-    def __hash__(self):
-        super().__hash__()
+    __hash__ = Nbo.__hash__
