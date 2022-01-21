@@ -14,9 +14,9 @@ class StudyCourseMapper(Mapper):
         tuples = cursor.fetchall()
 
         for (id, creationdate, name, title) in tuples:
-            studycourse = StudyCourse
+            studycourse = StudyCourse()
             studycourse.set_id(id)
-            studycourse.set_pname(name)
+            studycourse.set_name(name)
             studycourse.set_title(title)
 
             result.append(studycourse)
@@ -30,12 +30,13 @@ class StudyCourseMapper(Mapper):
 
         result = []
         cursor = self._cnx.cursor()
-        command = "SELECT * FROM studycourse WHERE name LIKE '{}' ORDER BY name".format(name)
+        command = "SELECT * FROM studycourse WHERE name LIKE '{}' " \
+                  "ORDER BY name".format(name)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
         for (id, creationdate, name, title) in tuples:
-            studycourse = Studycourse()
+            studycourse = StudyCourse()
             studycourse.set_id(id)
             studycourse.set_name(name)
             studycourse.set_title(title)
@@ -58,7 +59,33 @@ class StudyCourseMapper(Mapper):
 
         try:
             (id, creationdate, name, title) = tuples[0]
-            studycourse = Studycourse()
+            studycourse = StudyCourse()
+            studycourse.set_id(id)
+            studycourse.set_name(name)
+            studycourse.set_title(title)
+
+            result = studycourse
+        except IndexError:
+
+            result = None
+
+        self._cnx.commit()
+        cursor.close()
+
+        return result
+
+    def find_by_hash(self, hashcode):
+
+        result = None
+
+        cursor = self._cnx.cursor()
+        command = "SELECT * studycourse WHERE studycourse_hash={}".format(hashcode)
+        cursor.execute(command)
+        tuples = cursor.fetchall()
+
+        try:
+            (id, creationdate, name, title) = tuples[0]
+            studycourse = StudyCourse()
             studycourse.set_id(id)
             studycourse.set_name(name)
             studycourse.set_title(title)
@@ -87,7 +114,8 @@ class StudyCourseMapper(Mapper):
 
                 studycourse.set_id(1)
 
-        command = "INSERT INTO studycourse (id, creationdate, name, title, studycourse_hash) VALUES (%s,%s,%s,%s,%s) "
+        command = "INSERT INTO studycourse (id, creationdate, name, title, studycourse_hash) " \
+                  "VALUES (%s,%s,%s,%s,%s)"
         data = (studycourse.get_id(), studycourse.get_creationdate(), studycourse.get_name(), studycourse.get_title(), hash(studycourse))
         cursor.execute(command, data)
 
@@ -116,6 +144,4 @@ class StudyCourseMapper(Mapper):
 
         self._cnx.commit()
         cursor.close()
-
-
 
