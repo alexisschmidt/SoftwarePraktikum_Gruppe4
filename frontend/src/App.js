@@ -20,6 +20,7 @@ import Admin from './components/pages/AdminSpoAnsicht';
 import AdminStudiengangAuswahl from './components/pages/AdminStudiengangAuswahl';
 import SpoAuswählenOMM from './components/pages/SpOAuswählenOMM';
 import Spowi from './components/pages/Spowi';
+import SpoForm from './components/pages/SpoForm';
 
 
 
@@ -122,10 +123,11 @@ Globales CSS-Reset und Browser-Normalisierung. CssBaseline startet eine elegante
 							currentUser ?
 								<>
 									<Route path="/" exact component={About} />
+									<Route path="/SpoForm" exact component={SpoForm}/>
 									{/* <Route path="/Studiengangauswahl" exact component={StudyCourses}/> */}
 									<Route path="/AdminStudiengangAuswahl" exact component={AdminStudiengangAuswahl}/>
-									<Route path="/Spoauswahl2" exact comonent={SpoAuswählenOMM}/>
-									<Route path="/Spoauswahl" exact comonent={Spowi}/>
+									<Route path="/Spoauswahl2" exact component={SpoAuswählenOMM}/>
+									<Route path="/Spoauswahl" exact component={Spowi}/>
 									{/*<Route path="/Altespo" exact component ={}/>*/}
 									<Route path="/Spoerstellen" exact component={Admin}/>
 									{/* <Route path="/Spo" exact component={SpoStudent}/> */}
