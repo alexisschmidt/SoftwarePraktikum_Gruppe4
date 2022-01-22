@@ -102,8 +102,7 @@ class User(Bo.BusinessObject):
                self.get_lastname() == other.get_lastname() and\
                self.get_email() == other.get_email()
 
-    def __hash__(self):
-        super().__hash__()
+    __hash__ = Bo.BusinessObject.__hash__
 
 
 """

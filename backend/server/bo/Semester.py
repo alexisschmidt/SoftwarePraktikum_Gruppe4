@@ -1,8 +1,8 @@
-from server.bo import NamedBo as nbo
+from server.bo import NamedBo as Nbo
 import json
 
 
-class Semester(nbo.NamedBo):
+class Semester(Nbo.NamedBo):
     def __init__(self):
         super().__init__()
 
@@ -28,5 +28,4 @@ class Semester(nbo.NamedBo):
     def __eq__(self, other):
         super().__eq__(other)
 
-    def __hash__(self):
-        super().__hash__()
+    __hash__ = Nbo.NamedBo.__hash__
