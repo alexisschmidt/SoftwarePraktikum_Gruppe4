@@ -10,7 +10,7 @@ class StudyCourseMapper(Mapper):
     def find_all(self):
         result = []
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT * from studycourse")
+        cursor.execute("SELECT id, creationdate, name, title FROM studycourse")
         tuples = cursor.fetchall()
 
         for (id, creationdate, name, title) in tuples:
@@ -53,7 +53,7 @@ class StudyCourseMapper(Mapper):
         result = None
 
         cursor = self._cnx.cursor()
-        command = "SELECT * studycourse WHERE id={}".format(key)
+        command = "SELECT id, creationdate, name, title FROM studycourse WHERE id= {}".format(key)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
@@ -108,10 +108,8 @@ class StudyCourseMapper(Mapper):
 
         for (maxid) in tuples:
             if maxid[0] is not None:
-
                 studycourse.set_id(maxid[0] + 1)
             else:
-
                 studycourse.set_id(1)
 
         command = "INSERT INTO studycourse (id, creationdate, name, title, studycourse_hash) " \
@@ -128,9 +126,10 @@ class StudyCourseMapper(Mapper):
 
         cursor = self._cnx.cursor()
 
-        command = "UPDATE studycourse " + "SET name=%s, SET title=%s WHERE id=%s "
-        data = (studycourse.get_name(), studycourse.get_title(), studycourse.get_id())
-        cursor.execute(command, data)
+        command = f"UPDATE studycourse " + f"SET name={studycourse.get_name()}, " \
+                                           f"title={studycourse.get_title()}" \
+                                           f" WHERE id={studycourse.get_id()} "
+        cursor.execute(command)
 
         self._cnx.commit()
         cursor.close()

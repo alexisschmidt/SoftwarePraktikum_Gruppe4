@@ -3,48 +3,48 @@ import json
 
 
 class Person(Bo.BusinessObject):
-    __firstname: str
-    __lastname: str
-    __email: str
+    _firstname: str
+    _lastname: str
+    _email: str
 
     def __init__(self):
         super().__init__()
-        self.__firstname = ""  # Der Vorname der Person
-        self.__lastname = ""  # Der Nachname der Person
-        self.__email = ""  # email der Person
+        self._firstname = ""  # Der Vorname der Person
+        self._lastname = ""  # Der Nachname der Person
+        self._email = ""  # email der Person
 
     # Auslesen / des Vor-/nachnamens und Email.
 
     def get_firstname(self):
         """Auslesen des Vornamens"""
-        return self.__firstname
+        return self._firstname
 
     def set_firstname(self, firstname):
         """Setzen des Vornamens"""
-        self.__firstname = firstname
+        self._firstname = firstname
 
     def get_lastname(self):
         """Auslesen des Nachnamens"""
-        return self.__lastname
+        return self._lastname
 
     def set_lastname(self, lastname):
         """Setzen des Nachnamens"""
-        self.__lastname = lastname
+        self._lastname = lastname
 
     def get_email(self):
         """Auslesen der E-Mail"""
-        return self.__email
+        return self._email
 
     def set_email(self, email):
         """Setzen der E-Mail"""
-        self.__email = email
+        self._email = email
 
     def __str__(self):
         astring = (f"Person: "
                    f"id: {self.get_id()}, "
-                   f"firstname: {self.__firstname}, "
-                   f"lastname: {self.__lastname}, "
-                   f"email: {self.__email}"
+                   f"firstname: {self._firstname}, "
+                   f"lastname: {self._lastname}, "
+                   f"email: {self._email}"
                    )
         return astring
 
