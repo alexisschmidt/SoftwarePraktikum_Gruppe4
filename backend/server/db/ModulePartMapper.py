@@ -1,7 +1,5 @@
 from server.bo.Modulepart import Modulepart
 from .Mapper import Mapper
-from server.bo.Module import Module
-from server.bo.Person import Person
 
 
 class ModulePartMapper(Mapper):
@@ -168,24 +166,30 @@ class ModulePartMapper(Mapper):
         except ValueError:
             print('modulepart needs a professor to be created!')
 
+        try:
+            cursor.execute(f'SELECT id FROM module WHERE module_hash={modulepart.get_module()}')
+            modid = int(cursor.fetchone()[0])
+        except ValueError:
+            print('modulepart needs a professor to be created!')
+
         command = "INSERT INTO modulepart (id, creationdate, name, title, " \
                   "language, literature, semester, sources, connection, description, sws, " \
                   "ects, edvnr, workload, " \
-                  "modulepart_hash, professor_id, professor_hash) " \
-                  "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+                  "modulepart_hash, professor_id, professor_hash, module_id, module_hash) " \
+                  "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
 
         data = (modulepart.get_id(), modulepart.get_creationdate(), modulepart.get_name(), modulepart.get_title(),
                 modulepart.get_language(), modulepart.get_literature(), modulepart.get_semester(),
                 modulepart.get_sources(), modulepart.get_connection(), modulepart.get_description(),
                 modulepart.get_sws(), modulepart.get_ects(), modulepart.get_edvnr(), modulepart.get_workload(),
-                hash(modulepart), profid, modulepart.get_professor())
+                hash(modulepart), profid, modulepart.get_professor(), modid, modulepart.get_module())
 
         cursor.execute(command, data)
         self._cnx.commit()
         cursor.close()
         return modulepart
 
-    def update(self, modulepart):
+    def update(self, modulepart: Modulepart):
 
         cursor = self._cnx.cursor()
 
@@ -194,7 +198,7 @@ class ModulePartMapper(Mapper):
                                          "SET sws=%s, SET ects=%s,SET edvnr=%s,SET workload=%s WHERE id=%s "
         data = (
             modulepart.get_name(), modulepart.get_title(), modulepart.get_language(),
-            modulepart.get_literature(), modulepart.get_semester_id(), modulepart.get_sources(),
+            modulepart.get_literature(), modulepart.get_semester(), modulepart.get_sources(),
             modulepart.get_connection(), modulepart.get_description(), modulepart.get_sws(), modulepart.get_ects(),
             modulepart.get_edvnr(), modulepart.get_workload(), modulepart.get_id())
         cursor.execute(command, data)
@@ -202,7 +206,7 @@ class ModulePartMapper(Mapper):
         self._cnx.commit()
         cursor.close()
 
-    def delete(self, modulepart):
+    def delete(self, modulepart: Modulepart):
 
         cursor = self._cnx.cursor()
         command = f"DELETE FROM modulepart WHERE id={modulepart.get_id()}"
