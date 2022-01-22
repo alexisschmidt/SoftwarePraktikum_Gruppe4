@@ -37,16 +37,16 @@ bo = api.model('BusinessObject', {
 
 """Alle anderen BusinessObjects"""
 user = api.inherit('User', bo, {
-    'firstname': fields.String(attribute='__firstname', description='Vorname eines Users'),
-    'lastname': fields.String(attribute='__lastname', description='Nachname eines Users'),
-    'email': fields.String(attribute='__email', description='Email adresse eines Users'),
-    'google_user_id': fields.String(attribute='__google_user_id', description='Google ID des Users'),
-    'isadmin': fields.Integer(attribute='__isadmin', description='Anzeige ob Adminstatus oder nicht')
+    'firstname': fields.String(attribute='_firstname', description='Vorname eines Users'),
+    'lastname': fields.String(attribute='_lastname', description='Nachname eines Users'),
+    'email': fields.String(attribute='_email', description='Email adresse eines Users'),
+    'google_user_id': fields.String(attribute='_google_user_id', description='Google ID des Users'),
+    'isadmin': fields.Integer(attribute='_isadmin', description='Anzeige ob Adminstatus oder nicht')
 })
 
-namedbo = api.inherit('Namedbo', bo, {
+namedbo = api.clone('Namedbo', bo, {
     'name': fields.String(attribute='_name', description='Name eines NamedBOs'),
-    'title': fields.String(attribute='_name', description='Titel eines NamedBOs')
+    'title': fields.String(attribute='_title', description='Titel eines NamedBOs')
 })
 
 spo = api.inherit('Spo', namedbo, {
@@ -87,9 +87,9 @@ studycourse = api.inherit('StudyCourse', namedbo)
 semester = api.inherit('Semester', namedbo)
 
 person = api.inherit('Person', namedbo, {
-    'firstname': fields.String(attribute='__firstname', description='Vorname einer Person'),
-    'lastname': fields.String(attribute='__lastname', description='Nachname einer Person'),
-    'email': fields.String(attribute='__email', description='Email adresse einer Person')
+    'firstname': fields.String(attribute='_firstname', description='Vorname einer Person'),
+    'lastname': fields.String(attribute='_lastname', description='Nachname einer Person'),
+    'email': fields.String(attribute='_email', description='Email adresse einer Person')
 })
 
 """Alles @sposystem.route('')"""
@@ -472,7 +472,7 @@ class ModulePartOperations(Resource):
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
 class StudycourseListOperations(Resource):
     @sposystem.marshal_list_with(studycourse)
-    @secured
+    # @secured
     def get(self):
         """
         Auslesen aller SPO-Objekte.
@@ -491,7 +491,7 @@ class StudycourseListOperations(Resource):
         proposal = StudyCourse.from_dict(api.payload)
 
         if proposal is not None:
-            sc = adm.create_studycourse(proposal.get_name(), proposal.get_title())
+            sc = adm.create_studycourse(proposal)
             return sc, 200
         else:
             return'', 500
@@ -511,7 +511,7 @@ class StudycourseOperations(Resource):
         sc = adm.get_studycourse_by_id(id)
         return sc
 
-    @secured
+    # @secured
     def delete(self, id):
         """Löschen eines bestimmten Studycourse-Objekts.
         Das zu löschende Objekt wird durch die```id```in dem URI bestimmt."""
@@ -523,7 +523,7 @@ class StudycourseOperations(Resource):
 
     @sposystem.marshal_with(studycourse)
     @sposystem.expect(studycourse, validate=True)
-    @secured
+    # @secured
     def put(self, id):
         """Update eines bestimmten Studycourse-Objekts.
         **ACHTUNG: ** relevante id ist die id, die mittels URI bereitgestellt und somit als Methodenparameter

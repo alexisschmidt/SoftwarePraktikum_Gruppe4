@@ -1,11 +1,14 @@
-from server.bo.SpoValidity import SpoValidity
 from server.db.Mapper import Mapper
+from server.bo.Spo import Spo
+from server.bo.Semester import Semester
+
 
 class SpoValidityMapper(Mapper):
 
     def __init__(self):
         super().__init__()
 
+    """
     def find_all(self):
 
         result = []
@@ -25,82 +28,115 @@ class SpoValidityMapper(Mapper):
         cursor.close()
 
         return result
+    """
+    def find_all(self):
+        """Lies alle Tupel aus und gib sie als Objekte zurück."""
+        pass
 
     def find_by_id(self, key):
+        """Lies den einen Tupel mit der gegebenen ID (vgl. Primärschlüssel) aus."""
+        pass
 
-        result = None
+    def find_spo_by_semester_hash(self, hashcode: int):
+
+        result = []
 
         cursor = self._cnx.cursor()
-        command = "SELECT spo_id, semester_id, startsem, endsem FROM spo WHERE spo_id={}".format(key)
+        command = f"SELECT spo_hash FROM spovalidity " \
+                  f"WHERE semeser_hash={hashcode} AND WHERE startsem=1"
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        try:
-            (spo_id, semester_id, startsem, endsem) = tuples[0]
-            spov = SpoValidity()
-            spov.set_spo_id(spo_id)
-            spov.set_semester_id(semester_id)
-            spov.set_startsem(startsem)
-            spov.set_endsem(endsem)
-            result = spov
-        except IndexError:
-
-            result = None
+        spos = []
+        for (spo_hash) in tuples:
+            cursor.execute(
+                f"SELECT id, creationdate, name, title, studycourse_id FROM spo "
+                f"WHERE spo_hash ={spo_hash}")
+            spos.append(cursor.fetchall())
+        for i in spos:
+            for (id, creationdate, name, title, studycourse_id) in i:
+                spo = Spo()
+                spo.set_id(id)
+                spo.set_name(name)
+                spo.set_title(title)
+                spo.set_studycourse(studycourse_id)
+                result.append(spo)
 
         self._cnx.commit()
         cursor.close()
 
         return result
 
-    def find_by_spo_id(self, spo_id):
+    def find_semester_by_spo_hash(self, hashcode: int):
 
-        result = None
+        result = []
 
         cursor = self._cnx.cursor()
-        command = "spo_id, spo_hash, semester_id, semester_semester_hash, startsem, endsem FROM spo WHERE spo_id={}".format(spo_id)
+        command = f"SELECT semester_hash FROM spo WHERE spo_id={hashcode}"
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        try:
-            (spo_id, spo_hash, semester_id, semester_semester_hash, startsem, endsem) = tuples[0]
-            spov = SpoValidity()
-            spov.set_spo_id(spo_id)
-            spov.set_spo_hash(spo_hash)
-            spov.set_semester_id(semester_id)
-            spov.set_semester_semester_hash(semester_semester_hash)
-            spov.set_startsem(startsem)
-            spov.set_endsem(endsem)
-            result = spov
-        except IndexError:
-
-            result = None
+        scs = []
+        for (semester_hash) in tuples:
+            cursor.execute(
+                f"SELECT id, creationdate, name, title FROM semester "
+                f"WHERE semester_hash ={semester_hash}")
+            scs.append(cursor.fetchall())
+        for i in scs:
+            for (id, creationdate, name, title) in i:
+                semester = Semester()
+                semester.set_id(id)
+                semester.set_creationdate(creationdate)
+                semester.set_name(name)
+                semester.set_title(title)
+                result.append(semester)
 
         self._cnx.commit()
         cursor.close()
-
         return result
 
-    def insert(self, spov):
+    def insert(self, spo: Spo, endsemester=False):
 
         cursor = self._cnx.cursor()
         cursor.execute("SELECT MAX(id) AS maxid FROM spovalidity")
         tuples = cursor.fetchall()
 
+        newid= 0
         for (maxid) in tuples:
             if maxid[0] is not None:
+                newid = maxid[0] + 1
+                cursor.execute(f"INSERT INTO spovalidity (id) VALUES ({newid})")
 
-                spov.set_id(maxid[0] + 1)
-            else:
+        if not endsemester:
+            cursor.execute(f"SELECT id FROM semester WHERE semester_hash={spo.get_start_semester()}")
+            ssid = int(cursor.fetchone()[0])
+            command = "UPDATE spovalidity  SET " \
+                      "spo_id= %s, spo_hash=%s, " \
+                      "semester_id=%s, semester_hash=%s, " \
+                      "startsem=%s, endsem=%s" \
+                      f"WHERE id={newid}"
+            data = (spo.get_id(), hash(spo), ssid, spo.get_start_semester(),
+                    1, 0)
+        else:
+            cursor.execute(f"SELECT id FROM semester WHERE semester_hash={spo.get_end_semester()}")
+            esid = int(cursor.fetchone())
+            command = "UPDATE spovalidity  SET " \
+                      "spo_id=%s, spo_hash=%s, " \
+                      "semester_id=%s, semester_hash=%s, " \
+                      "startsem=%s, endsem=%s " \
+                      f"WHERE id={newid}"
+            data = (spo.get_id(), hash(spo), esid, spo.get_end_semester(),
+                    0, 1)
 
-                spov.set_id(1)
-
-
-        command = "INSERT INTO spovalidity (spo_id, spo_hash, semester_id, semester_semester_hash, startsem, endsem) VALUES (%s,%s,%s,%s,%s,%s)"
-        data = (spo.get_spo_id(), spo.get_spo_hash(), spo.get_semester_id(), spo.get_semester_semester_hash(), spo.get_startsem(), spo.get_endsem())
-        print(data)
         cursor.execute(command, data)
-
         self._cnx.commit()
         cursor.close()
+        return spo
 
-        return spov
+    def update(self, object):
+        """Ein Objekt auf einen bereits in der DB enthaltenen Datensatz abbilden."""
+        pass
+
+    def delete(self, object):
+        """Den Datensatz, der das gegebene Objekt in der DB repräsentiert löschen."""
+        pass

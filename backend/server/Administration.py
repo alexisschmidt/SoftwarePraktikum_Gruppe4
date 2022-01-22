@@ -11,6 +11,7 @@ from server.db.ModulePartMapper import ModulePartMapper
 from server.db.PersonMapper import PersonMapper
 from server.db.SemesterMapper import SemesterMapper
 from server.db.SpoMapper import SpoMapper
+from server.db.SpoValidityMapper import SpoValidityMapper
 from server.db.StudyCourseMapper import StudyCourseMapper
 from server.db.UserMapper import UserMapper
 
@@ -119,15 +120,10 @@ class Administration (object):
 
     """Semester-spezifische Methoden"""
 
-    def create_semester(self, name, title):
+    def create_semester(self, proposal):
         """Ein Semester anlegen"""
-        semester = Semester()
-        semester.set_name(name)
-        semester.set_title(title)
-        semester.set_id(1)
-
         with SemesterMapper() as mapper:
-            return mapper.insert(semester)
+            return mapper.insert(proposal)
 
     def get_semester_by_name(self, name):
         """Alle Semester mit Namen name auslesen."""
@@ -154,12 +150,30 @@ class Administration (object):
         with SemesterMapper() as mapper:
             mapper.delete(semester)
 
+    """SpoValidity-spezifische Methoden"""
+
+    def get_spo_by_semester_hash(self, hashcode: int ):
+        with SpoValidityMapper() as mapper:
+            mapper.find_spo_by_semester_hash(hashcode)
+
+    def get_semester_by_spo_hash(self, hashcode: int ):
+        with SpoValidityMapper() as mapper:
+            mapper.find_semester_by_spo_hash(hashcode)
+
+    def create_validity(self, proposal, endsemester):
+        with SpoValidityMapper() as mapper:
+            mapper.insert(proposal, endsemester)
+
     """Spo-spezifische Methoden"""
 
     def create_spo(self, proposal):
         """Eine Spo anlegen"""
         with SpoMapper() as mapper:
-            return mapper.insert(proposal)
+            newobj = mapper.insert(proposal)
+        with SpoValidityMapper() as mapper:
+            mapper.insert(newobj)
+
+        return newobj
 
     def get_spo_by_name(self, name):
         """Alle Spos mit Namen name auslesen."""
@@ -198,15 +212,10 @@ class Administration (object):
 
     """Studycourse-spezifische Methoden"""
 
-    def create_studycourse(self, name, title):
-
-        studycourse = StudyCourse()
-        studycourse.set_name(name)
-        studycourse.set_title(title)
-        studycourse.set_id(1)
+    def create_studycourse(self, proposal):
 
         with StudyCourseMapper() as mapper:
-            return mapper.insert(studycourse)
+            return mapper.insert(proposal)
 
     def get_studycourse_by_name(self, name):
 
@@ -216,7 +225,7 @@ class Administration (object):
     def get_studycourse_by_id(self, number):
 
         with StudyCourseMapper() as mapper:
-            return mapper.find_by_key(number)
+            return mapper.find_by_id(number)
 
     def get_all_studycourses(self):
 

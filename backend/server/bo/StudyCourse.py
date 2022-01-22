@@ -20,7 +20,7 @@ class StudyCourse (Nbo.NamedBo):
     def from_dict(dictionary=dict()):
         """Umwandeln eines Python dict() in einen StudyCourse()."""
         obj = StudyCourse()
-        # obj.set_id(dictionary["id"])  # Teil von BusinessObject!
+        obj.set_id(dictionary["id"])
         obj.set_name(dictionary["name"])
         obj.set_title(dictionary["title"])
         return obj

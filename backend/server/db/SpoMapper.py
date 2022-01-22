@@ -154,14 +154,12 @@ class SpoMapper(Mapper):
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for (id, creationdate, name, title, spo_hash, studycourse_id, studycourse_studycourse_hash) in tuples:
+        for (id, creationdate, name, title, studycourse_hash) in tuples:
             spo = Spo()
             spo.set_id(id)
             spo.set_name(name)
             spo.set_title(title)
-            spo.set_spo_hash(spo_hash)
-            spo.set_studycourse(studycourse_id)
-            spo.set_studycourse_studycourse_hash(studycourse_studycourse_hash)
+            spo.set_studycourse(studycourse_hash)
 
             result.append(spo)
 
@@ -178,20 +176,18 @@ class SpoMapper(Mapper):
 
         for (maxid) in tuples:
             if maxid[0] is not None:
-
                 spo.set_id(maxid[0] + 1)
             else:
-
                 spo.set_id(1)
 
         try:
-            cursor.execute(f'SELECT id FROM person WHERE studycourse_hash={spo.get_studycourse()}')
+            cursor.execute(f'SELECT id FROM studycourse WHERE studycourse_hash={spo.get_studycourse()}')
             sc = int(cursor.fetchone()[0])
         except ValueError:
             print('spo needs an studycourse to be created!')
 
 
-        command = "INSERT INTO spo (id, creationdate, name, title, spo_hash, studycourse_id studycourse_hash) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+        command = "INSERT INTO spo (id, creationdate, name, title, spo_hash, studycourse_id, studycourse_hash) VALUES (%s,%s,%s,%s,%s,%s,%s)"
         data = (spo.get_id(), spo.get_creationdate(), spo.get_name(), spo.get_title(), hash(spo), sc, spo.get_studycourse())
         print(data)
         cursor.execute(command, data)
