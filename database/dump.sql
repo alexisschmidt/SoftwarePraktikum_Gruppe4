@@ -193,13 +193,14 @@ COLLATE = utf8mb4_0900_ai_ci;
 DROP TABLE IF EXISTS `spoverwaltung`.`spovalidity` ;
 
 CREATE TABLE IF NOT EXISTS `spoverwaltung`.`spovalidity` (
+  `id` INT NOT NULL,
   `spo_id` INT NOT NULL,
   `spo_hash` BIGINT NOT NULL,
   `semester_id` INT NOT NULL,
   `semester_hash` BIGINT NOT NULL,
   `startsem` TINYINT(1) NOT NULL,
   `endsem` TINYINT(1) NOT NULL,
-  PRIMARY KEY (`spo_id`, `spo_hash`, `semester_id`, `semester_hash`),
+  PRIMARY KEY (`id`, `spo_id`, `spo_hash`, `semester_id`, `semester_hash`),
   INDEX `fk_spo_has_semester_semester1_idx` (`semester_id` ASC, `semester_hash` ASC) VISIBLE,
   INDEX `fk_spo_has_semester_spo1_idx` (`spo_id` ASC, `spo_hash` ASC) VISIBLE,
   CONSTRAINT `fk_spo_has_semester_semester1`
