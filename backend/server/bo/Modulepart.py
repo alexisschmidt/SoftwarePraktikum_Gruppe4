@@ -11,6 +11,7 @@ class Modulepart(Spe.SpoElement):
     __sources: str
     __semester: int
     __professor: int
+    __module:   int
 
     def __init__(self):
         super().__init__()
@@ -22,6 +23,7 @@ class Modulepart(Spe.SpoElement):
         self.__sources = ""
         self.__semester = 0
         self.__professor = 0
+        self.__module = 0
 
     def get_sws(self):
         """Auslesen der Semesterwochenstunden"""
@@ -86,6 +88,12 @@ class Modulepart(Spe.SpoElement):
         """Setzen des Modulverantwortlichen"""
         self.__professor = professor
 
+    def get_module(self):
+        return self.__module
+
+    def set_module(self, module: int):
+        self.__module = module
+
     def __str__(self):
         astring = (f"Modulepart:"
                    f"id: {self.get_id()}, "
@@ -118,7 +126,8 @@ class Modulepart(Spe.SpoElement):
             'literature': self.get_literature(),
             'sources': self.get_sources(),
             'semester': self.get_semester(),
-            'professor': self.get_professor()
+            'professor': self.get_professor(),
+            'module': self.get_module()
         })
 
     @staticmethod
@@ -137,6 +146,7 @@ class Modulepart(Spe.SpoElement):
         obj.set_sources(dictionary["sources"])
         obj.set_semester(dictionary["semester"])
         obj.set_professor(dictionary["professor"])
+        obj.set_module(dictionary["module"])
         return obj
 
     __hash__ = Spe.SpoElement.__hash__

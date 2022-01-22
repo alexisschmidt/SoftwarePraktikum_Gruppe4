@@ -100,7 +100,7 @@ class StudyCourseMapper(Mapper):
 
         return result
 
-    def insert(self, studycourse):
+    def insert(self, studycourse: StudyCourse):
 
         cursor = self._cnx.cursor()
         cursor.execute("SELECT MAX(id) AS maxid FROM studycourse ")
@@ -124,7 +124,7 @@ class StudyCourseMapper(Mapper):
 
         return studycourse
 
-    def update(self, studycourse):
+    def update(self, studycourse: StudyCourse):
 
         cursor = self._cnx.cursor()
 
@@ -135,7 +135,7 @@ class StudyCourseMapper(Mapper):
         self._cnx.commit()
         cursor.close()
 
-    def delete(self, studycourse):
+    def delete(self, studycourse: StudyCourse):
 
         cursor = self._cnx.cursor()
 

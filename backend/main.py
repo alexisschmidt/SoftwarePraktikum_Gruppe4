@@ -71,14 +71,15 @@ module = api.inherit('Module', spoelement, {
 })
 
 modulepart = api.inherit('Modulepart', spoelement, {
-    'sws': fields.Integer(attribute='_sws', description='Anzahl der SWS des Modulteils'),
-    'language': fields.String(attribute='_language', descpription='Sprache des Modulteils'),
-    'description': fields.String(attribute='_description', description='Beschreibung des Modulteils'),
-    'connection': fields.String(attribute='_connection', description='Verbindung zu anderen Modulteilen'),
-    'literature': fields.String(attribute='_literature', description='Literatur für das Modulteil'),
-    'sources': fields.String(attribute='_sources', description='Quellen'),
-    'semester': fields.Integer(attribute='_semester', description='Semester des Modulteils'),
-    'professor': fields.Integer(attribute='_professor', description='Prof des Modulteils'),
+    'sws':          fields.Integer(attribute='_sws', description='Anzahl der SWS des Modulteils'),
+    'language':     fields.String(attribute='_language', descpription='Sprache des Modulteils'),
+    'description':  fields.String(attribute='_description', description='Beschreibung des Modulteils'),
+    'connection':   fields.String(attribute='_connection', description='Verbindung zu anderen Modulteilen'),
+    'literature':   fields.String(attribute='_literature', description='Literatur für das Modulteil'),
+    'sources':      fields.String(attribute='_sources', description='Quellen'),
+    'semester':     fields.Integer(attribute='_semester', description='Semester des Modulteils'),
+    'professor':    fields.Integer(attribute='_professor', description='Prof des Modulteils'),
+    'module':       fields.Integer(attribute='_module', description='Das zugehörige Modul')
 })
 
 studycourse = api.inherit('StudyCourse', namedbo)
