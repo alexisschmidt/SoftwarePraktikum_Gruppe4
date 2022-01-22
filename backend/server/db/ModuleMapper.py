@@ -155,7 +155,7 @@ class ModuleMapper(Mapper):
 
         return result
 
-    def insert(self, module: Module):
+    def insert(self, module: Module, ):
 
         cursor = self._cnx.cursor()
         cursor.execute("SELECT MAX(id) AS maxid FROM module ")
@@ -168,9 +168,9 @@ class ModuleMapper(Mapper):
                 module.set_id(1)
 
         try:
-            cursor.execute(f'SELECT id FROM person WHERE person_hash={module.get_instructor()}')
+            cursor.execute(f"SELECT id FROM person WHERE person_hash={module.get_instructor()}")
         except ValueError:
-            print('module needs an instructor to be created!')
+            print("module needs an instructor to be created!")
 
         instructor = int(cursor.fetchone()[0])
         command = "INSERT INTO module (id, creationdate, name, title, " \
