@@ -73,8 +73,7 @@ class Spo (Nbo.NamedBo):
                self.get_end_semester() == other.get_endsemester() and \
                self.get_studycourse() == other.get_studycourse()
 
-    def __hash__(self):
-        super().__hash__()
+    __hash__ = Nbo.NamedBo.__hash__
 
 
 """

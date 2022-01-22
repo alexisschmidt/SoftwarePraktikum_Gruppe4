@@ -4,8 +4,7 @@ from flask_restx import Api, Resource, fields
 from flask_cors import CORS
 
 # Wir greifen natürlich auf unsere Applikationslogik inkl. BusinessObject-Klassen zurück
-from server.SecurityDecorator import secured
-from server.Administration import Administration
+
 from server.bo.Spo import Spo
 from server.bo.User import User
 from server.bo.Module import Module
@@ -13,15 +12,10 @@ from server.bo.Modulepart import Modulepart
 from server.bo.StudyCourse import StudyCourse
 from server.bo.Person import Person
 from server.bo.Semester import Semester
-
-"""
-from server.bo.Module import Module
-from server.bo.Modulepart import Modulepart
-from server.bo.StudyCourse import StudyCourse
-from server.bo.Person import Person
-"""
+from server.Administration import Administration
 
 # Außerdem nutzen wir einen selbstgeschriebenen Decorator der die Authentifikation übernimmt
+from server.SecurityDecorator import secured
 
 app = Flask(__name__)
 CORS(app, resources=r'/sopra/*')
@@ -77,7 +71,7 @@ module = api.inherit('Module', spoelement, {
 })
 
 modulepart = api.inherit('Modulepart', spoelement, {
-    'sws': fields.String(attribute='_sws', description='Anzahl der SWS des Modulteils'),
+    'sws': fields.Integer(attribute='_sws', description='Anzahl der SWS des Modulteils'),
     'language': fields.String(attribute='_language', descpription='Sprache des Modulteils'),
     'description': fields.String(attribute='_description', description='Beschreibung des Modulteils'),
     'connection': fields.String(attribute='_connection', description='Verbindung zu anderen Modulteilen'),
@@ -104,7 +98,7 @@ person = api.inherit('Person', namedbo, {
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
 class UserListOperations(Resource):
     @sposystem.marshal_list_with(user)
-    @secured
+    # @secured
     def get(self):
         """
         Auslesen aller User Objekte.
@@ -301,7 +295,7 @@ class SpoStartSemesterOperations:
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
 class ModuleListOperations(Resource):
     @sposystem.marshal_list_with(module, code=200)
-    @secured
+    # @secured
     def get(self):
 
         adm = Administration()
@@ -329,9 +323,9 @@ class ModuleListOperations(Resource):
 @sposystem.param("id", "Die id des Modules")
 class ModuleOperations(Resource):
     @sposystem.marshal_with(module)
-    @secured
+    # @secured
     def get(self, id):
-        """Auslesen eines bestimmten Modul-Objekts"""
+        """Auslesen eines durch ID bestimmten Modul-Objekts"""
         adm = Administration()
         mo = adm.get_module_by_id(id)
         return mo
@@ -369,19 +363,27 @@ class ModuleOperations(Resource):
         return '', 200
 
 
-@sposystem.route('/module/<int:module_id>')
+@sposystem.route('/modules/<int:module_hash>')
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
-@sposystem.param('id', 'Die id des Moduls')
-class ModulePartsOperations(Resource):
-    @sposystem.marshal_list_with(module)
-    @secured
-    def get(self, id):
+@sposystem.param("module_hash", "Der Hash des Modules")
+class ModuleOperations(Resource):
+    @sposystem.marshal_with(module)
+    # @secured
+    def get(self, module_hash):
+        """Auslesen eines durch hash bestimmten Modul-Objekts"""
         adm = Administration()
-        moparts = adm.get_module_by_id(id)
-        moparts.get_moduleparts()
+        mo = adm.get_module_by_hash(module_hash)
+        return mo
 
-        return moparts
+    @secured
+    def delete(self, module_hash):
+        """Löschen eines bestimmten Module-Objekts.
+        Das zu löschende Objekt wird durch den hash in dem URI bestimmt."""
 
+        adm = Administration()
+        mo = adm.get_module_by_hash(module_hash)
+        adm.delete_module(mo)
+        return '', 200
 
 @sposystem.route('/moduleparts')
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
@@ -415,7 +417,7 @@ class ModulePartOperations(Resource):
     @sposystem.marshal_with(modulepart)
     @secured
     def get(self, id):
-        """Auslesen eines bestimmten Modulepart-Objekts"""
+        """Auslesen eines durch die ID bestimmten Modulepart-Objekts"""
         adm = Administration()
         mopart = adm.get_modulepart_by_id(id)
         return mopart
@@ -451,6 +453,18 @@ class ModulePartOperations(Resource):
         mopart = adm.get_modulepart_by_id(id)
         adm.delete_modulepart(mopart)
         return '', 200
+
+@sposystem.route('/moduleparts/<int:modulepart_hash>')
+@sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
+@sposystem.param("modulepart_hash", "Der Hash des Moduleparts")
+class ModulePartOperations(Resource):
+    @sposystem.marshal_with(modulepart)
+    @secured
+    def get(self, modulepart_hash):
+        """Auslesen eines durch den Hash bestimmten Modulepart-Objekts"""
+        adm = Administration()
+        mopart = adm.get_modulepart_by_hash(modulepart_hash)
+        return mopart
 
 
 @sposystem.route('/studycourses')
@@ -553,8 +567,7 @@ class PersonListOperations(Resource):
         proposal = Person.from_dict(api.payload)
 
         if proposal is not None:
-            pe = adm.create_person(proposal.get_firstname(),
-                                   proposal.get_lastname(), proposal.get_email())
+            pe = adm.create_person(proposal)
             return pe, 200
         else:
             return'', 500

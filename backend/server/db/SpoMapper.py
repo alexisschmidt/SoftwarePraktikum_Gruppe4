@@ -53,7 +53,7 @@ class SpoMapper(Mapper):
 
         return result
 
-    def find_by_key(self, key):
+    def find_by_id(self, key):
 
         result = None
 

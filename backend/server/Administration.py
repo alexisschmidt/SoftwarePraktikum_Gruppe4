@@ -33,7 +33,12 @@ class Administration (object):
     def get_module_by_id(self, number):
         """Das Modul mit der gegebenen ID auslesen."""
         with ModuleMapper() as mapper:
-            return mapper.find_by_key(number)
+            return mapper.find_by_id(number)
+
+    def get_module_by_hash(self, number):
+        """Das Modul mit dem gegebenem Hash auslesen."""
+        with ModuleMapper() as mapper:
+            return mapper.find_by_hash(number)
 
     def get_all_modules(self):
         """Alle module auslesen."""
@@ -44,6 +49,10 @@ class Administration (object):
         """Den gegebenen Benutzer speichern."""
         with ModuleMapper as mapper:
             mapper.update(module)
+
+    def delete_module(self, module):
+        with ModuleMapper() as mapper:
+            mapper.delete(module)
 
     """Modulteil-spezifische Methoden"""
 
@@ -59,7 +68,7 @@ class Administration (object):
     def get_modulepart_by_id(self, number):
         """Den Modulteil mit der gegebenen ID auslesen."""
         with ModulePartMapper() as mapper:
-            return mapper.find_by_key(number)
+            return mapper.find_by_id(number)
 
     def get_all_moduleparts(self):
         """Alle Modulteile auslesen."""
@@ -78,16 +87,10 @@ class Administration (object):
 
     """Person-spezifische Methoden"""
 
-    def create_person(self, firstname, lastname, email):
+    def create_person(self, proposal):
         """Eine Person anlegen"""
-        person = Person()
-        person.set_firstname(firstname)
-        person.set_lastname(lastname)
-        person.set_email(email)
-        person.set_id(1)
-
         with PersonMapper() as mapper:
-            return mapper.insert(person)
+            return mapper.insert(proposal)
 
     def get_person_by_name(self, name):
         """Alle Personen mit Namen name auslesen."""

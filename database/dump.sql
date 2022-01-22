@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS `spoverwaltung`.`person` (
   `firstname` VARCHAR(45) NOT NULL,
   `lastname` VARCHAR(45) NOT NULL,
   `email` VARCHAR(45) NOT NULL,
-  `person_hash` INT NOT NULL,
+  `person_hash` BIGINT NOT NULL,
   PRIMARY KEY (`id`, `person_hash`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
@@ -53,9 +53,9 @@ CREATE TABLE IF NOT EXISTS `spoverwaltung`.`module` (
   `ects` INT NOT NULL,
   `edvnr` VARCHAR(45) NOT NULL,
   `workload` VARCHAR(200) NOT NULL,
-  `module_hash` INT NOT NULL,
+  `module_hash` BIGINT NOT NULL,
   `instructor_id` INT NOT NULL,
-  `instructor_hash` INT NOT NULL,
+  `instructor_hash` BIGINT NOT NULL,
   PRIMARY KEY (`id`, `module_hash`),
   INDEX `fk_module_person1_idx` (`instructor_id` ASC, `instructor_hash` ASC) VISIBLE,
   CONSTRAINT `fk_module_person1`
@@ -86,22 +86,20 @@ CREATE TABLE IF NOT EXISTS `spoverwaltung`.`modulepart` (
   `ects` INT NOT NULL,
   `edvnr` VARCHAR(45) NOT NULL,
   `workload` VARCHAR(600) NOT NULL,
-  `modulepart_hash` INT NOT NULL,
+  `modulepart_hash` BIGINT NOT NULL,
   `professor_id` INT NOT NULL,
-  `professor_hash` INT NOT NULL,
+  `professor_hash` BIGINT NOT NULL,
   `module_id` INT NOT NULL,
-  `module_hash` INT NOT NULL,
+  `module_hash` BIGINT NOT NULL,
   PRIMARY KEY (`id`, `modulepart_hash`, `professor_id`, `professor_hash`, `module_id`, `module_hash`),
   INDEX `fk_modulepart_person1_idx` (`professor_id` ASC, `professor_hash` ASC) VISIBLE,
   INDEX `fk_modulepart_module1_idx` (`module_id` ASC, `module_hash` ASC) VISIBLE,
-  CONSTRAINT `fk_modulepart_person1`
-    FOREIGN KEY (`professor_id` , `professor_hash`)
-    REFERENCES `spoverwaltung`.`person` (`id` , `person_hash`),
   CONSTRAINT `fk_modulepart_module1`
     FOREIGN KEY (`module_id` , `module_hash`)
-    REFERENCES `spoverwaltung`.`module` (`id` , `module_hash`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    REFERENCES `spoverwaltung`.`module` (`id` , `module_hash`),
+  CONSTRAINT `fk_modulepart_person1`
+    FOREIGN KEY (`professor_id` , `professor_hash`)
+    REFERENCES `spoverwaltung`.`person` (`id` , `person_hash`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -117,7 +115,7 @@ CREATE TABLE IF NOT EXISTS `spoverwaltung`.`semester` (
   `creationdate` DATETIME NOT NULL,
   `name` VARCHAR(45) NOT NULL,
   `title` VARCHAR(45) NOT NULL,
-  `semester_hash` INT NOT NULL,
+  `semester_hash` BIGINT NOT NULL,
   PRIMARY KEY (`id`, `semester_hash`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
@@ -134,7 +132,7 @@ CREATE TABLE IF NOT EXISTS `spoverwaltung`.`studycourse` (
   `creationdate` DATETIME NOT NULL,
   `name` VARCHAR(45) NOT NULL,
   `title` VARCHAR(45) NOT NULL,
-  `studycourse_hash` INT NOT NULL,
+  `studycourse_hash` BIGINT NOT NULL,
   PRIMARY KEY (`id`, `studycourse_hash`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
@@ -151,16 +149,65 @@ CREATE TABLE IF NOT EXISTS `spoverwaltung`.`spo` (
   `creationdate` DATETIME NOT NULL,
   `name` VARCHAR(45) NOT NULL,
   `title` VARCHAR(45) NOT NULL,
-  `spo_hash` INT NOT NULL,
+  `spo_hash` BIGINT NOT NULL,
   `studycourse_id` INT NOT NULL,
-  `studycourse_studycourse_hash` INT NOT NULL,
-  PRIMARY KEY (`id`, `spo_hash`, `studycourse_id`, `studycourse_studycourse_hash`),
-  INDEX `fk_spo_studycourse1_idx` (`studycourse_id` ASC, `studycourse_studycourse_hash` ASC) VISIBLE,
+  `studycourse_hash` BIGINT NOT NULL,
+  PRIMARY KEY (`id`, `spo_hash`, `studycourse_id`, `studycourse_hash`),
+  INDEX `fk_spo_studycourse1_idx` (`studycourse_id` ASC, `studycourse_hash` ASC) VISIBLE,
   CONSTRAINT `fk_spo_studycourse1`
-    FOREIGN KEY (`studycourse_id` , `studycourse_studycourse_hash`)
-    REFERENCES `spoverwaltung`.`studycourse` (`id` , `studycourse_hash`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    FOREIGN KEY (`studycourse_id` , `studycourse_hash`)
+    REFERENCES `spoverwaltung`.`studycourse` (`id` , `studycourse_hash`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `spoverwaltung`.`spocomposition`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `spoverwaltung`.`spocomposition` ;
+
+CREATE TABLE IF NOT EXISTS `spoverwaltung`.`spocomposition` (
+  `id` INT NOT NULL,
+  `module_id` INT NOT NULL,
+  `module_hash` BIGINT NOT NULL,
+  `spo_id` INT NOT NULL,
+  `spo_hash` BIGINT NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_module_has_spo_spo1_idx` (`spo_id` ASC, `spo_hash` ASC) VISIBLE,
+  INDEX `fk_module_has_spo_module1_idx` (`module_id` ASC, `module_hash` ASC) VISIBLE,
+  CONSTRAINT `fk_module_has_spo_module1`
+    FOREIGN KEY (`module_id` , `module_hash`)
+    REFERENCES `spoverwaltung`.`module` (`id` , `module_hash`),
+  CONSTRAINT `fk_module_has_spo_spo1`
+    FOREIGN KEY (`spo_id` , `spo_hash`)
+    REFERENCES `spoverwaltung`.`spo` (`id` , `spo_hash`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `spoverwaltung`.`spovalidity`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `spoverwaltung`.`spovalidity` ;
+
+CREATE TABLE IF NOT EXISTS `spoverwaltung`.`spovalidity` (
+  `spo_id` INT NOT NULL,
+  `spo_hash` BIGINT NOT NULL,
+  `semester_id` INT NOT NULL,
+  `semester_hash` BIGINT NOT NULL,
+  `startsem` TINYINT(1) NOT NULL,
+  `endsem` TINYINT(1) NOT NULL,
+  PRIMARY KEY (`spo_id`, `spo_hash`, `semester_id`, `semester_hash`),
+  INDEX `fk_spo_has_semester_semester1_idx` (`semester_id` ASC, `semester_hash` ASC) VISIBLE,
+  INDEX `fk_spo_has_semester_spo1_idx` (`spo_id` ASC, `spo_hash` ASC) VISIBLE,
+  CONSTRAINT `fk_spo_has_semester_semester1`
+    FOREIGN KEY (`semester_id` , `semester_hash`)
+    REFERENCES `spoverwaltung`.`semester` (`id` , `semester_hash`),
+  CONSTRAINT `fk_spo_has_semester_spo1`
+    FOREIGN KEY (`spo_id` , `spo_hash`)
+    REFERENCES `spoverwaltung`.`spo` (`id` , `spo_hash`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -179,67 +226,8 @@ CREATE TABLE IF NOT EXISTS `spoverwaltung`.`user` (
   `email` VARCHAR(45) NOT NULL,
   `google_user_id` VARCHAR(60) NOT NULL,
   `isadmin` TINYINT(1) NOT NULL,
-  `user_hash` INT NOT NULL,
+  `user_hash` BIGINT NOT NULL,
   PRIMARY KEY (`id`, `user_hash`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
-
-
--- -----------------------------------------------------
--- Table `spoverwaltung`.`spocomposition`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `spoverwaltung`.`spocomposition` ;
-
-CREATE TABLE IF NOT EXISTS `spoverwaltung`.`spocomposition` (
-  `id` INT NOT NULL,
-  `module_id` INT NOT NULL,
-  `module_hash` INT NOT NULL,
-  `spo_id` INT NOT NULL,
-  `spo_hash` INT NOT NULL,
-  PRIMARY KEY (`id`),
-  INDEX `fk_module_has_spo_spo1_idx` (`spo_id` ASC, `spo_hash` ASC) VISIBLE,
-  INDEX `fk_module_has_spo_module1_idx` (`module_id` ASC, `module_hash` ASC) VISIBLE,
-  CONSTRAINT `fk_module_has_spo_module1`
-    FOREIGN KEY (`module_id` , `module_hash`)
-    REFERENCES `spoverwaltung`.`module` (`id` , `module_hash`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_module_has_spo_spo1`
-    FOREIGN KEY (`spo_id` , `spo_hash`)
-    REFERENCES `spoverwaltung`.`spo` (`id` , `spo_hash`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
-
-
--- -----------------------------------------------------
--- Table `spoverwaltung`.`spovalidity`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `spoverwaltung`.`spovalidity` ;
-
-CREATE TABLE IF NOT EXISTS `spoverwaltung`.`spovalidity` (
-  `spo_id` INT NOT NULL,
-  `spo_hash` INT NOT NULL,
-  `semester_id` INT NOT NULL,
-  `semester_semester_hash` INT NOT NULL,
-  `startsem` TINYINT(1) NOT NULL,
-  `endsem` TINYINT(1) NOT NULL,
-  PRIMARY KEY (`spo_id`, `spo_hash`, `semester_id`, `semester_semester_hash`),
-  INDEX `fk_spo_has_semester_semester1_idx` (`semester_id` ASC, `semester_semester_hash` ASC) VISIBLE,
-  INDEX `fk_spo_has_semester_spo1_idx` (`spo_id` ASC, `spo_hash` ASC) VISIBLE,
-  CONSTRAINT `fk_spo_has_semester_spo1`
-    FOREIGN KEY (`spo_id` , `spo_hash`)
-    REFERENCES `spoverwaltung`.`spo` (`id` , `spo_hash`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_spo_has_semester_semester1`
-    FOREIGN KEY (`semester_id` , `semester_semester_hash`)
-    REFERENCES `spoverwaltung`.`semester` (`id` , `semester_hash`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;

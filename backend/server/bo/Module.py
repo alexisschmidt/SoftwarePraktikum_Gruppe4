@@ -115,8 +115,7 @@ class Module(Spe.SpoElement):
                self.get_examtype() == other.get_examtype() and \
                self.get_instructor() == other.get_instructor()
 
-    def __hash__(self):
-        super().__hash__()
+    __hash__ = Spe.SpoElement.__hash__
 
 
 """
