@@ -10,7 +10,9 @@ class UserMapper(Mapper):
     def find_all(self):
         result = []
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT * from user")
+        cursor.execute("SELECT id, creationdate, "
+                       "firstname, lastname, email, "
+                       "google_user_id, isadmin FROM user")
         tuples = cursor.fetchall()
 
         for (id, creationdate, firstname, lastname, email, google_user_id, isadmin) in tuples:
@@ -53,12 +55,12 @@ class UserMapper(Mapper):
 
         return result
 
-    def find_by_key(self, key):
+    def find_by_id(self, key):
 
         result = None
 
         cursor = self._cnx.cursor()
-        command = "SELECT * user WHERE id={}".format(key)
+        command = f"SELECT * user WHERE id={key}"
         cursor.execute(command)
         tuples = cursor.fetchall()
 
@@ -87,7 +89,7 @@ class UserMapper(Mapper):
         result = None
 
         cursor = self._cnx.cursor()
-        command = "SELECT * user WHERE user_hash={}".format(hashcode)
+        command = f"SELECT * user WHERE user_hash={hashcode}"
         cursor.execute(command)
         tuples = cursor.fetchall()
 
