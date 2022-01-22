@@ -139,7 +139,7 @@ class Modulepart(Spe.SpoElement):
         obj.set_professor(dictionary["professor"])
         return obj
 
-    __hash__ = Spe.__hash__()
+    __hash__ = Spe.SpoElement.__hash__
 
 """
 # Test Script
