@@ -2,7 +2,7 @@ from server.bo import Businessobject as bo
 import json
 
 
-class ModuleList(bo.BusinessObject):
+class SpoComposition(bo.BusinessObject):
     _module: int
     _modulepart: int
 
