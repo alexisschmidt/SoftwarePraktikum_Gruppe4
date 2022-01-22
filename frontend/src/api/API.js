@@ -24,6 +24,8 @@ export default class API{
 		#getAllModulePartsURL = (id) => `${this.#serverBaseURL}/modulepart/${id}` //Alle Moduleparts eines Modules/Spo
 		#addSpoURL = () => `${this.#serverBaseURL}/spo` //Spo erstellen
 
+
+
 		//Admin Ansicht - Liste aller SPOs
 		#getAllSpoRelatedURL = (id) => `${this.#serverBaseURL}/spo/${id}`; //Alle Spos die zu einem Sudiengang gehören gelistet nach WS20, SS21...
 
