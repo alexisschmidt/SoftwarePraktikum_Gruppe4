@@ -102,20 +102,21 @@ class SpoMapper(Mapper):
 
         return result
 
-    def find_all_by_studycourse(self, studycourse_id):
+    def find_all_by_studycourse(self, studycourse):
         result = []
         cursor = self._cnx.cursor()
-        command = "SELECT id, creationdate, name, title, studycourse_id FROM spo WHERE studycourse_id LIKE '{}' ORDER BY studycourse_id".format(studycourse_id)
-        cursor.execute(command)
+        command = "SELECT id, creationdate, name, title, studycourse_id FROM spo " \
+                  f"WHERE studycourse_id LIKE '{studycourse}' " \
+                  "ORDER BY studycourse_id"
         tuples = cursor.fetchall()
 
         try:
-            (id, creationdate, name, title, studycourse_id) = tuples[0]
+            (id, creationdate, name, title, studycourse) = tuples[0]
             spo = Spo()
             spo.set_id(id)
             spo.set_name(name)
             spo.set_title(title)
-            spo.set_studycourse_id(studycourse_id)
+            spo.set_studycourse(studycourse)
             result = spo
         except IndexError:
 
@@ -126,19 +127,21 @@ class SpoMapper(Mapper):
 
         return result
 
-    def find_latest_by_studycourse(self, studycourse_hash):
+    def find_latest_by_studycourse(self, studycourse):
         result = []
         cursor = self._cnx.cursor()
-        command = "SELECT id, creationdate, name, title, studycourse_hash FROM spo WHERE studycourse_hash = '{}' ORDER BY creationdate DESC LIMIT 1".format(studycourse_hash)
+        command = "SELECT id, creationdate, name, title, studycourse_hash " \
+                  f"FROM spo WHERE studycourse_hash = '{studycourse}' " \
+                  "ORDER BY creationdate DESC LIMIT 1"
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for (id, creationdate, name, title, studycourse_hash) in tuples:
+        for (id, creationdate, name, title, studycourse) in tuples:
             spo = Spo()
             spo.set_id(id)
             spo.set_name(name)
             spo.set_title(title)
-            spo.set_studycourse_hash(studycourse_hash)
+            spo.set_studycourse(studycourse)
 
             result.append(spo)
 
@@ -147,21 +150,26 @@ class SpoMapper(Mapper):
 
         return result
 
-    def find_by_startsemester_and_studycourse(self, studycourse_id):
-        result = []
+    def find_by_startsemester_and_studycourse(self, semesterhash, studycoursehash):
+        result = None
         cursor = self._cnx.cursor()
-        command = "SELECT id, creationdate, name, title, spo_hash, studycourse_id, studycourse_studycourse_hash FROM spo WHERE studycourse_id='{}' AND start_semester='{}'".format(studycourse_id)
+        command ="SELECT spo.id, spo.creationdate, spo.name, spo.title, spo.studycourse_hash " \
+                 "FROM spo " \
+                 "LEFT JOIN spovalidity ON spo.spo_hash = spovalidity.spo_hash " \
+                 f"WHERE semester_hash = {semesterhash} AND studycourse_hash = {studycoursehash}"
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for (id, creationdate, name, title, studycourse_hash) in tuples:
+        try:
+            (id, creationdate, name, title, studycourse_hash) = tuples[0]
             spo = Spo()
             spo.set_id(id)
             spo.set_name(name)
             spo.set_title(title)
             spo.set_studycourse(studycourse_hash)
-
-            result.append(spo)
+            result = spo
+        except IndexError:
+            result = None
 
         self._cnx.commit()
         cursor.close()
@@ -189,7 +197,6 @@ class SpoMapper(Mapper):
 
         command = "INSERT INTO spo (id, creationdate, name, title, spo_hash, studycourse_id, studycourse_hash) VALUES (%s,%s,%s,%s,%s,%s,%s)"
         data = (spo.get_id(), spo.get_creationdate(), spo.get_name(), spo.get_title(), hash(spo), sc, spo.get_studycourse())
-        print(data)
         cursor.execute(command, data)
 
         self._cnx.commit()
