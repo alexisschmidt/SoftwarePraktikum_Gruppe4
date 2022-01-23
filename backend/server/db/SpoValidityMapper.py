@@ -43,7 +43,7 @@ class SpoValidityMapper(Mapper):
 
         cursor = self._cnx.cursor()
         command = f"SELECT spo_hash FROM spovalidity " \
-                  f"WHERE semeser_hash={hashcode} AND WHERE startsem=1"
+                  f"WHERE semester_hash={hashcode} AND WHERE startsem=1"
         cursor.execute(command)
         tuples = cursor.fetchall()
 
@@ -102,6 +102,8 @@ class SpoValidityMapper(Mapper):
         tuples = cursor.fetchall()
 
         newid= 0
+        ssid= 0
+        esid= 0
         for (maxid) in tuples:
             if maxid[0] is not None:
                 newid = maxid[0] + 1
@@ -111,9 +113,9 @@ class SpoValidityMapper(Mapper):
             cursor.execute(f"SELECT id FROM semester WHERE semester_hash={spo.get_start_semester()}")
             ssid = int(cursor.fetchone()[0])
             command = "UPDATE spovalidity  SET " \
-                      "spo_id= %s, spo_hash=%s, " \
-                      "semester_id=%s, semester_hash=%s, " \
-                      "startsem=%s, endsem=%s" \
+                      f"spo_id={spo.get_id()}, spo_hash={hash(spo)}, " \
+                      f"semester_id={esid}, semester_hash={spo.get_end_semester()}, " \
+                      f"startsem={1}, endsem={0} " \
                       f"WHERE id={newid}"
             data = (spo.get_id(), hash(spo), ssid, spo.get_start_semester(),
                     1, 0)
@@ -121,14 +123,12 @@ class SpoValidityMapper(Mapper):
             cursor.execute(f"SELECT id FROM semester WHERE semester_hash={spo.get_end_semester()}")
             esid = int(cursor.fetchone())
             command = "UPDATE spovalidity  SET " \
-                      "spo_id=%s, spo_hash=%s, " \
-                      "semester_id=%s, semester_hash=%s, " \
-                      "startsem=%s, endsem=%s " \
+                      f"spo_id={spo.get_id()}, spo_hash={hash(spo)}, " \
+                      f"semester_id={esid}, semester_hash={spo.get_end_semester()}, " \
+                      f"startsem={0}, endsem={1} " \
                       f"WHERE id={newid}"
-            data = (spo.get_id(), hash(spo), esid, spo.get_end_semester(),
-                    0, 1)
-
-        cursor.execute(command, data)
+        print(command)
+        cursor.execute(command)
         self._cnx.commit()
         cursor.close()
         return spo
