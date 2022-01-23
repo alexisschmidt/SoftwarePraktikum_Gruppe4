@@ -156,8 +156,8 @@ class SpoForm extends Component {
             titleEdited,
 
             start_semester,
-            start_semesteValidationFailed,
-            start_semesteEdited,
+            start_semesterValidationFailed,
+            start_semesterEdited,
 
             end_semester,
             end_semesterValidationFailed,
@@ -181,7 +181,7 @@ class SpoForm extends Component {
 
         if (spo) {
             // Projekt objekt true, somit ein edit
-            title = `Spo "${module.name}" erstellen`;
+            title = `Spo "${spo.name}" erstellen`;
             header = 'Neue Spo Daten einfügen';
         } else {
             title = 'Erstelle eine neue Spo';
@@ -204,6 +204,9 @@ class SpoForm extends Component {
 
                         <form noValidate autoComplete='off'>
 
+                        <TextField autoFocus type='text' required fullWidth margin='small' id='id' label='id' variant="outlined" value={id}
+                                onChange={this.numberFieldValueChange} error={idValidationFailed} />
+
                             <TextField autoFocus type='text' required fullWidth margin='small' id='name' label='Sponame' variant="outlined" value={name}
                                 onChange={this.textFieldValueChange} error={nameValidationFailed} />
 
@@ -214,11 +217,11 @@ class SpoForm extends Component {
                                 onChange={this.numberValueChange} error={start_semesterValidationFailed} />
 
 
-<TextField  autoFocus type='text' required fullWidth margin='small' id='end_semester' label='End Semester' variant="outlined" value={end_semester}
+                            <TextField  autoFocus type='text' required fullWidth margin='small' id='end_semester' label='End Semester' variant="outlined" value={end_semester}
                                 onChange={this.numberValueChange} error={end_semesterValidationFailed} />  
 
 
-<TextField  autoFocus type='text' required fullWidth margin='small' id='studyCourse' label='StudyCourse' variant="outlined" value={studyCourse}
+                            <TextField  autoFocus type='text' required fullWidth margin='small' id='studyCourse' label='StudyCourse' variant="outlined" value={studyCourse}
                                 onChange={this.textFieldValueChange} error={studyCourseValidationFailed} />
 
                                 
@@ -227,7 +230,7 @@ class SpoForm extends Component {
                         <LoadingProgress show={addingInProgress || updatingInProgress} />
                         {
                             // Show error message in dependency of Projektart prop
-                            module ?
+                            spo ?
                                 <ContextErrorMessage error={updatingError} contextErrorMsg={`The Spo ${spo.getID()} could not be updated.`} onReload={this.updateSpo} />
                                 :
                                 <ContextErrorMessage error={addingError} contextErrorMsg={`The Spo could not be added.`} onReload={this.addSpo} />
@@ -240,12 +243,12 @@ class SpoForm extends Component {
                         {
                             // If a Projekt is given, show an update button, else an add button
                             spo ?
-                                <Button disabled={nameValidationFailed || tileValidationFailed || start_semesterValidationFailed || end_semesterValidationFailed || studyCourseValidationFailed  } variant='contained' onClick={this.updateSpo} color='primary'>
+                                <Button disabled={idValidationFailed ||nameValidationFailed || titleValidationFailed || start_semesterValidationFailed || end_semesterValidationFailed || studyCourseValidationFailed  } variant='contained' onClick={this.updateSpo} color='primary'>
                                     Speichern  
                                     //anpassen 
                         </Button>
                                 :
-                                <Button disabled={nameValidationFailed || !nameEdited || titleValidationFailed || !titleEdited || start_semesterValidationFailed || !start_semesterEdited || end_semesterValidationFailed || !end_semesterEdited || studyCourseValidationFailed || !studyCourseEdited}
+                                <Button disabled={idValidationFailed || !idEdited ||nameValidationFailed || !nameEdited || titleValidationFailed || !titleEdited || start_semesterValidationFailed || !start_semesterEdited || end_semesterValidationFailed || !end_semesterEdited || studyCourseValidationFailed || !studyCourseEdited}
                                     variant='contained' onClick={this.addSpo} color='primary'>
                                     Hinzufügen
                         </Button>
