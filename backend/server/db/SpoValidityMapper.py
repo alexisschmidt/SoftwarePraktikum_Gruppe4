@@ -72,7 +72,7 @@ class SpoValidityMapper(Mapper):
         result = []
 
         cursor = self._cnx.cursor()
-        command = f"SELECT semester_hash FROM spo WHERE id={hashcode}"
+        command = f"SELECT semester_hash FROM spovalidity WHERE spo_hash={hashcode}"
         cursor.execute(command)
         tuples = cursor.fetchall()
 
