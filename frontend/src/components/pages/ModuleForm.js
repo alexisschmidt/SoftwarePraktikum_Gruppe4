@@ -72,7 +72,6 @@ export class ModuleForm extends Component {
         newModule.setedvnr(this.state.edvnr)
         newModule.setects(this.state.ects)
         newModule.setworkload(this.state.workload)
-        newModule.set_type(this.state.type)
         newModule.set_requirement(this.state.requirement)
         newModule.set_outcome(this.state.outcome)
         newModule.set_examtype(this.state.set_examtype)
@@ -195,9 +194,6 @@ handleClose = () => {
           instructorValidationFailed,
           instructorEdited,
 
-
-
-
           addingInProgress,
           addingError,
           updatingInProgress,
@@ -258,7 +254,7 @@ handleClose = () => {
                               onChange={this.textFieldValueChange} error={examtypeValidationFailed} />
 
                           <TextField  autoFocus type='text' required fullWidth margin='small' id='instructor' label='instructur' variant="outlined" value={instructor}
-                              onChange={this.textFieldValueChange} error={instructorValidationFailed} />
+                              onChange={this.numberValueChange} error={instructorValidationFailed} />
 
                       </form>
                       <LoadingProgress show={addingInProgress || updatingInProgress} />
