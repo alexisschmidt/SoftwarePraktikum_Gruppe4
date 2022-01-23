@@ -114,3 +114,172 @@ export default class AdminTable extends Component {
     );
   }
 } 
+
+// Tabelle mit zum aufklappen
+/* 
+import * as React from 'react';
+import PropTypes from 'prop-types';
+import Box from '@mui/material/Box';
+import Collapse from '@mui/material/Collapse';
+import IconButton from '@mui/material/IconButton';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Typography from '@mui/material/Typography';
+import Paper from '@mui/material/Paper';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+
+function createData(name, edvnr, modul, sws, etcs, bearbeiten) {
+  return {
+    name,
+    edvnr,
+    modul,
+    sws,
+    etcs,
+    bearbeiten,
+    weiteres: [
+      {
+        etcspunkte: '2',
+        swspunkte: '2',
+        professorID: 'Wagner',
+        buch: 'Wirtschaft',
+        sprache: 'Deutsch',
+        edvnummer: '234567a',
+      },
+
+      {
+        etcspunkte: '3',
+        swspunkte: '2',
+        professorID: 'Müller',
+        buch: 'Ökonomie',
+        sprache: 'Deutsch',
+        edvnummer: '234567b'
+      },
+    ],
+  };
+}
+
+
+
+function Row(props) {
+  const { row } = props;
+  const [open, setOpen] = React.useState(false);
+
+
+
+  return (
+    <React.Fragment>
+      <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
+        <TableCell>
+          <IconButton
+            aria-label="expand row"
+            size="small"
+            onClick={() => setOpen(!open)}
+          >
+            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+          </IconButton>
+        </TableCell>
+        <TableCell component="th" scope="row">
+          {row.name}
+        </TableCell>
+        <TableCell align="right">{row.edvnr}</TableCell>
+        <TableCell align="right">{row.modul}</TableCell>
+        <TableCell align="right">{row.sws}</TableCell>
+        <TableCell align="right">{row.etcs}</TableCell>
+        <TableCell align="right">{row.bearbeiten}</TableCell>
+        
+      </TableRow>
+      <TableRow>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+          <Collapse in={open} timeout="auto" unmountOnExit>
+            <Box sx={{ margin: 1 }}>
+              <Typography variant="h6" gutterBottom component="div">
+                Weiteres
+              </Typography>
+              <Table size="small" aria-label="purchases">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>ETCS-Punkte</TableCell>
+                    <TableCell>SWS-Punkte</TableCell>
+                    <TableCell>Professor</TableCell>
+                    <TableCell>Buch</TableCell>
+                    <TableCell>Sprache</TableCell>
+                    <TableCell>EDV-Nr.</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {row.weiteres.map((weiteresRow) => (
+                    <TableRow>
+                      <TableCell align="right">{weiteresRow.etcspunkte}</TableCell>
+                      <TableCell align="right">{weiteresRow.swspunkte}</TableCell>
+                      <TableCell align="right">{weiteresRow.professorID}</TableCell>
+                      <TableCell align="right">{weiteresRow.buch}</TableCell>
+                      <TableCell align="right">{weiteresRow.sprache}</TableCell>
+                      <TableCell align="right">{weiteresRow.edvnummer}</TableCell>  
+
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </Box>
+          </Collapse>
+        </TableCell>
+      </TableRow>
+    </React.Fragment>
+  );
+}
+
+Row.propTypes = {
+  row: PropTypes.shape({
+    edvnr: PropTypes.number.isRequired,
+    sws: PropTypes.number.isRequired,
+    modul: PropTypes.string.isRequired,
+    weiteres: PropTypes.arrayOf(
+      PropTypes.shape({
+        buch: PropTypes.string.isRequired,
+        professorID: PropTypes.string.isRequired,
+        etcspunkte: PropTypes.string.isRequired,
+        swspunkte: PropTypes.string.isRequired,
+        sprache: PropTypes.string.isRequired,
+      }),
+    ).isRequired,
+    name: PropTypes.string.isRequired,
+    bearbeiten: PropTypes.number.isRequired,
+    etcs: PropTypes.number.isRequired,
+  }).isRequired,
+};
+
+const rows = [
+  createData('1', 234567, 'Betriebswirtschaft', 4, 5, ''),
+  createData('1', 448973, 'Design', 4, 5, ''),
+];
+
+
+export default function CollapsibleTable() {
+  return (
+    <TableContainer component={Paper}>
+      <Table aria-label="collapsible table">
+        <TableHead>
+          <TableRow>
+            <TableCell />
+            <TableCell>Semester</TableCell>
+            <TableCell align="right">EDV-Nr.</TableCell>
+            <TableCell align="right">Modul (Kurzbezeichnung)</TableCell>
+            <TableCell align="right">SWS</TableCell>
+            <TableCell align="right">ECTS</TableCell>
+            <TableCell align="right">Bearbeiten</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {rows.map((row) => (
+            <Row key={row.name} row={row} />
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
+}*/
