@@ -4,8 +4,7 @@ from flask_restx import Api, Resource, fields
 from flask_cors import CORS
 
 # Wir greifen natürlich auf unsere Applikationslogik inkl. BusinessObject-Klassen zurück
-from server.SecurityDecorator import secured
-from server.Administration import Administration
+
 from server.bo.Spo import Spo
 from server.bo.User import User
 from server.bo.Module import Module
@@ -13,15 +12,10 @@ from server.bo.Modulepart import Modulepart
 from server.bo.StudyCourse import StudyCourse
 from server.bo.Person import Person
 from server.bo.Semester import Semester
-
-"""
-from server.bo.Module import Module
-from server.bo.Modulepart import Modulepart
-from server.bo.StudyCourse import StudyCourse
-from server.bo.Person import Person
-"""
+from server.Administration import Administration
 
 # Außerdem nutzen wir einen selbstgeschriebenen Decorator der die Authentifikation übernimmt
+from server.SecurityDecorator import secured
 
 app = Flask(__name__)
 CORS(app, resources=r'/sopra/*')
@@ -43,16 +37,16 @@ bo = api.model('BusinessObject', {
 
 """Alle anderen BusinessObjects"""
 user = api.inherit('User', bo, {
-    'firstname': fields.String(attribute='__firstname', description='Vorname eines Users'),
-    'lastname': fields.String(attribute='__lastname', description='Nachname eines Users'),
-    'email': fields.String(attribute='__email', description='Email adresse eines Users'),
-    'google_user_id': fields.String(attribute='__google_user_id', description='Google ID des Users'),
-    'isadmin': fields.Integer(attribute='__isadmin', description='Anzeige ob Adminstatus oder nicht')
+    'firstname': fields.String(attribute='_firstname', description='Vorname eines Users'),
+    'lastname': fields.String(attribute='_lastname', description='Nachname eines Users'),
+    'email': fields.String(attribute='_email', description='Email adresse eines Users'),
+    'google_user_id': fields.String(attribute='_google_user_id', description='Google ID des Users'),
+    'isadmin': fields.Integer(attribute='_isadmin', description='Anzeige ob Adminstatus oder nicht')
 })
 
-namedbo = api.inherit('Namedbo', bo, {
+namedbo = api.clone('Namedbo', bo, {
     'name': fields.String(attribute='_name', description='Name eines NamedBOs'),
-    'title': fields.String(attribute='_name', description='Titel eines NamedBOs')
+    'title': fields.String(attribute='_title', description='Titel eines NamedBOs')
 })
 
 spo = api.inherit('Spo', namedbo, {
@@ -77,7 +71,7 @@ module = api.inherit('Module', spoelement, {
 })
 
 modulepart = api.inherit('Modulepart', spoelement, {
-    'sws': fields.String(attribute='_sws', description='Anzahl der SWS des Modulteils'),
+    'sws': fields.Integer(attribute='_sws', description='Anzahl der SWS des Modulteils'),
     'language': fields.String(attribute='_language', descpription='Sprache des Modulteils'),
     'description': fields.String(attribute='_description', description='Beschreibung des Modulteils'),
     'connection': fields.String(attribute='_connection', description='Verbindung zu anderen Modulteilen'),
@@ -85,6 +79,7 @@ modulepart = api.inherit('Modulepart', spoelement, {
     'sources': fields.String(attribute='_sources', description='Quellen'),
     'semester': fields.Integer(attribute='_semester', description='Semester des Modulteils'),
     'professor': fields.Integer(attribute='_professor', description='Prof des Modulteils'),
+    'module': fields.Integer(attribute='_module', description='Das zugehörige Modul')
 })
 
 studycourse = api.inherit('StudyCourse', namedbo)
@@ -92,9 +87,9 @@ studycourse = api.inherit('StudyCourse', namedbo)
 semester = api.inherit('Semester', namedbo)
 
 person = api.inherit('Person', namedbo, {
-    'firstname': fields.String(attribute='__firstname', description='Vorname einer Person'),
-    'lastname': fields.String(attribute='__lastname', description='Nachname einer Person'),
-    'email': fields.String(attribute='__email', description='Email adresse einer Person')
+    'firstname': fields.String(attribute='_firstname', description='Vorname einer Person'),
+    'lastname': fields.String(attribute='_lastname', description='Nachname einer Person'),
+    'email': fields.String(attribute='_email', description='Email adresse einer Person')
 })
 
 """Alles @sposystem.route('')"""
@@ -104,7 +99,7 @@ person = api.inherit('Person', namedbo, {
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
 class UserListOperations(Resource):
     @sposystem.marshal_list_with(user)
-    @secured
+    # @secured
     def get(self):
         """
         Auslesen aller User Objekte.
@@ -123,7 +118,7 @@ class UserListOperations(Resource):
         proposal = User.from_dict(api.payload)
 
         if proposal is not None:
-            c = adm.create_user(proposal.get_firstname(), proposal.get_lastname(), proposal.get_email(), proposal.get_google_user_id())
+            c = adm.create_user(proposal)
             return c, 200
         else:
             return '', 500
@@ -209,7 +204,7 @@ class SpoListOperations(Resource):
 
     @sposystem.marshal_with(spo, code=200)
     @sposystem.expect(spo, validate=True)
-    #@secured
+    # @secured
     def post(self):
         adm = Administration()
         proposal = Spo.from_dict(api.payload)
@@ -221,10 +216,10 @@ class SpoListOperations(Resource):
             return '', 500
 
 
-@sposystem.route('/spos/<int:id>')
+@sposystem.route('/spo/id/<int:id>')
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
 @sposystem.param('id', 'Die ID des SPO-Objekts')
-class SpoOperations(Resource):
+class SpoIdOperations(Resource):
 
     @sposystem.marshal_with(spo)
     @secured
@@ -263,6 +258,24 @@ class SpoOperations(Resource):
         else:
             return '', 500
 
+
+@sposystem.route('/spo/hash/<int:spo_hash>')
+@sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
+@sposystem.param('spo_hash', 'Der Hash des SPO-Objekts')
+class SpoOperations(Resource):
+
+    @sposystem.marshal_with(spo)
+    @secured
+    def get_by_hash(self, spo_hash):
+        """
+        Auslesen eines bestimmten SPO-Objekts.
+        Das auszulesende Objekt wird durch die ```id``` in dem URI bestimmt.
+        """
+
+        adm = Administration()
+        spo = adm.get_spo_by_hash(spo_hash)
+        return spo
+
     @secured
     def delete(self, id):
         """
@@ -278,14 +291,34 @@ class SpoOperations(Resource):
     @sposystem.marshal_list_with(spo)
     @secured
     def get_modules_by_spo(self, id):
-
         adm = Administration()
         s = adm.get_spo_by_id(id)
         molist = adm.get_all_modules(s)
         return molist
 
 
+@sposystem.route('/spo-by-startsemester-and-studycourse/<int:semester_hash><int:studycourse_hash>')
+@sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
+@sposystem.param('semester_hash', 'Der Hash des Startsemesters')
+@sposystem.param('studycourse_hash', 'Der Hash des Studiengangs')
+class SpoSemStudOperations(Resource):
+
+    @sposystem.marshal_with(spo)
+    # @secured
+    def get(self, semester_hash, studycourse_hash):
+        """
+        Auslesen eines bestimmten SPO-Objekts.
+        Das auszulesende Objekt wird durch die ```id``` in dem URI bestimmt.
+        """
+        adm = Administration()
+        spo = adm.get_spo_by_starstem_studycourse(semester_hash, studycourse_hash)
+        if spo is None:
+            print('verkackt')
+        return spo
+
+
 """
+
 @sposystem.route('/spos/<semester: startsemester>')
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
 @sposystem.param('start_semester', 'Das Startsemester des SPO-Objekts')
@@ -301,7 +334,7 @@ class SpoStartSemesterOperations:
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
 class ModuleListOperations(Resource):
     @sposystem.marshal_list_with(module, code=200)
-    @secured
+    # @secured
     def get(self):
 
         adm = Administration()
@@ -310,9 +343,9 @@ class ModuleListOperations(Resource):
 
     @sposystem.marshal_with(module, code=200)
     @sposystem.expect(module)
-    #@secured
+    # @secured
     def post(self):
- 
+
         adm = Administration()
         proposal = Module.from_dict(api.payload)
         print("post-method")
@@ -324,14 +357,14 @@ class ModuleListOperations(Resource):
             return '', 500
 
 
-@sposystem.route('/modules/<int:id>')
+@sposystem.route('/module/id/<int:id>')
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
 @sposystem.param("id", "Die id des Modules")
-class ModuleOperations(Resource):
+class ModuleIdOperations(Resource):
     @sposystem.marshal_with(module)
-    @secured
+    # @secured
     def get(self, id):
-        """Auslesen eines bestimmten Modul-Objekts"""
+        """Auslesen eines durch ID bestimmten Modul-Objekts"""
         adm = Administration()
         mo = adm.get_module_by_id(id)
         return mo
@@ -369,18 +402,27 @@ class ModuleOperations(Resource):
         return '', 200
 
 
-@sposystem.route('/module/<int:module_id>')
+@sposystem.route('/module/hash/<int:module_hash>')
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
-@sposystem.param('id', 'Die id des Moduls')
-class ModulePartsOperations(Resource):
-    @sposystem.marshal_list_with(module)
-    @secured
-    def get(self, id):
+@sposystem.param("module_hash", "Der Hash des Modules")
+class ModuleHashOperations(Resource):
+    @sposystem.marshal_with(module)
+    # @secured
+    def get(self, module_hash):
+        """Auslesen eines durch hash bestimmten Modul-Objekts"""
         adm = Administration()
-        moparts = adm.get_module_by_id(id)
-        moparts.get_moduleparts()
+        mo = adm.get_module_by_hash(module_hash)
+        return mo
 
-        return moparts
+    @secured
+    def delete(self, module_hash):
+        """Löschen eines bestimmten Module-Objekts.
+        Das zu löschende Objekt wird durch den hash in dem URI bestimmt."""
+
+        adm = Administration()
+        mo = adm.get_module_by_hash(module_hash)
+        adm.delete_module(mo)
+        return '', 200
 
 
 @sposystem.route('/moduleparts')
@@ -415,7 +457,7 @@ class ModulePartOperations(Resource):
     @sposystem.marshal_with(modulepart)
     @secured
     def get(self, id):
-        """Auslesen eines bestimmten Modulepart-Objekts"""
+        """Auslesen eines durch die ID bestimmten Modulepart-Objekts"""
         adm = Administration()
         mopart = adm.get_modulepart_by_id(id)
         return mopart
@@ -453,11 +495,24 @@ class ModulePartOperations(Resource):
         return '', 200
 
 
+@sposystem.route('/moduleparts/<int:modulepart_hash>')
+@sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
+@sposystem.param("modulepart_hash", "Der Hash des Moduleparts")
+class ModulePartOperations(Resource):
+    @sposystem.marshal_with(modulepart)
+    @secured
+    def get(self, modulepart_hash):
+        """Auslesen eines durch den Hash bestimmten Modulepart-Objekts"""
+        adm = Administration()
+        mopart = adm.get_modulepart_by_hash(modulepart_hash)
+        return mopart
+
+
 @sposystem.route('/studycourses')
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
 class StudycourseListOperations(Resource):
     @sposystem.marshal_list_with(studycourse)
-    @secured
+    # @secured
     def get(self):
         """
         Auslesen aller SPO-Objekte.
@@ -476,10 +531,10 @@ class StudycourseListOperations(Resource):
         proposal = StudyCourse.from_dict(api.payload)
 
         if proposal is not None:
-            sc = adm.create_studycourse(proposal.get_name(), proposal.get_title())
+            sc = adm.create_studycourse(proposal)
             return sc, 200
         else:
-            return'', 500
+            return '', 500
 
 
 @sposystem.route('/studycourse/<int:id>')
@@ -496,7 +551,7 @@ class StudycourseOperations(Resource):
         sc = adm.get_studycourse_by_id(id)
         return sc
 
-    @secured
+    # @secured
     def delete(self, id):
         """Löschen eines bestimmten Studycourse-Objekts.
         Das zu löschende Objekt wird durch die```id```in dem URI bestimmt."""
@@ -504,11 +559,11 @@ class StudycourseOperations(Resource):
         adm = Administration()
         sc = adm.get_studycourse_by_id(id)
         adm.delete_studycourse(sc)
-        return'', 200
+        return '', 200
 
     @sposystem.marshal_with(studycourse)
     @sposystem.expect(studycourse, validate=True)
-    @secured
+    # @secured
     def put(self, id):
         """Update eines bestimmten Studycourse-Objekts.
         **ACHTUNG: ** relevante id ist die id, die mittels URI bereitgestellt und somit als Methodenparameter
@@ -524,9 +579,9 @@ class StudycourseOperations(Resource):
 
             sc.set_id(id)
             adm.save_studycourse(sc)
-            return'', 200
+            return '', 200
         else:
-            return'', 500
+            return '', 500
 
 
 @sposystem.route('/persons')
@@ -553,11 +608,10 @@ class PersonListOperations(Resource):
         proposal = Person.from_dict(api.payload)
 
         if proposal is not None:
-            pe = adm.create_person(proposal.get_firstname(),
-                                   proposal.get_lastname(), proposal.get_email())
+            pe = adm.create_person(proposal)
             return pe, 200
         else:
-            return'', 500
+            return '', 500
 
 
 @sposystem.route('/persons/<int:id>')
@@ -582,7 +636,7 @@ class PersonOperations(Resource):
         adm = Administration()
         pe = adm.get_person_by_id(id)
         adm.delete_person(pe)
-        return'', 200
+        return '', 200
 
     @sposystem.marshal_with(person)
     @sposystem.expect(person, validate=True)
@@ -602,9 +656,9 @@ class PersonOperations(Resource):
 
             pe.set_id(id)
             adm.save_person(pe)
-            return'', 200
+            return '', 200
         else:
-            return'', 500
+            return '', 500
 
 
 @sposystem.route('/semesters')

@@ -1,6 +1,6 @@
-import BusinessObject from './Businessobject';
+import NamedBo from './NamedBo';
 
-export default class Spobo extends BusinessObject{
+export default class Spobo extends NamedBo{
   /**
    * Constructs a new Spobo object with a given owner.
    * 

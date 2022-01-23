@@ -11,6 +11,7 @@ from server.db.ModulePartMapper import ModulePartMapper
 from server.db.PersonMapper import PersonMapper
 from server.db.SemesterMapper import SemesterMapper
 from server.db.SpoMapper import SpoMapper
+from server.db.SpoValidityMapper import SpoValidityMapper
 from server.db.StudyCourseMapper import StudyCourseMapper
 from server.db.UserMapper import UserMapper
 
@@ -33,7 +34,12 @@ class Administration (object):
     def get_module_by_id(self, number):
         """Das Modul mit der gegebenen ID auslesen."""
         with ModuleMapper() as mapper:
-            return mapper.find_by_key(number)
+            return mapper.find_by_id(number)
+
+    def get_module_by_hash(self, number):
+        """Das Modul mit dem gegebenem Hash auslesen."""
+        with ModuleMapper() as mapper:
+            return mapper.find_by_hash(number)
 
     def get_all_modules(self):
         """Alle module auslesen."""
@@ -44,6 +50,10 @@ class Administration (object):
         """Den gegebenen Benutzer speichern."""
         with ModuleMapper as mapper:
             mapper.update(module)
+
+    def delete_module(self, module):
+        with ModuleMapper() as mapper:
+            mapper.delete(module)
 
     """Modulteil-spezifische Methoden"""
 
@@ -59,7 +69,7 @@ class Administration (object):
     def get_modulepart_by_id(self, number):
         """Den Modulteil mit der gegebenen ID auslesen."""
         with ModulePartMapper() as mapper:
-            return mapper.find_by_key(number)
+            return mapper.find_by_id(number)
 
     def get_all_moduleparts(self):
         """Alle Modulteile auslesen."""
@@ -78,16 +88,10 @@ class Administration (object):
 
     """Person-spezifische Methoden"""
 
-    def create_person(self, firstname, lastname, email):
+    def create_person(self, proposal):
         """Eine Person anlegen"""
-        person = Person()
-        person.set_firstname(firstname)
-        person.set_lastname(lastname)
-        person.set_email(email)
-        person.set_id(1)
-
         with PersonMapper() as mapper:
-            return mapper.insert(person)
+            return mapper.insert(proposal)
 
     def get_person_by_name(self, name):
         """Alle Personen mit Namen name auslesen."""
@@ -116,15 +120,10 @@ class Administration (object):
 
     """Semester-spezifische Methoden"""
 
-    def create_semester(self, name, title):
+    def create_semester(self, proposal):
         """Ein Semester anlegen"""
-        semester = Semester()
-        semester.set_name(name)
-        semester.set_title(title)
-        semester.set_id(1)
-
         with SemesterMapper() as mapper:
-            return mapper.insert(semester)
+            return mapper.insert(proposal)
 
     def get_semester_by_name(self, name):
         """Alle Semester mit Namen name auslesen."""
@@ -151,12 +150,29 @@ class Administration (object):
         with SemesterMapper() as mapper:
             mapper.delete(semester)
 
+    """SpoValidity-spezifische Methoden"""
+
+    def get_spo_by_semester_hash(self, hashcode: int ):
+        with SpoValidityMapper() as mapper:
+            mapper.find_spo_by_semester_hash(hashcode)
+
+    def get_semester_by_spo_hash(self, hashcode: int ):
+        with SpoValidityMapper() as mapper:
+            mapper.find_semester_by_spo_hash(hashcode)
+
+    def create_validity(self, proposal, endsemester):
+        with SpoValidityMapper() as mapper:
+            mapper.insert(proposal, endsemester)
+
     """Spo-spezifische Methoden"""
 
     def create_spo(self, proposal):
         """Eine Spo anlegen"""
         with SpoMapper() as mapper:
-            return mapper.insert(proposal)
+            newobj = mapper.insert(proposal)
+        with SpoValidityMapper() as mapper:
+            mapper.insert(newobj)
+        return newobj
 
     def get_spo_by_name(self, name):
         """Alle Spos mit Namen name auslesen."""
@@ -168,10 +184,18 @@ class Administration (object):
         with SpoMapper() as mapper:
             return mapper.find_by_key(number)
 
+    def get_spo_by_hash(self, spo_hash):
+        pass
+
     def get_latest_by_studycourse(self, studycourse):
         """Die aktuelle Spo eines Studienganges auslesen"""
         with SpoMapper() as mapper:
             return mapper.find_by_latest_creationdate(studycourse)
+
+    def get_spo_by_starstem_studycourse(self, semesterhash: int, studycoursehash: int):
+        """Die Spo mit den ausgewählten Startsemester und Studiengang auslesen."""
+        with SpoMapper() as mapper:
+            return mapper.find_by_startsemester_and_studycourse(semesterhash, studycoursehash)
 
     def get_all_spos(self):
         """Alle Spo auslesen."""
@@ -195,15 +219,10 @@ class Administration (object):
 
     """Studycourse-spezifische Methoden"""
 
-    def create_studycourse(self, name, title):
-
-        studycourse = StudyCourse()
-        studycourse.set_name(name)
-        studycourse.set_title(title)
-        studycourse.set_id(1)
+    def create_studycourse(self, proposal):
 
         with StudyCourseMapper() as mapper:
-            return mapper.insert(studycourse)
+            return mapper.insert(proposal)
 
     def get_studycourse_by_name(self, name):
 
@@ -213,7 +232,7 @@ class Administration (object):
     def get_studycourse_by_id(self, number):
 
         with StudyCourseMapper() as mapper:
-            return mapper.find_by_key(number)
+            return mapper.find_by_id(number)
 
     def get_all_studycourses(self):
 
@@ -232,15 +251,7 @@ class Administration (object):
 
     """User-spezifische Methoden"""
 
-    def create_user(self, firstname, lastname, email, google_user_id):
-
-        user = User()
-        user.set_firstname(firstname)
-        user.set_lastname(lastname)
-        user.set_email(email)
-        user.set_google_user_id(google_user_id)
-        user.set_id(1)
-
+    def create_user(self, user):
         with UserMapper() as mapper:
             return mapper.insert(user)
 
@@ -273,3 +284,5 @@ class Administration (object):
         """Den Benutzer mit der gegebenen Google ID auslesen."""
         with UserMapper() as mapper:
             return mapper.find_by_google_user_id(id)
+
+

@@ -3,60 +3,60 @@ import json
 
 
 class Module(Spe.SpoElement):
-    __type: str
-    __requirement: str
-    __outcome: str
-    __examtype: str
-    __instructor: int
+    _type: str
+    _requirement: str
+    _outcome: str
+    _examtype: str
+    _instructor: int
 
     def __init__(self):
         super().__init__()
-        self.__type = ""
-        self.__requirement = ""
-        self.__outcome = ""
-        self.__examtype = ""
-        self.__instructor = 0
+        self._type = ""
+        self._requirement = ""
+        self._outcome = ""
+        self._examtype = ""
+        self._instructor = 0
 
     # Auslesen
     def get_type(self):
         """Auslesen des Modultyps"""
-        return self.__type
+        return self._type
 
     def set_type(self, value):
         """Setzen des Modultyps"""
-        self.__type = value
+        self._type = value
 
     def get_requirement(self):
         """Auslesen der Voraussetzung(en)"""
-        return self.__requirement
+        return self._requirement
 
     def set_requirement(self, requirement):
         """Setzen der Voraussetzung(en)"""
-        self.__requirement = requirement
+        self._requirement = requirement
 
     def get_outcome(self):
         """Auslesen des Lernergebnisses"""
-        return self.__outcome
+        return self._outcome
 
     def set_outcome(self, outcome):
         """Setzen des Lernergebnisses"""
-        self.__outcome = outcome
+        self._outcome = outcome
 
     def get_examtype(self):
         """Auslesen des Prüfungstyps"""
-        return self.__examtype
+        return self._examtype
 
     def set_examtype(self, examtype):
         """Setzen des Prüfungstyps"""
-        self.__examtype = examtype
+        self._examtype = examtype
 
     def get_instructor(self):
         """Auslesen des Modulverantwortlichen"""
-        return self.__instructor
+        return self._instructor
 
     def set_instructor(self, instructor):
         """Setzen des Modulverantwortlichen"""
-        self.__instructor = instructor
+        self._instructor = instructor
 
     def __str__(self):
         astring = (
@@ -66,12 +66,12 @@ class Module(Spe.SpoElement):
             f"title: {self._title}, "
             f"edvnr: {self._edvnr}, "
             f"ects: {self._ects}, "
-            f"workload: {self.workload}, "
-            f"type: {self.__type}, "
-            f"requirement: {self.__requirement}, "
-            f"outcome: {self.__outcome}, "
-            f"examtype: {self.__examtype}, "
-            f"instructor: {self.__instructor}"
+            f"workload: {self._workload}, "
+            f"type: {self._type}, "
+            f"requirement: {self._requirement}, "
+            f"outcome: {self._outcome}, "
+            f"examtype: {self._examtype}, "
+            f"instructor: {self._instructor}"
         )
         return astring
 
@@ -115,8 +115,7 @@ class Module(Spe.SpoElement):
                self.get_examtype() == other.get_examtype() and \
                self.get_instructor() == other.get_instructor()
 
-    def __hash__(self):
-        super().__hash__()
+    __hash__ = Spe.SpoElement.__hash__
 
 
 """

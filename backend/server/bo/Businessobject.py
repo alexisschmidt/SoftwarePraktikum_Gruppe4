@@ -43,6 +43,5 @@ class BusinessObject(ABC):
         Gibt den Integer aus den Bits des Hash der json vom Objekt aus. Wird von allen BOs geerbt.
         Ermöglicht die referentielle Integrität.
         """
-
         hashedbo = int.from_bytes(hashlib.sha256(self.json().encode()).digest(), 'big')
         return hashedbo

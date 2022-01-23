@@ -28,27 +28,28 @@ class SemesterMapper(Mapper):
         return result
 
     def find_by_name(self, name):
-        result = []
+        result = None
         cursor = self._cnx.cursor()
-        command = "SELECT * FROM semester WHERE name LIKE '{}' ORDER BY name".format(name)
+        command = "SELECT id, creationdate, name, title FROM semester WHERE name={}".format(name)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for (id, creationdate, name, title) in tuples:
+        try:
+            (id, creationdate, name, title) = tuples[0]
             semester = Semester()
             semester.set_id(id)
             semester.set_name(name)
             semester.set_title(title)
-
-            result.append(semester)
+            result = semester
+        except IndexError:
+            result = None
 
         self._cnx.commit()
         cursor.close()
-
         return result
 
-    def find_by_key(self, key):
 
+    def find_by_id(self, key):
         result = None
 
         cursor = self._cnx.cursor()
@@ -69,15 +70,13 @@ class SemesterMapper(Mapper):
 
         self._cnx.commit()
         cursor.close()
-
         return result
 
     def find_by_hash(self, hashcode):
 
         result = None
-
         cursor = self._cnx.cursor()
-        command = "SELECT * semester WHERE semester_hash={}".format(hashcode)
+        command = f"SELECT * FROM semester WHERE semester_hash={hashcode}"
         cursor.execute(command)
         tuples = cursor.fetchall()
 
@@ -105,14 +104,14 @@ class SemesterMapper(Mapper):
 
         for (maxid) in tuples:
             if maxid[0] is not None:
-
                 semester.set_id(maxid[0] + 1)
             else:
-
                 semester.set_id(1)
 
         command = "INSERT INTO semester (id, creationdate, name, title, semester_hash) VALUES (%s,%s,%s,%s,%s) "
-        data = (semester.get_id(), semester.get_name(), semester.get_title(), hash(semester))
+        data = (semester.get_id(), semester.get_creationdate(),
+                semester.get_name(), semester.get_title(),
+                hash(semester))
         cursor.execute(command, data)
 
         self._cnx.commit()

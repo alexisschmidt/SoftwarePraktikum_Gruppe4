@@ -50,7 +50,7 @@ class PersonMapper(Mapper):
 
         return result
 
-    def find_by_key(self, key):
+    def find_by_id(self, key):
 
         result = None
 
@@ -105,7 +105,7 @@ class PersonMapper(Mapper):
     def insert(self, person):
 
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT MAX(id) AS maxid FROM person ")
+        cursor.execute("SELECT MAX(id) AS maxid FROM person")
         tuples = cursor.fetchall()
 
         for (maxid) in tuples:
