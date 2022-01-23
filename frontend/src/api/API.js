@@ -1,164 +1,166 @@
-import Modulebo from './Modulebo';
-import Modulepartbo from './Modulepartbo';
-import Personbo from './Personbo';
-import Semesterbo from './Semesterbo';
-import Spobo from './Spobo';
-import SpoElementbo from './SpoElementbo';
-import StudyCoursebo from './StudyCoursebo';
-import Userbo from './Userbo';
+import Modulebo from "./BusinessObjects/Modulebo";
+import Modulepartbo from "./BusinessObjects/Modulepartbo";
+import Personbo from "./BusinessObjects/Personbo";
+import Semesterbo from "./BusinessObjects/Semesterbo";
+import Spobo from "./BusinessObjects/Spobo";
+import SpoElementbo from "./BusinessObjects/SpoElementbo";
+import StudyCoursebo from "./BusinessObjects/StudyCoursebo";
+import Userbo from "./BusinessObjects/Userbo";
 
-export default class API{
-	//Singleton instance
-		static #api = null;
-	
-		//local Python backend
-		#serverBaseURL = '/sopra';
-	
-		//Local http-fake-backend?
-	
-		//Admin Ansicht - Neue Spo erstellen
-		#getSpoURL = (id) => `${this.#serverBaseURL}/spo/${id}`; //Die ausgewählte SPO wird dem Admin angezeigt abruf durch den hash? id? oder durch einzelne module?
-		#addModulepartURL = () => `${this.#serverBaseURL}/modulepart`; //Für den Edit-Button (Modules)
-		#addModuleURL = () => `${this.#serverBaseURL}/module`; //Module hinzugügen
-		#getAllModulesURL = (id) => `${this.#serverBaseURL}/module/${id}` //Alle Module einer id
-		#getAllModulePartsURL = (id) => `${this.#serverBaseURL}/modulepart/${id}` //Alle Moduleparts eines Modules/Spo
-		#addSpoURL = () => `${this.#serverBaseURL}/spo` //Spo erstellen
+export default class API {
+  //Singleton instance
+  static #api = null;
 
+  //local Python backend
+  #serverBaseURL = "/sopra";
 
+  //Local http-fake-backend?
 
-		//Admin Ansicht - Liste aller SPOs
-		#getAllSpoRelatedURL = (id) => `${this.#serverBaseURL}/spo/${id}`; //Alle Spos die zu einem Sudiengang gehören gelistet nach WS20, SS21...
+  //Admin Ansicht - Neue Spo erstellen
+  #getSpoURL = (id) => `${this.#serverBaseURL}/spo/${id}`; //Die ausgewählte SPO wird dem Admin angezeigt abruf durch den hash? id? oder durch einzelne module?
+  #addModulepartURL = () => `${this.#serverBaseURL}/modulepart`; //Für den Edit-Button (Modules)
+  #addModuleURL = () => `${this.#serverBaseURL}/module`; //Module hinzugügen
+  #getAllModulesURL = (id) => `${this.#serverBaseURL}/module/${id}`; //Alle Module einer id
+  #getAllModulePartsURL = (id) => `${this.#serverBaseURL}/modulepart/${id}`; //Alle Moduleparts eines Modules/Spo
+  #addSpoURL = () => `${this.#serverBaseURL}/spo`; //Spo erstellen
 
-		//Admin Ansicht - Studiengänge
-		#getAllStudycoursesURL = () => `${this.#serverBaseURL}/studycourses`;
+  //Admin Ansicht - Liste aller SPOs
+  #getAllSpoRelatedURL = (id) => `${this.#serverBaseURL}/spo/${id}`; //Alle Spos die zu einem Sudiengang gehören gelistet nach WS20, SS21...
 
-		//Studenten Ansicht - Zugeordnete SPO/Ausgewählte SPO
-		
-		/** 
-	   * Get the Singelton instance 
-	   * 
-	   * @public
-	   */
-		static getAPI() {
-			if (this.#api == null) {
-			  this.#api = new API();
-			}
-			return this.#api;
-		}
-	
-		#fetchAdvanced = (url, init) => fetch(url, init)
-		.then(res => {
-		  // The Promise returned from fetch() won’t reject on HTTP error status even if the response is an HTTP 404 or 500. 
-		  if (!res.ok) {
-			throw Error(`${res.status} ${res.statusText}`);
-		  }
-		  return res.json();
-		}
-		)
-  		/**
-   		*
-   		* @public
-   		*/
-		getSpo(spoId) {
-			return this.#fetchAdvanced(this.#getSpoURL(spoId)).then((responseJSON) => {
-				let responseSpobo = Spobo.fromJSON(responseJSON)[0];
-				// console.info(responseSpobo);
-				return new Promise(function (resolve) {
-					resolve(responseSpobo);
-			  	})
-			})
-		}
+  //Admin Ansicht - Studiengänge
+  #getAllStudycoursesURL = () => `${this.#serverBaseURL}/studycourses`;
 
-		addModulepart(modulepartbo){
-			return this.#fetchAdvanced(this.#addModulepartURL(), {
-				method: 'POST',
-				headers: {
-					'Accept': 'application/json, text/plain',
-					'Content-type': 'application/json',
-				},
-				body: JSON.stringify(modulepartbo)
-			}).then((responsejSON) => {
-				let responseModulepartbo = Modulepartbo.fromJSON(responseJSON)[0];
-				return new Promise(function (resolve) {
-					resolve(responseModulepartbo);
-				})
-			})
-		}
+  //Studenten Ansicht - Zugeordnete SPO/Ausgewählte SPO
 
-		addModule(modulebo){
-			return this.#fetchAdvanced(this.#addModuleURL(), {
-				method: 'POST',
-				headers: {
-					'Accept': 'application/json, text/plain',
-					'Content-type': 'application/json',
-				},
-				body: JSON.stringify(modulebo)
-			}).then((responseJSON) => {
-				let responseModulebo = Modulebo.fromJSON(responseJSON)[0];
-				return new Promise(function (resolve) {
-					resolve(responseModulebo);
-				})
-			})
+  /**
+   * Get the Singelton instance
+   *
+   * @public
+   */
+  static getAPI() {
+    if (this.#api == null) {
+      this.#api = new API();
+    }
+    return this.#api;
+  }
 
-		}
+  #fetchAdvanced = (url, init) =>
+    fetch(url, init).then((res) => {
+      // The Promise returned from fetch() won’t reject on HTTP error status even if the response is an HTTP 404 or 500.
+      if (!res.ok) {
+        throw Error(`${res.status} ${res.statusText}`);
+      }
+      return res.json();
+    });
+  /**
+   *
+   * @public
+   */
+  getSpo(spoId) {
+    return this.#fetchAdvanced(this.#getSpoURL(spoId)).then((responseJSON) => {
+      let responseSpobo = Spobo.fromJSON(responseJSON)[0];
+      // console.info(responseSpobo);
+      return new Promise(function (resolve) {
+        resolve(responseSpobo);
+      });
+    });
+  }
 
-		getAllModules(){
-			return this.#fetchAdvanced(this.#getAllModulesURL()).then((responseJSON) => {
-				let spobos = Spobo.fromJSON(responseJSON);
-				// console.info(customerBOs);
-				return new Promise(function (resolve) {
-					resolve(spobos);
-			  	})
-			})
-		}
+  addModulepart(modulepartbo) {
+    return this.#fetchAdvanced(this.#addModulepartURL(), {
+      method: "POST",
+      headers: {
+        Accept: "application/json, text/plain",
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(modulepartbo),
+    }).then((responseJSON) => {
+      let responseModulepartbo = Modulepartbo.fromJSON(responseJSON)[0];
+      return new Promise(function (resolve) {
+        resolve(responseModulepartbo);
+      });
+    });
+  }
 
-		getAllModuleParts(moduleId){
-			return this.#fetchAdvanced(this.#getAllModulePartsURL(moduleId)).then((responseJSON) => {
-				let responseModulepartbo = Modulepartbo.fromJSON(responseJSON)[0];
-				// console.info(responseModulepartbo);
-				return new Promise(function (resolve) {
-					resolve(responseModulepartbo);
-			  	})
-			})
-		}
+  addModule(modulebo) {
+    return this.#fetchAdvanced(this.#addModuleURL(), {
+      method: "POST",
+      headers: {
+        Accept: "application/json, text/plain",
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(modulebo),
+    }).then((responseJSON) => {
+      let responseModulebo = Modulebo.fromJSON(responseJSON)[0];
+      return new Promise(function (resolve) {
+        resolve(responseModulebo);
+      });
+    });
+  }
 
-		addSpo(spoBo){
-			return this.#fetchAdvanced(this.#addSpoURL(), {
-				method: 'POST',
-				headers: {
-				  'Accept': 'application/json, text/plain',
-				  'Content-type': 'application/json',
-				},
-				body: JSON.stringify(spoBo)
-			  }).then((responseJSON) => {
-				// We always get an array of CustomerBOs.fromJSON, but only need one object
-				let responseSpobo = Spobo.fromJSON(responseJSON)[0];
-				// console.info(accountBOs);
-				return new Promise(function (resolve) {
-				  resolve(responseSpobo);
-				})
-			  })
-		}
+  getAllModules() {
+    return this.#fetchAdvanced(this.#getAllModulesURL()).then(
+      (responseJSON) => {
+        let spobos = Spobo.fromJSON(responseJSON);
+        // console.info(customerBOs);
+        return new Promise(function (resolve) {
+          resolve(spobos);
+        });
+      }
+    );
+  }
 
-		getAllSpoRelated(spoId){
-			return this.#fetchAdvanced(this.#getAllSpoRelatedURL(spoId)).then((responseJSON) => {
-				let responseSpobo = Spobo.fromJSON(responseJSON)[0];
-				// console.info(responseSpobo);
-				return new Promise(function (resolve) {
-					resolve(responseSpobo);
-			  	})
-			})
-		}
+  getAllModuleParts(moduleId) {
+    return this.#fetchAdvanced(this.#getAllModulePartsURL(moduleId)).then(
+      (responseJSON) => {
+        let responseModulepartbo = Modulepartbo.fromJSON(responseJSON)[0];
+        // console.info(responseModulepartbo);
+        return new Promise(function (resolve) {
+          resolve(responseModulepartbo);
+        });
+      }
+    );
+  }
 
-		getAllStudycourses(){
-			return this.#fetchAdvanced(this.#getAllStudycoursesURL()).then((responseJSON) => {
-				let studycourseBo = StudyCoursebo.fromJSON(responseJSON);
-				// console.info(studycourseBo);
-				return new Promise(function (resolve) {
-				  resolve(studycourseBo);
-				})
-			  })
-		}
+  addSpo(spoBo) {
+    return this.#fetchAdvanced(this.#addSpoURL(), {
+      method: "POST",
+      headers: {
+        Accept: "application/json, text/plain",
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(spoBo),
+    }).then((responseJSON) => {
+      // We always get an array of CustomerBOs.fromJSON, but only need one object
+      let responseSpobo = Spobo.fromJSON(responseJSON)[0];
+      // console.info(accountBOs);
+      return new Promise(function (resolve) {
+        resolve(responseSpobo);
+      });
+    });
+  }
 
+  getAllSpoRelated(spoId) {
+    return this.#fetchAdvanced(this.#getAllSpoRelatedURL(spoId)).then(
+      (responseJSON) => {
+        let responseSpobo = Spobo.fromJSON(responseJSON)[0];
+        // console.info(responseSpobo);
+        return new Promise(function (resolve) {
+          resolve(responseSpobo);
+        });
+      }
+    );
+  }
 
-	}
+  getAllStudycourses() {
+    return this.#fetchAdvanced(this.#getAllStudycoursesURL()).then(
+      (responseJSON) => {
+        let studycourseBo = StudyCoursebo.fromJSON(responseJSON);
+        // console.info(studycourseBo);
+        return new Promise(function (resolve) {
+          resolve(studycourseBo);
+        });
+      }
+    );
+  }
+}
