@@ -244,15 +244,7 @@ class Administration (object):
 
     """User-spezifische Methoden"""
 
-    def create_user(self, firstname, lastname, email, google_user_id):
-
-        user = User()
-        user.set_firstname(firstname)
-        user.set_lastname(lastname)
-        user.set_email(email)
-        user.set_google_user_id(google_user_id)
-        user.set_id(1)
-
+    def create_user(self, user):
         with UserMapper() as mapper:
             return mapper.insert(user)
 

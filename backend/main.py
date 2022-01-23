@@ -118,7 +118,7 @@ class UserListOperations(Resource):
         proposal = User.from_dict(api.payload)
 
         if proposal is not None:
-            c = adm.create_user(proposal.get_firstname(), proposal.get_lastname(), proposal.get_email(), proposal.get_google_user_id())
+            c = adm.create_user(proposal)
             return c, 200
         else:
             return '', 500
