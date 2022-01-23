@@ -126,8 +126,8 @@ class StudyCourseMapper(Mapper):
 
         cursor = self._cnx.cursor()
 
-        command = f"UPDATE studycourse " + f"SET name={studycourse.get_name()}, " \
-                                           f"title={studycourse.get_title()}" \
+        command = f"UPDATE studycourse " + f"SET name='{studycourse.get_name()}', " \
+                                           f"title='{studycourse.get_title()}'" \
                                            f" WHERE id={studycourse.get_id()} "
         cursor.execute(command)
 

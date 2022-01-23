@@ -172,7 +172,6 @@ class Administration (object):
             newobj = mapper.insert(proposal)
         with SpoValidityMapper() as mapper:
             mapper.insert(newobj)
-
         return newobj
 
     def get_spo_by_name(self, name):
@@ -185,10 +184,18 @@ class Administration (object):
         with SpoMapper() as mapper:
             return mapper.find_by_key(number)
 
+    def get_spo_by_hash(self, spo_hash):
+        pass
+
     def get_latest_by_studycourse(self, studycourse):
         """Die aktuelle Spo eines Studienganges auslesen"""
         with SpoMapper() as mapper:
             return mapper.find_by_latest_creationdate(studycourse)
+
+    def get_spo_by_starstem_studycourse(self, semesterhash: int, studycoursehash: int):
+        """Die Spo mit den ausgewählten Startsemester und Studiengang auslesen."""
+        with SpoMapper() as mapper:
+            return mapper.find_by_startsemester_and_studycourse(semesterhash, studycoursehash)
 
     def get_all_spos(self):
         """Alle Spo auslesen."""
@@ -244,15 +251,7 @@ class Administration (object):
 
     """User-spezifische Methoden"""
 
-    def create_user(self, firstname, lastname, email, google_user_id):
-
-        user = User()
-        user.set_firstname(firstname)
-        user.set_lastname(lastname)
-        user.set_email(email)
-        user.set_google_user_id(google_user_id)
-        user.set_id(1)
-
+    def create_user(self, user):
         with UserMapper() as mapper:
             return mapper.insert(user)
 
@@ -285,3 +284,5 @@ class Administration (object):
         """Den Benutzer mit der gegebenen Google ID auslesen."""
         with UserMapper() as mapper:
             return mapper.find_by_google_user_id(id)
+
+

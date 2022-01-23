@@ -71,15 +71,15 @@ module = api.inherit('Module', spoelement, {
 })
 
 modulepart = api.inherit('Modulepart', spoelement, {
-    'sws':          fields.Integer(attribute='_sws', description='Anzahl der SWS des Modulteils'),
-    'language':     fields.String(attribute='_language', descpription='Sprache des Modulteils'),
-    'description':  fields.String(attribute='_description', description='Beschreibung des Modulteils'),
-    'connection':   fields.String(attribute='_connection', description='Verbindung zu anderen Modulteilen'),
-    'literature':   fields.String(attribute='_literature', description='Literatur für das Modulteil'),
-    'sources':      fields.String(attribute='_sources', description='Quellen'),
-    'semester':     fields.Integer(attribute='_semester', description='Semester des Modulteils'),
-    'professor':    fields.Integer(attribute='_professor', description='Prof des Modulteils'),
-    'module':       fields.Integer(attribute='_module', description='Das zugehörige Modul')
+    'sws': fields.Integer(attribute='_sws', description='Anzahl der SWS des Modulteils'),
+    'language': fields.String(attribute='_language', descpription='Sprache des Modulteils'),
+    'description': fields.String(attribute='_description', description='Beschreibung des Modulteils'),
+    'connection': fields.String(attribute='_connection', description='Verbindung zu anderen Modulteilen'),
+    'literature': fields.String(attribute='_literature', description='Literatur für das Modulteil'),
+    'sources': fields.String(attribute='_sources', description='Quellen'),
+    'semester': fields.Integer(attribute='_semester', description='Semester des Modulteils'),
+    'professor': fields.Integer(attribute='_professor', description='Prof des Modulteils'),
+    'module': fields.Integer(attribute='_module', description='Das zugehörige Modul')
 })
 
 studycourse = api.inherit('StudyCourse', namedbo)
@@ -118,7 +118,7 @@ class UserListOperations(Resource):
         proposal = User.from_dict(api.payload)
 
         if proposal is not None:
-            c = adm.create_user(proposal.get_firstname(), proposal.get_lastname(), proposal.get_email(), proposal.get_google_user_id())
+            c = adm.create_user(proposal)
             return c, 200
         else:
             return '', 500
@@ -204,7 +204,7 @@ class SpoListOperations(Resource):
 
     @sposystem.marshal_with(spo, code=200)
     @sposystem.expect(spo, validate=True)
-    #@secured
+    # @secured
     def post(self):
         adm = Administration()
         proposal = Spo.from_dict(api.payload)
@@ -216,10 +216,10 @@ class SpoListOperations(Resource):
             return '', 500
 
 
-@sposystem.route('/spos/<int:id>')
+@sposystem.route('/spo/id/<int:id>')
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
 @sposystem.param('id', 'Die ID des SPO-Objekts')
-class SpoOperations(Resource):
+class SpoIdOperations(Resource):
 
     @sposystem.marshal_with(spo)
     @secured
@@ -258,6 +258,24 @@ class SpoOperations(Resource):
         else:
             return '', 500
 
+
+@sposystem.route('/spo/hash/<int:spo_hash>')
+@sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
+@sposystem.param('spo_hash', 'Der Hash des SPO-Objekts')
+class SpoOperations(Resource):
+
+    @sposystem.marshal_with(spo)
+    @secured
+    def get_by_hash(self, spo_hash):
+        """
+        Auslesen eines bestimmten SPO-Objekts.
+        Das auszulesende Objekt wird durch die ```id``` in dem URI bestimmt.
+        """
+
+        adm = Administration()
+        spo = adm.get_spo_by_hash(spo_hash)
+        return spo
+
     @secured
     def delete(self, id):
         """
@@ -273,14 +291,34 @@ class SpoOperations(Resource):
     @sposystem.marshal_list_with(spo)
     @secured
     def get_modules_by_spo(self, id):
-
         adm = Administration()
         s = adm.get_spo_by_id(id)
         molist = adm.get_all_modules(s)
         return molist
 
 
+@sposystem.route('/spo-by-startsemester-and-studycourse/<int:semester_hash><int:studycourse_hash>')
+@sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
+@sposystem.param('semester_hash', 'Der Hash des Startsemesters')
+@sposystem.param('studycourse_hash', 'Der Hash des Studiengangs')
+class SpoSemStudOperations(Resource):
+
+    @sposystem.marshal_with(spo)
+    # @secured
+    def get(self, semester_hash, studycourse_hash):
+        """
+        Auslesen eines bestimmten SPO-Objekts.
+        Das auszulesende Objekt wird durch die ```id``` in dem URI bestimmt.
+        """
+        adm = Administration()
+        spo = adm.get_spo_by_starstem_studycourse(semester_hash, studycourse_hash)
+        if spo is None:
+            print('verkackt')
+        return spo
+
+
 """
+
 @sposystem.route('/spos/<semester: startsemester>')
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
 @sposystem.param('start_semester', 'Das Startsemester des SPO-Objekts')
@@ -305,9 +343,9 @@ class ModuleListOperations(Resource):
 
     @sposystem.marshal_with(module, code=200)
     @sposystem.expect(module)
-    #@secured
+    # @secured
     def post(self):
- 
+
         adm = Administration()
         proposal = Module.from_dict(api.payload)
         print("post-method")
@@ -319,10 +357,10 @@ class ModuleListOperations(Resource):
             return '', 500
 
 
-@sposystem.route('/modules/<int:id>')
+@sposystem.route('/module/id/<int:id>')
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
 @sposystem.param("id", "Die id des Modules")
-class ModuleOperations(Resource):
+class ModuleIdOperations(Resource):
     @sposystem.marshal_with(module)
     # @secured
     def get(self, id):
@@ -364,10 +402,10 @@ class ModuleOperations(Resource):
         return '', 200
 
 
-@sposystem.route('/modules/<int:module_hash>')
+@sposystem.route('/module/hash/<int:module_hash>')
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
 @sposystem.param("module_hash", "Der Hash des Modules")
-class ModuleOperations(Resource):
+class ModuleHashOperations(Resource):
     @sposystem.marshal_with(module)
     # @secured
     def get(self, module_hash):
@@ -385,6 +423,7 @@ class ModuleOperations(Resource):
         mo = adm.get_module_by_hash(module_hash)
         adm.delete_module(mo)
         return '', 200
+
 
 @sposystem.route('/moduleparts')
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
@@ -455,6 +494,7 @@ class ModulePartOperations(Resource):
         adm.delete_modulepart(mopart)
         return '', 200
 
+
 @sposystem.route('/moduleparts/<int:modulepart_hash>')
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
 @sposystem.param("modulepart_hash", "Der Hash des Moduleparts")
@@ -494,7 +534,7 @@ class StudycourseListOperations(Resource):
             sc = adm.create_studycourse(proposal)
             return sc, 200
         else:
-            return'', 500
+            return '', 500
 
 
 @sposystem.route('/studycourse/<int:id>')
@@ -519,7 +559,7 @@ class StudycourseOperations(Resource):
         adm = Administration()
         sc = adm.get_studycourse_by_id(id)
         adm.delete_studycourse(sc)
-        return'', 200
+        return '', 200
 
     @sposystem.marshal_with(studycourse)
     @sposystem.expect(studycourse, validate=True)
@@ -539,9 +579,9 @@ class StudycourseOperations(Resource):
 
             sc.set_id(id)
             adm.save_studycourse(sc)
-            return'', 200
+            return '', 200
         else:
-            return'', 500
+            return '', 500
 
 
 @sposystem.route('/persons')
@@ -571,7 +611,7 @@ class PersonListOperations(Resource):
             pe = adm.create_person(proposal)
             return pe, 200
         else:
-            return'', 500
+            return '', 500
 
 
 @sposystem.route('/persons/<int:id>')
@@ -596,7 +636,7 @@ class PersonOperations(Resource):
         adm = Administration()
         pe = adm.get_person_by_id(id)
         adm.delete_person(pe)
-        return'', 200
+        return '', 200
 
     @sposystem.marshal_with(person)
     @sposystem.expect(person, validate=True)
@@ -616,9 +656,9 @@ class PersonOperations(Resource):
 
             pe.set_id(id)
             adm.save_person(pe)
-            return'', 200
+            return '', 200
         else:
-            return'', 500
+            return '', 500
 
 
 @sposystem.route('/semesters')

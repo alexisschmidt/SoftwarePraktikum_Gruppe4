@@ -75,9 +75,8 @@ class SemesterMapper(Mapper):
     def find_by_hash(self, hashcode):
 
         result = None
-
         cursor = self._cnx.cursor()
-        command = "SELECT * semester WHERE semester_hash={}".format(hashcode)
+        command = f"SELECT * FROM semester WHERE semester_hash={hashcode}"
         cursor.execute(command)
         tuples = cursor.fetchall()
 
