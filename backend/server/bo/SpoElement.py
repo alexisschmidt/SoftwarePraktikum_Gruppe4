@@ -5,13 +5,13 @@ from server.bo import NamedBo as Nbo
 class SpoElement(Nbo.NamedBo, ABC):
     _edvnr: int
     _ects: int
-    workload: str
+    _workload: str
 
     def __init__(self):
         super().__init__()
         self._edvnr = 0     # EDV Nummer des Spo Elements
         self._ects = 0      # ECTS des Spo Elements
-        self.workload = ""  # Arbeitsaufwand in Stunden des Spo Elements
+        self._workload = ""  # Arbeitsaufwand in Stunden des Spo Elements
 
     def get_edvnr(self):
         """Auslesen der EDV Nummer"""
@@ -31,11 +31,11 @@ class SpoElement(Nbo.NamedBo, ABC):
 
     def get_workload(self):
         """Auslesen des Arbeitsaufwands"""
-        return self.workload
+        return self._workload
 
     def set_workload(self, workload):
         """Setzen des Arbeitsaufwands"""
-        self.workload = workload
+        self._workload = workload
 
     def __eq__(self, other):
         return super().__eq__() and \

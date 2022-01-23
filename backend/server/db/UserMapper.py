@@ -13,7 +13,7 @@ class UserMapper(Mapper):
         cursor.execute("SELECT * from user")
         tuples = cursor.fetchall()
 
-        for (id, creationdate, firstname, lastname, email, google_user_id, isadmin) in tuples:
+        for (id, creationdate, firstname, lastname, email, google_user_id, isadmin, user_hash) in tuples:
             user = User()
             user.set_id(id)
             user.set_firstname(firstname)

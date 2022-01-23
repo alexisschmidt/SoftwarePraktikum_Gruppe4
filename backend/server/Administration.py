@@ -255,7 +255,6 @@ class Administration (object):
             return mapper.find_by_key(number)
 
     def get_all_users(self):
-
         with UserMapper() as mapper:
             return mapper.find_all()
 

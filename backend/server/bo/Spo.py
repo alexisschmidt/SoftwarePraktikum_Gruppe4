@@ -5,13 +5,13 @@ import json
 class Spo (Nbo.NamedBo):
     _start_semester: int
     _end_semester: int
-    _studycourse: int
+    _studycourse_id: int
 
     def __init__(self):
         super().__init__()
         self._start_semester = 0  # Anfangssemester der SPO Gültigkeit
         self._end_semester = 0    # Endsemester der SPO Gültigkeit
-        self._studycourse = 0     # Studiengang der SPO
+        self._studycourse_id = 0     # Studiengang der SPO
 
     def get_start_semester(self):
         """Auslesen des Anfangsdatums der SPO Gültigkeit """
@@ -29,20 +29,20 @@ class Spo (Nbo.NamedBo):
         """Setzen des Enddatums der SPO Gültigkeit """
         self._end_semester = end_semester
 
-    def get_studycourse(self):
+    def get_studycourse_id(self):
         """Auslesen des Studienganges"""
-        return self._studycourse
+        return self._studycourse_id
 
-    def set_studycourse(self, studycourse: int):
+    def set_studycourse_id(self, studycourse: int):
         """Setzen des Studiengangs"""
-        self._studycourse = studycourse
+        self._studycourse_id = studycourse
 
     def __str__(self):
         astring = (f'Spo: id: {self.get_id()}, '
                    f'name: {self._name}, title: {self._title}, '
                    f'start Semester: {self.get_start_semester()}, '
                    f'end Semester: {self.get_end_semester()}, '
-                   f'studycourse: {self.get_studycourse()}'
+                   f'studycourse: {self.get_studycourse_id()}'
                    )
         return astring
 
@@ -53,7 +53,7 @@ class Spo (Nbo.NamedBo):
             'title': self.get_title(),
             'start_semester': self.get_start_semester(),
             'end_semester': self.get_end_semester(),
-            'studycourse_id': self.get_studycourse()
+            'studycourse_id': self.get_studycourse_id()
             })
 
     @staticmethod
@@ -65,21 +65,19 @@ class Spo (Nbo.NamedBo):
         obj.set_title(dictionary["title"])                  # Teil von NamedBo!
         obj.set_start_semester(dictionary["start_semester"])
         obj.set_end_semester(dictionary["end_semester"])
-        obj.set_studycourse(dictionary["studycourse"])
+        obj.set_studycourse_id(dictionary["studycourse_id"])
         return obj
 
     def __eq__(self, other):
         return super().__eq__(other) and self.get_start_semester() == other.get_start_semester() and \
                self.get_end_semester() == other.get_endsemester() and \
-               self.get_studycourse() == other.get_studycourse()
+               self.get_studycourse_id() == other.get_studycourse_id()
 
-    def __hash__(self):
-        super().__hash__()
+    __hash__ = Nbo.NamedBo.__hash__
 
 
 """
 # Test Script
-
 test = Spo()
 print(test.json())
 print(hash(test))

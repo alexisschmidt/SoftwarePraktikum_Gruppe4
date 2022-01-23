@@ -10,26 +10,27 @@ class ModuleMapper(Mapper):
     def find_all(self):
 
         result = []
+        command = "SELECT id, creationdate, name, title, requirement, examtype, outcome, type, ects, edvnr, workload, instructor_hash FROM module"
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT * from module")
+        cursor.execute(command)
         tuples = cursor.fetchall()
 
         for (id, creationdate, name, title,
-             requirement, examtype, instructor, outcome, type, moduleparts,
-             ects, edvnr, workload) in tuples:
+             requirement, examtype, outcome, type,
+             ects, edvnr, workload, instructor_hash) in tuples:
             module = Module()
             module.set_id(id)
+            module.set_creationdate(creationdate)
             module.set_name(name)
             module.set_title(title)
             module.set_requirement(requirement)
             module.set_examtype(examtype)
-            module.set_instructor(instructor)
             module.set_outcome(outcome)
             module.set_type(type)
             module.set_ects(ects)
             module.set_edvnr(edvnr)
             module.set_workload(workload)
-
+            module.set_instructor(instructor_hash)
             result.append(module)
 
         self._cnx.commit()
@@ -69,33 +70,34 @@ class ModuleMapper(Mapper):
 
         return result
 
-    def find_by_key(self, key: int):
+    def find_by_key(self, key):
 
         result = None
-        command = "SELECT * module WHERE id={}".format(key)
         cursor = self._cnx.cursor()
+        command = "SELECT id, creationdate, name, title, requirement, examtype, outcome, type, ects, edvnr, workload, instructor_hash FROM module WHERE id={}".format(key)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
         try:
             (id, creationdate, name, title,
-             requirement, examtype, instructor, outcome, type, moduleparts,
-             ects, edvnr, workload) = tuples[0]
+             requirement, examtype, outcome, type,
+             ects, edvnr, workload,
+             instructor_hash) = tuples[0]
             module = Module()
             module.set_id(id)
+            module.set_creationdate(creationdate)
             module.set_name(name)
             module.set_title(title)
             module.set_requirement(requirement)
             module.set_examtype(examtype)
-            module.set_instructor(instructor)
             module.set_outcome(outcome)
             module.set_type(type)
             module.set_ects(ects)
             module.set_edvnr(edvnr)
             module.set_workload(workload)
+            module.set_instructor(instructor_hash)
             result = module
         except IndexError:
-
             result = None
 
         self._cnx.commit()

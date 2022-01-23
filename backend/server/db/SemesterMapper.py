@@ -13,7 +13,7 @@ class SemesterMapper(Mapper):
         cursor.execute("SELECT * from semester")
         tuples = cursor.fetchall()
 
-        for (id, creationdate, name, title,) \
+        for (id, creationdate, name, title, semester_hash) \
                 in tuples:
             semester = Semester()
             semester.set_id(id)
@@ -48,11 +48,10 @@ class SemesterMapper(Mapper):
         return result
 
     def find_by_key(self, key):
-
         result = None
 
         cursor = self._cnx.cursor()
-        command = "SELECT * semester WHERE id={}".format(key)
+        command = "SELECT id, creationdate, name, title FROM semester WHERE id={}".format(key)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
@@ -69,7 +68,6 @@ class SemesterMapper(Mapper):
 
         self._cnx.commit()
         cursor.close()
-
         return result
 
     def find_by_hash(self, hashcode):

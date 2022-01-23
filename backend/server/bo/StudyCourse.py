@@ -1,8 +1,9 @@
-from server.bo import NamedBo as nbo
+
+from server.bo import NamedBo as Nbo
 import json
 
 
-class StudyCourse (nbo.NamedBo):
+class StudyCourse (Nbo.NamedBo):
     def __init__(self):
         super().__init__()
 
@@ -20,7 +21,7 @@ class StudyCourse (nbo.NamedBo):
     def from_dict(dictionary=dict()):
         """Umwandeln eines Python dict() in einen StudyCourse()."""
         obj = StudyCourse()
-        # obj.set_id(dictionary["id"])  # Teil von BusinessObject!
+        obj.set_id(dictionary["id"])
         obj.set_name(dictionary["name"])
         obj.set_title(dictionary["title"])
         return obj
@@ -28,4 +29,4 @@ class StudyCourse (nbo.NamedBo):
     def __eq__(self, other):
         return super().__eq__(other)
 
-    __hash__ = nbo.__hash__
+    __hash__ = Nbo.NamedBo.__hash__

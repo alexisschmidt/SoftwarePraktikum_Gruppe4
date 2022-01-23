@@ -43,16 +43,16 @@ bo = api.model('BusinessObject', {
 
 """Alle anderen BusinessObjects"""
 user = api.inherit('User', bo, {
-    'firstname': fields.String(attribute='__firstname', description='Vorname eines Users'),
-    'lastname': fields.String(attribute='__lastname', description='Nachname eines Users'),
-    'email': fields.String(attribute='__email', description='Email adresse eines Users'),
-    'google_user_id': fields.String(attribute='__google_user_id', description='Google ID des Users'),
-    'isadmin': fields.Integer(attribute='__isadmin', description='Anzeige ob Adminstatus oder nicht')
+    'firstname': fields.String(attribute='_firstname', description='Vorname eines Users'),
+    'lastname': fields.String(attribute='_lastname', description='Nachname eines Users'),
+    'email': fields.String(attribute='_email', description='Email adresse eines Users'),
+    'google_user_id': fields.String(attribute='_google_user_id', description='Google ID des Users'),
+    'isadmin': fields.Integer(attribute='_isadmin', description='Anzeige ob Adminstatus oder nicht')
 })
 
-namedbo = api.inherit('Namedbo', bo, {
+namedbo = api.clone('Namedbo', bo, {
     'name': fields.String(attribute='_name', description='Name eines NamedBOs'),
-    'title': fields.String(attribute='_name', description='Titel eines NamedBOs')
+    'title': fields.String(attribute='_title', description='Titel eines NamedBOs')
 })
 
 spo = api.inherit('Spo', namedbo, {
@@ -88,16 +88,14 @@ modulepart = api.inherit('Modulepart', spoelement, {
 })
 
 studycourse = api.inherit('StudyCourse', namedbo, {
-    'id': fields.Integer(attribute='_studycourseId', description='ID des Studycourses'),
-
 })
 
 semester = api.inherit('Semester', namedbo)
 
 person = api.inherit('Person', namedbo, {
-    'firstname': fields.String(attribute='__firstname', description='Vorname einer Person'),
-    'lastname': fields.String(attribute='__lastname', description='Nachname einer Person'),
-    'email': fields.String(attribute='__email', description='Email adresse einer Person')
+    'firstname': fields.String(attribute='_firstname', description='Vorname einer Person'),
+    'lastname': fields.String(attribute='_lastname', description='Nachname einer Person'),
+    'email': fields.String(attribute='_email', description='Email adresse einer Person')
 })
 
 """Alles @sposystem.route('')"""
@@ -107,7 +105,7 @@ person = api.inherit('Person', namedbo, {
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
 class UserListOperations(Resource):
     @sposystem.marshal_list_with(user)
-    @secured
+    #@secured
     def get(self):
         """
         Auslesen aller User Objekte.
@@ -315,7 +313,7 @@ class SpoStartSemesterOperations:
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
 class ModuleListOperations(Resource):
     @sposystem.marshal_list_with(module, code=200)
-    @secured
+    #@secured
     def get(self):
 
         adm = Administration()
@@ -343,7 +341,7 @@ class ModuleListOperations(Resource):
 @sposystem.param("id", "Die id des Modules")
 class ModuleOperations(Resource):
     @sposystem.marshal_with(module)
-    @secured
+    #@secured
     def get(self, id):
         """Auslesen eines bestimmten Modul-Objekts"""
         adm = Administration()
@@ -352,7 +350,7 @@ class ModuleOperations(Resource):
 
     @sposystem.marshal_with(module)
     @sposystem.expect(module, validate=True)
-    @secured
+    #@secured
     def put(self, id):
         """Update eines bestimmten Module-Objekts.
         **ACHTUNG: ** relevante id ist die id, die mittels URI bereitgestellt und somit als Methodenparameter
@@ -388,7 +386,7 @@ class ModuleOperations(Resource):
 @sposystem.param('id', 'Die id des Moduls')
 class ModulePartsOperations(Resource):
     @sposystem.marshal_list_with(module)
-    @secured
+    #@secured
     def get(self, id):
         adm = Administration()
         moparts = adm.get_module_by_id(id)
@@ -427,7 +425,7 @@ class ModulePartListOperations(Resource):
 @sposystem.param("id", "Die id des Moduleparts")
 class ModulePartOperations(Resource):
     @sposystem.marshal_with(modulepart)
-    @secured
+    #@secured
     def get(self, id):
         """Auslesen eines bestimmten Modulepart-Objekts"""
         adm = Administration()
@@ -501,7 +499,7 @@ class StudycourseListOperations(Resource):
 @sposystem.param('id', 'Die ID des Studycourse-Objekts')
 class StudycourseOperations(Resource):
     @sposystem.marshal_with(studycourse)
-    @secured
+    #@secured
     def get(self, id):
         """Auslesen eines bestimmten Studycourse-Objekts.
         Das auszulesende Objekt wird durch die```id```in dem URI bestimmt."""
@@ -547,7 +545,7 @@ class StudycourseOperations(Resource):
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
 class PersonListOperations(Resource):
     @sposystem.marshal_list_with(person)
-    @secured
+    #@secured
     def get(self):
         """
         Auslesen aller Person-Objekte.
@@ -579,7 +577,7 @@ class PersonListOperations(Resource):
 @sposystem.param('id', 'Die ID des Person-Objekts')
 class PersonOperations(Resource):
     @sposystem.marshal_with(person)
-    @secured
+    #@secured
     def get(self, id):
         """Auslesen eines bestimmten Person-Objekts.
         Das auszulesende Objekt wird durch die```id```in dem URI bestimmt."""
@@ -625,11 +623,11 @@ class PersonOperations(Resource):
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
 class SemesterListOperations(Resource):
     @sposystem.marshal_list_with(semester, code=200)
-    @secured
+    #@secured
     def get(self):
 
         adm = Administration()
-        semesters = adm.get_all_semester()
+        semesters = adm.get_all_semesters()
         return semesters
 
     @sposystem.marshal_with(semester, code=200)
@@ -651,7 +649,7 @@ class SemesterListOperations(Resource):
 @sposystem.param("id", "Die ID des Semesters")
 class SemesterOperations(Resource):
     @sposystem.marshal_with(semester)
-    @secured
+    #@secured
     def get(self, id):
         """Auslesen eines bestimmten Semester-Objekts"""
         adm = Administration()

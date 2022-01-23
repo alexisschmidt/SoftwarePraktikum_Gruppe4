@@ -29,7 +29,14 @@ export default class API{
 		
 		//Admin Ansicht - Studiengänge
 		#getAllStudycoursesURL = () => `${this.#serverBaseURL}/studycourses`;
-
+		#getAllStudycoursesByIdURL = (id) => `${this.#serverBaseURL}/studycourses/${id}`;
+		#getAllModulesByIdURL = (id) => `${this.#serverBaseURL}/modules/${id}`;
+		#getAllModulePartsByIdURL = (id) => `${this.#serverBaseURL}/moduleparts/${id}`;
+		#getAllSemesterByIdURL = (id) => `${this.#serverBaseURL}/semesters/${id}`;
+		#getAllPersonsByIdURL = (id) => `${this.#serverBaseURL}/persons/${id}`;
+		#getAllSposByIdURL = (id) => `${this.#serverBaseURL}/spos/${id}`;
+		#getAllUsersByIdURL = (id) => `${this.#serverBaseURL}/users/${id}`;
+		
 		//Studenten Ansicht - Zugeordnete SPO/Ausgewählte SPO
 		
 		/** 
@@ -144,6 +151,34 @@ export default class API{
 
 		async getAllStudycourses() {
 			return this.#fetchAdvanced(this.#getAllStudycoursesURL());
+		}
+
+		async getAllStudycoursesById(studycourseId) {
+			return this.#fetchAdvanced(this.#getAllStudycoursesByIdURL(studycourseId));
+		}
+
+		async getAllModulesById(moduleId) {
+			return this.#fetchAdvanced(this.#getAllModulesByIdURL(moduleId));
+		}
+
+		async getAllModulePartsById(modulepartId) {
+			return this.#fetchAdvanced(this.#getAllModulePartsByIdURL(modulepartId));
+		}
+
+		async getAllSemesterById(semesterId) {
+			return this.#fetchAdvanced(this.#getAllSemesterByIdURL(semesterId));
+		}
+
+		async getAllPersonsById(personId) {
+			return this.#fetchAdvanced(this.#getAllPersonsByIdURL(personId));
+		}
+
+		async getAllSposById(spoId) {
+			return this.#fetchAdvanced(this.#getAllSposByIdURL(spoId));
+		}
+
+		async getAllUsersById(userId) {
+			return this.#fetchAdvanced(this.#getAllUsersByIdURL(userId));
 		}
 
 		/**

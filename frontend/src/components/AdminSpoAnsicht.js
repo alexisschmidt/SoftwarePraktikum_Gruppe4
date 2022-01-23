@@ -32,8 +32,9 @@ class AdminSpoAnsicht extends Component {
 
  
 
-    getAllStudycourses = () => {
-        API.getAPI().getAllStudycourses().then(studyCoursebo => {            
+    getAllStudycoursesById = () => {
+        const id = this.props.match.params.id;
+        API.getAPI().getAllStudycoursesById(id).then(studyCoursebo => {            
             this.setState({
                 studycourses: studyCoursebo,
                 loadingProgress: false,
@@ -53,8 +54,8 @@ class AdminSpoAnsicht extends Component {
         });
     }
 
-	getAllModules = () => {
-        API.getAPI().getAllModules().then(modulebo => {            
+	getAllModulesById = () => {
+        API.getAPI().getAllModulesById().then(modulebo => {            
             this.setState({
                 modules: modulebo,
                 loadingProgress: false,
@@ -74,8 +75,8 @@ class AdminSpoAnsicht extends Component {
         });
     }
 
-	getAllModuleParts = () => {
-        API.getAPI().getAllModuleParts().then(modulepartbo => {            
+	getAllModulePartsById = () => {
+        API.getAPI().getAllModulePartsById().then(modulepartbo => {            
             this.setState({
                 moduleparts: modulepartbo,
                 loadingProgress: false,
@@ -95,8 +96,8 @@ class AdminSpoAnsicht extends Component {
         });
     }
 
-	getAllSemester = () => {
-        API.getAPI().getAllSemester().then(semesterbo => {            
+	getAllSemesterById = () => {
+        API.getAPI().getAllSemesterById().then(semesterbo => {            
             this.setState({
                 semester: semesterbo,
                 loadingProgress: false,
@@ -105,6 +106,70 @@ class AdminSpoAnsicht extends Component {
         }).catch(e => {
             this.setState({
                 semester: [],
+                loadingProgress: false,
+                error: e
+            });
+        });
+        
+        this.setState({
+            loadingProgress: true,
+            error: null
+        });
+    }
+
+
+    getAllPersonsById = () => {
+        API.getAPI().getAllPersonsById().then(personbo => {            
+            this.setState({
+                person: personbo,
+                loadingProgress: false,
+                error: null
+            });
+        }).catch(e => {
+            this.setState({
+                person: [],
+                loadingProgress: false,
+                error: e
+            });
+        });
+        
+        this.setState({
+            loadingProgress: true,
+            error: null
+        });
+    }
+
+    getAllSposById = () => {
+        API.getAPI().getAllSposById().then(spobo => {            
+            this.setState({
+                spo: spobo,
+                loadingProgress: false,
+                error: null
+            });
+        }).catch(e => {
+            this.setState({
+                semester: [],
+                loadingProgress: false,
+                error: e
+            });
+        });
+        
+        this.setState({
+            loadingProgress: true,
+            error: null
+        });
+    }
+
+    getAllUsersById = () => {
+        API.getAPI().getAllUsersById().then(userbo => {            
+            this.setState({
+                user: userbo,
+                loadingProgress: false,
+                error: null
+            });
+        }).catch(e => {
+            this.setState({
+                user: [],
                 loadingProgress: false,
                 error: e
             });
@@ -127,18 +192,25 @@ class AdminSpoAnsicht extends Component {
     }
 
     componentDidMount() {
-        this.getAllStudycourses();
+        this.getAllStudycoursesById();
+        this.getAllModulesById();
+        this.getAllModulePartsById();
+        this.getAllSemesterById();
+        this.getAllPersonsById();
+        this.getAllSposById();
+        this.getAllUsersById();
+
     }
 
     render() {
         const { classes } = this.props;
-        const { loadingProgress, error, studycourses, modules, moduleparts, semester, } = this.state;
+        const { loadingProgress, error, studycourses, modules, moduleparts, semester, person, spo, user} = this.state;
         return (
 
             <Box sx={{ width: '100%', maxWidth: 650 }}>
      
                 <Typography variant="h6" textAlign={'center'} gutterBottom component="div">
-                    Studiengang-Auswählen
+                    SPO
                 </Typography>
                     
                 <Stack spacing={2} direction="column">

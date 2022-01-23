@@ -11,19 +11,19 @@ class SpoMapper(Mapper):
 
         result = []
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT id, creationdate, name, title, start_semester, end_semester, studycourse from spo")
+        cursor.execute("SELECT id, creationdate, name, title, spo_hash, studycourse_id, studycourse_studycourse_hash from spo")
         tuples = cursor.fetchall()
         
         print(tuples)
 
-        for (id, creationdate, name, title, start_semester, end_semester, studycourse_id) in tuples:
+        for (id, creationdate, name, title, spo_hash, studycourse_id, studycourse_studycourse_hash) in tuples:
             spo = Spo()
             spo.set_id(id)
             spo.set_name(name)
             spo.set_title(title)
-            spo.set_start_semester(start_semester)
-            spo.set_end_semester(end_semester)
+            #spo.set_spo_hash(spo_hash)
             spo.set_studycourse(studycourse_id)
+           # spo.set_studycourse_studycourse_hash(studycourse_studycourse_hash)
             result.append(spo)
 
         self._cnx.commit()
@@ -93,12 +93,12 @@ class SpoMapper(Mapper):
         tuples = cursor.fetchall()
 
         try:
-            (id, creationdate, name, title, start_semester, end_semester, studycourse_id) = tuples[0]
+            (id, creationdate, name, title, spo_hash, studycourse_id, studycourse_studycourse_hash) = tuples[0]
             spo = Spo()
             spo.set_id(id)
             spo.set_name(name)
             spo.set_title(title)
-            spo.set_start_semester(start_semester)
+            spo.set_spo_hash(spo_hash)
             spo.set_end_semester(end_semster)
             spo.set_studycourse(studycourse_id)
             result = spo
@@ -111,22 +111,20 @@ class SpoMapper(Mapper):
 
         return result
 
-    def find_all_by_studycourse(self, studycourse):
+    def find_all_by_studycourse(self, studycourse_id):
         result = []
         cursor = self._cnx.cursor()
-        command = "SELECT * FROM spo WHERE studycourse LIKE '{}' ORDER BY studycourse".format(studycourse)
+        command = "SELECT id, creationdate, name, title, studycourse_id FROM spo WHERE studycourse_id LIKE '{}' ORDER BY studycourse_id".format(studycourse_id)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
         try:
-            (id, creationdate, name, title, start_semester, end_semester, studycourse) = tuples[0]
+            (id, creationdate, name, title, studycourse_id) = tuples[0]
             spo = Spo()
             spo.set_id(id)
             spo.set_name(name)
             spo.set_title(title)
-            spo.set_start_semester(start_semester)
-            spo.set_end_semester(end_semester)
-            spo.set_studycourse(studycourse)
+            spo.set_studycourse_id(studycourse_id)
             result = spo
         except IndexError:
 
@@ -136,6 +134,7 @@ class SpoMapper(Mapper):
         cursor.close()
 
         return result
+
 
     def find_latest_by_studycourse(self, studycourse_hash):
         result = []

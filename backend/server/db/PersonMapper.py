@@ -14,7 +14,7 @@ class PersonMapper(Mapper):
         cursor.execute("SELECT * from person")
         tuples = cursor.fetchall()
 
-        for (id, creationdate, firstname, lastname, email) in tuples:
+        for (id, creationdate, firstname, lastname, email, person_hash) in tuples:
             person = Person()
             person.set_id(id)
             person.set_firstname(firstname)
@@ -55,7 +55,7 @@ class PersonMapper(Mapper):
         result = None
 
         cursor = self._cnx.cursor()
-        command = "SELECT * person WHERE id={}".format(key)
+        command = "SELECT * from person WHERE id={}".format(key)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
@@ -81,7 +81,7 @@ class PersonMapper(Mapper):
         result = None
 
         cursor = self._cnx.cursor()
-        command = "SELECT * person WHERE person_hash={}".format(hashcode)
+        command = "SELECT * from person WHERE person_hash={}".format(hashcode)
         cursor.execute(command)
         tuples = cursor.fetchall()
 

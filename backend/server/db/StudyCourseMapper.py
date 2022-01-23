@@ -13,7 +13,7 @@ class StudyCourseMapper(Mapper):
         cursor.execute("SELECT * from studycourse")
         tuples = cursor.fetchall()
 
-        for (id, creationdate, name, title) in tuples:
+        for (id, creationdate, name, title, studycourse_hash) in tuples:
             studycourse = StudyCourse()
             studycourse.set_id(id)
             studycourse.set_name(name)
@@ -49,11 +49,11 @@ class StudyCourseMapper(Mapper):
         return result
 
     def find_by_key(self, key):
-
+	
         result = None
 
         cursor = self._cnx.cursor()
-        command = "SELECT * studycourse WHERE id={}".format(key)
+        command = "SELECT id, creationdate, name, title FROM studycourse WHERE id= {}".format(key)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
