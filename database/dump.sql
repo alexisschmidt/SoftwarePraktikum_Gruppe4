@@ -26,6 +26,7 @@ DROP TABLE IF EXISTS `spoverwaltung`.`module` ;
 CREATE TABLE IF NOT EXISTS `spoverwaltung`.`module` (
   `id` INT NOT NULL,
   `creationdate` DATETIME NOT NULL,
+  `createdby` BIGINT NOT NULL,
   `name` VARCHAR(45) NOT NULL,
   `title` VARCHAR(45) NOT NULL,
   `requirement` VARCHAR(45) NULL DEFAULT NULL,
@@ -36,7 +37,6 @@ CREATE TABLE IF NOT EXISTS `spoverwaltung`.`module` (
   `edvnr` VARCHAR(45) NOT NULL,
   `workload` VARCHAR(200) NOT NULL,
   `module_hash` BIGINT NOT NULL,
-  `instructor_id` INT NOT NULL,
   `instructor_hash` BIGINT NOT NULL,
   PRIMARY KEY (`id`, `module_hash`))
 ENGINE = InnoDB
@@ -52,6 +52,7 @@ DROP TABLE IF EXISTS `spoverwaltung`.`modulepart` ;
 CREATE TABLE IF NOT EXISTS `spoverwaltung`.`modulepart` (
   `id` INT NOT NULL,
   `creationdate` DATETIME NOT NULL,
+  `createdby` BIGINT NOT NULL,
   `name` VARCHAR(45) NOT NULL,
   `title` VARCHAR(45) NOT NULL,
   `language` VARCHAR(45) NOT NULL,
@@ -65,9 +66,7 @@ CREATE TABLE IF NOT EXISTS `spoverwaltung`.`modulepart` (
   `edvnr` VARCHAR(45) NOT NULL,
   `workload` VARCHAR(600) NOT NULL,
   `modulepart_hash` BIGINT NOT NULL,
-  `professor_id` INT NOT NULL,
   `professor_hash` BIGINT NOT NULL,
-  `module_id` INT NOT NULL,
   `module_hash` BIGINT NOT NULL,
   PRIMARY KEY (`id`, `modulepart_hash`))
 ENGINE = InnoDB
@@ -83,6 +82,7 @@ DROP TABLE IF EXISTS `spoverwaltung`.`person` ;
 CREATE TABLE IF NOT EXISTS `spoverwaltung`.`person` (
   `id` INT NOT NULL,
   `creationdate` DATETIME NOT NULL,
+  `createdby` BIGINT NOT NULL,
   `firstname` VARCHAR(45) NOT NULL,
   `lastname` VARCHAR(45) NOT NULL,
   `email` VARCHAR(45) NOT NULL,
@@ -101,6 +101,7 @@ DROP TABLE IF EXISTS `spoverwaltung`.`semester` ;
 CREATE TABLE IF NOT EXISTS `spoverwaltung`.`semester` (
   `id` INT NOT NULL,
   `creationdate` DATETIME NOT NULL,
+  `createdby` BIGINT NOT NULL,
   `name` VARCHAR(45) NOT NULL,
   `title` VARCHAR(45) NOT NULL,
   `semester_hash` BIGINT NOT NULL,
@@ -118,10 +119,10 @@ DROP TABLE IF EXISTS `spoverwaltung`.`spo` ;
 CREATE TABLE IF NOT EXISTS `spoverwaltung`.`spo` (
   `id` INT NOT NULL,
   `creationdate` DATETIME NOT NULL,
+  `createdby` BIGINT NOT NULL,
   `name` VARCHAR(45) NOT NULL,
   `title` VARCHAR(45) NOT NULL,
   `spo_hash` BIGINT NOT NULL,
-  `studycourse_id` INT NOT NULL,
   `studycourse_hash` BIGINT NOT NULL,
   PRIMARY KEY (`id`, `spo_hash`))
 ENGINE = InnoDB
@@ -136,9 +137,7 @@ DROP TABLE IF EXISTS `spoverwaltung`.`spocomposition` ;
 
 CREATE TABLE IF NOT EXISTS `spoverwaltung`.`spocomposition` (
   `id` INT NOT NULL,
-  `module_id` INT NOT NULL,
   `module_hash` BIGINT NOT NULL,
-  `spo_id` INT NOT NULL,
   `spo_hash` BIGINT NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
@@ -153,13 +152,10 @@ DROP TABLE IF EXISTS `spoverwaltung`.`spovalidity` ;
 
 CREATE TABLE IF NOT EXISTS `spoverwaltung`.`spovalidity` (
   `id` INT NOT NULL,
-  `spo_id` INT NOT NULL,
   `spo_hash` BIGINT NOT NULL,
-  `semester_id` INT NOT NULL,
   `semester_hash` BIGINT NOT NULL,
   `startsem` TINYINT(1) NOT NULL DEFAULT '0',
   `endsem` TINYINT(1) NOT NULL DEFAULT '0',
-  `creationdate` DATE NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
@@ -174,6 +170,7 @@ DROP TABLE IF EXISTS `spoverwaltung`.`studycourse` ;
 CREATE TABLE IF NOT EXISTS `spoverwaltung`.`studycourse` (
   `id` INT NOT NULL,
   `creationdate` DATETIME NOT NULL,
+  `createdby` BIGINT NOT NULL,
   `name` VARCHAR(45) NOT NULL,
   `title` VARCHAR(45) NOT NULL,
   `studycourse_hash` BIGINT NOT NULL,
@@ -191,6 +188,7 @@ DROP TABLE IF EXISTS `spoverwaltung`.`user` ;
 CREATE TABLE IF NOT EXISTS `spoverwaltung`.`user` (
   `id` INT NOT NULL,
   `creationdate` DATETIME NOT NULL,
+  `createdby` BIGINT NOT NULL,
   `firstname` VARCHAR(45) NOT NULL,
   `lastname` VARCHAR(45) NOT NULL,
   `email` VARCHAR(45) NOT NULL,
