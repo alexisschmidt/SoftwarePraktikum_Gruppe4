@@ -31,7 +31,8 @@ class SpoMapper(Mapper):
 
         result = []
         cursor = self._cnx.cursor()
-        command = "SELECT id, creationdate, name, title, studycourse_id FROM spo WHERE name LIKE '{}' ORDER BY name".format(name)
+        command = f"SELECT id, creationdate, name, title, studycourse_id " \
+                  f"FROM spo WHERE name LIKE '{name}' ORDER BY name"
         cursor.execute(command)
         tuples = cursor.fetchall()
 
@@ -42,8 +43,6 @@ class SpoMapper(Mapper):
             spo.set_title(title)
             spo.set_studycourse(studycourse_id)
             result.append(spo)
-
-
 
         self._cnx.commit()
         cursor.close()
@@ -108,6 +107,7 @@ class SpoMapper(Mapper):
         command = "SELECT id, creationdate, name, title, studycourse_id FROM spo " \
                   f"WHERE studycourse_id LIKE '{studycourse}' " \
                   "ORDER BY studycourse_id"
+        cursor.execute(command)
         tuples = cursor.fetchall()
 
         try:
@@ -153,10 +153,10 @@ class SpoMapper(Mapper):
     def find_by_startsemester_and_studycourse(self, semesterhash, studycoursehash):
         result = None
         cursor = self._cnx.cursor()
-        command ="SELECT spo.id, spo.creationdate, spo.name, spo.title, spo.studycourse_hash " \
-                 "FROM spo " \
-                 "LEFT JOIN spovalidity ON spo.spo_hash = spovalidity.spo_hash " \
-                 f"WHERE semester_hash = {semesterhash} AND studycourse_hash = {studycoursehash}"
+        command = "SELECT spo.id, spo.creationdate, spo.name, spo.title, spo.studycourse_hash " \
+                  "FROM spo " \
+                  "LEFT JOIN spovalidity ON spo.spo_hash = spovalidity.spo_hash " \
+                  f"WHERE semester_hash = {semesterhash} AND studycourse_hash = {studycoursehash}"
         cursor.execute(command)
         tuples = cursor.fetchall()
 
@@ -194,9 +194,10 @@ class SpoMapper(Mapper):
         except ValueError:
             print('spo needs an studycourse to be created!')
 
-
-        command = "INSERT INTO spo (id, creationdate, name, title, spo_hash, studycourse_id, studycourse_hash) VALUES (%s,%s,%s,%s,%s,%s,%s)"
-        data = (spo.get_id(), spo.get_creationdate(), spo.get_name(), spo.get_title(), hash(spo), sc, spo.get_studycourse())
+        command = "INSERT INTO spo (id, creationdate, name, title, spo_hash, studycourse_id, studycourse_hash) " \
+                  "VALUES (%s,%s,%s,%s,%s,%s,%s)"
+        data = (spo.get_id(), spo.get_creationdate(), spo.get_name(), spo.get_title(),
+                hash(spo), sc, spo.get_studycourse())
         cursor.execute(command, data)
 
         self._cnx.commit()
@@ -208,8 +209,11 @@ class SpoMapper(Mapper):
 
         cursor = self._cnx.cursor()
 
-        command = "UPDATE spo " + "SET name=%s, SET title=%s, SET spo_hash=%s, SET studycourse_id=%s, SET get_studycourse_studycourse_hash=%s WHERE id=%s "
-        data = (spo.get_name(), spo.get_title(), spo.get_start_semester(), spo.get_end_semester(), spo.get_studycourse(), spo.get_id())
+        command = "UPDATE spo " + "SET name=%s, SET title=%s, SET spo_hash=%s, " \
+                                  "SET studycourse_id=%s, SET get_studycourse_studycourse_hash=%s " \
+                                  "WHERE id=%s "
+        data = (spo.get_spo(), spo.get_semester(),
+                spo.get_start_semester(), spo.get_end_semester(), spo.get_studycourse(), spo.get_id())
         cursor.execute(command, data)
 
         self._cnx.commit()
