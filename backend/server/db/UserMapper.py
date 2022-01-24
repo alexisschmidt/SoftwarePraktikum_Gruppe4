@@ -34,7 +34,7 @@ class UserMapper(Mapper):
 
         result = []
         cursor = self._cnx.cursor()
-        command = "SELECT * FROM user WHERE name LIKE '{}' ORDER BY name".format(name)
+        command = f"SELECT * FROM user WHERE user.lastname LIKE '{name}' ORDER BY lastname"
         cursor.execute(command)
         tuples = cursor.fetchall()
 
