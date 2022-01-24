@@ -159,6 +159,7 @@ CREATE TABLE IF NOT EXISTS `spoverwaltung`.`spovalidity` (
   `semester_hash` BIGINT NOT NULL,
   `startsem` TINYINT(1) NOT NULL DEFAULT '0',
   `endsem` TINYINT(1) NOT NULL DEFAULT '0',
+  `creationdate` DATE NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
