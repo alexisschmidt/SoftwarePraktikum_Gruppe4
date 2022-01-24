@@ -29,7 +29,8 @@ class SpoCompositionMapper(Mapper):
     def find_by_module(self, module_id):
         result = []
         cursor = self._cnx.cursor()
-        command = "SELECT id, module_id, spo_id,  FROM spocomposition WHERE module_id={} ORDER BY module_id".format(module_id)
+        command = "SELECT id, module_id, spo_id,  FROM spocomposition " \
+                  "WHERE module_id={} ORDER BY module_id".format(module_id)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
@@ -44,7 +45,6 @@ class SpoCompositionMapper(Mapper):
         cursor.close()
 
         return result
-
 
     def find_by_spo_id(self, spo_id):
         result = []
@@ -106,7 +106,7 @@ class SpoCompositionMapper(Mapper):
 
         command = "INSERT INTO spocomposition (id, module_id, module_hash, spo_id, spo_hash) VALUES (%s,%s,%s,%s,%s) "
         data = (
-        spoc.get_id(), spoc.get_module_id(), spoc.get_module_hash(), spoc.get_spo_id(), spoc.get_spo_hash())
+            spoc.get_id(), spoc.get_module_id(), spoc.get_module_hash(), spoc.get_spo_id(), spoc.get_spo_hash())
         cursor.execute(command, data)
 
         self._cnx.commit()
@@ -119,7 +119,7 @@ class SpoCompositionMapper(Mapper):
 
         command = "UPDATE spocomposition " + "SET module_id=%s, spo_id=%s WHERE id=%s"
         data = (
-        spoc.get_id(), spoc.get_module_id(), spoc.get_spo_id())
+            spoc.get_id(), spoc.get_module_id(), spoc.get_spo_id())
         cursor.execute(command, data)
 
         self._cnx.commit()
