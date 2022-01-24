@@ -1,3 +1,5 @@
+import datetime
+
 from server.bo.Module import Module
 from server.bo.Modulepart import Modulepart
 from server.bo.Person import Person
@@ -23,6 +25,8 @@ class Administration (object):
     """Modul-spezifische Methoden"""
 
     def create_module(self, proposal):
+
+        proposal.set_creationdate(datetime.date.today())
         with ModuleMapper() as mapper:
             return mapper.insert(proposal)
 
@@ -58,6 +62,7 @@ class Administration (object):
     """Modulteil-spezifische Methoden"""
 
     def create_modulepart(self, proposal):
+        proposal.set_creationdate(datetime.date.today())
         with ModulePartMapper() as mapper:
             return mapper.insert(proposal)
 
@@ -90,6 +95,7 @@ class Administration (object):
 
     def create_person(self, proposal):
         """Eine Person anlegen"""
+        proposal.set_creationdate(datetime.date.today())
         with PersonMapper() as mapper:
             return mapper.insert(proposal)
 
@@ -121,6 +127,7 @@ class Administration (object):
     """Semester-spezifische Methoden"""
 
     def create_semester(self, proposal):
+        proposal.set_creationdate(datetime.date.today())
         """Ein Semester anlegen"""
         with SemesterMapper() as mapper:
             return mapper.insert(proposal)
@@ -161,6 +168,7 @@ class Administration (object):
             mapper.find_semesters_by_spo_hash(hashcode)
 
     def create_validity(self, proposal):
+        proposal.set_creationdate(datetime.date.today())
         with SpoValidityMapper() as mapper:
             mapper.insert(proposal)
 
@@ -168,10 +176,9 @@ class Administration (object):
 
     def create_spo(self, proposal):
         """Eine SPO anlegen"""
+        proposal.set_creationdate(datetime.date.today())
         with SpoMapper() as mapper:
             newobj = mapper.insert(proposal)
-        with SpoValidityMapper() as mapper:
-             mapper.insert(newobj)
         return newobj
 
     def get_spo_by_name(self, name):
@@ -220,7 +227,7 @@ class Administration (object):
     """Studycourse-spezifische Methoden"""
 
     def create_studycourse(self, proposal):
-
+        proposal.set_creationdate(datetime.date.today())
         with StudyCourseMapper() as mapper:
             return mapper.insert(proposal)
 
@@ -252,6 +259,7 @@ class Administration (object):
     """User-spezifische Methoden"""
 
     def create_user(self, user):
+        proposal.set_creationdate(datetime.date.today())
         with UserMapper() as mapper:
             return mapper.insert(user)
 
