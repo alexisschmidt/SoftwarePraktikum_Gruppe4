@@ -6,12 +6,14 @@ class Spo (Nbo.NamedBo):
     _start_semester: int
     _end_semester: int
     _studycourse: int
+    _modules: list[int]
 
     def __init__(self):
         super().__init__()
         self._start_semester = 0  # Anfangssemester der SPO Gültigkeit
         self._end_semester = 0    # Endsemester der SPO Gültigkeit
         self._studycourse = 0     # Studiengang der SPO
+        self._modules = []
 
     def get_start_semester(self):
         """Auslesen des Anfangsdatums der SPO Gültigkeit """
@@ -37,6 +39,18 @@ class Spo (Nbo.NamedBo):
         """Setzen des Studiengangs"""
         self._studycourse = studycourse
 
+    def get_modules(self):
+        return self._modules
+
+    def set_modules(self, modules: list[int]):
+        self._modules = modules
+
+    def append_module(self, module: int):
+        self._modules.append(module)
+
+    def remove_module(self, module: int):
+        self._modules.remove(module)
+
     def __str__(self):
         astring = (f'Spo: id: {self.get_id()}, '
                    f'name: {self._name}, title: {self._title}, '
@@ -53,7 +67,8 @@ class Spo (Nbo.NamedBo):
             'title': self.get_title(),
             'start_semester': self.get_start_semester(),
             'end_semester': self.get_end_semester(),
-            'studycourse_id': self.get_studycourse()
+            'studycourse_id': self.get_studycourse(),
+            'modules': self.get_modules()
             })
 
     @staticmethod
@@ -66,6 +81,7 @@ class Spo (Nbo.NamedBo):
         obj.set_start_semester(dictionary["start_semester"])
         obj.set_end_semester(dictionary["end_semester"])
         obj.set_studycourse(dictionary["studycourse"])
+        obj.set_modules(dictionary["modules"])
         return obj
 
     def __eq__(self, other):

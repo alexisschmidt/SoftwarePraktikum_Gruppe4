@@ -7,10 +7,12 @@ import hashlib
 class BusinessObject(ABC):
     _id: int
     _creationdate: datetime.date
+    _createdby: int
 
     def __init__(self):
         self._id = 0
-        self._creationdate = datetime.date.today()  # immer aktuelles Datum
+        self._creationdate = None   # immer aktuelles Datum
+        self._createdby = 0
 
     def set_id(self, value):
         """Setzen der ID."""
@@ -27,6 +29,12 @@ class BusinessObject(ABC):
     def get_creationdate(self):
         """Auslesen des erstellten Datums"""
         return self._creationdate
+
+    def get_creator(self):
+        return self._createdby
+
+    def set_creator(self, userhash):
+        self._createdby = userhash
 
     @abstractmethod
     def json(self):

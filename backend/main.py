@@ -62,7 +62,9 @@ Nachfolgend werden analog zu unseren BusinessObject-Klassen transferierbare Stru
 BusinessObject und NamedBo dienen als Basisklassen, auf der die weiteren Strukturen basieren.
 """
 bo = api.model('BusinessObject', {
-    'id': fields.Integer(attribute='_id', description='Einzigartige Identität eines Objects')
+    'id': fields.Integer(attribute='_id', description='Einzigartige Identität eines Objects'),
+    'creationdate': fields.Integer(attribute='_creationdate', description='Tag der erstellung'),
+    'createdby': fields.Integer(attribute='_createdby', description='bearbeitender User')
 })
 
 """Alle BusinessObjects"""
@@ -83,7 +85,8 @@ namedbo = api.clone('Namedbo', bo, {
 spo = api.inherit('Spo', namedbo, {
     'start_semester': fields.Integer(attribute='_start_semester', description='Anfangssemester der SPO-gültigkeit'),
     'end_semester': fields.Integer(attribute='_end_semester', description='Endsemester der SPO-gültigkeit'),
-    'studycourse': fields.Integer(attribute='_studycourse_id', description='Studycourse der SPO')
+    'studycourse': fields.Integer(attribute='_studycourse_id', description='Studycourse der SPO'),
+    'modules':  fields.List(fields.Integer(attribute='_modules', description='Module einer SPO'))
 })
 
 spoelement = api.inherit('Spoelement', namedbo, {
@@ -123,12 +126,6 @@ person = api.inherit('Person', bo, {
     'email': fields.String(attribute='_email', description='Email adresse einer Person')
 })
 
-validity = api.inherit('Validity', bo, {
-    'spo': fields.Integer(attribute='spo', description='Hash der Spo'),
-    'semester': fields.Integer(attribute='semester', description='Hash des Semesters'),
-    'startsem': fields.Boolean(attribute='startsem', description='Startpunkt der Gültigkeit?'),
-    'endsem': fields.Boolean(attribute='endsem', description='Endpunkt der Gültigkeit?')
-})
 
 """Alles @sposystem.route('')"""
 
@@ -150,7 +147,7 @@ class UserListOperations(Resource):
     @sposystem.marshal_with(user, code=200)
     @sposystem.expect(user)
     # @secured
-    def post(self):
+    def post(self,**kwargs):
         """
         Erstellen eines User-Objekts in der Datenbank.
         """
@@ -158,7 +155,7 @@ class UserListOperations(Resource):
         proposal = User.from_dict(api.payload)
 
         if proposal is not None:
-            c = adm.create_user(proposal)
+            c = adm.create_user(proposal,kwargs['user'])
             return c, 200
         else:
             return '', 500
@@ -182,7 +179,7 @@ class UserOperations(Resource):
     @sposystem.marshal_with(user)
     @sposystem.expect(user, validate=True)
     @secured
-    def put(self, id):
+    def put(self, id,**kwargs):
         """
         Update eines bestimmten User-Objekts.\n
         **ACHTUNG: ** relevante id ist die id, die mittels URI bereitgestellt und somit als Methodenparameter
@@ -263,7 +260,7 @@ class SpoListOperations(Resource):
     @sposystem.marshal_with(spo, code=200)
     @sposystem.expect(spo, validate=True)
     # @secured
-    def post(self):
+    def post(self,**kwargs):
         """
         Erstellen eines Spo-Objekts in der Datenbank.
         """
@@ -271,7 +268,7 @@ class SpoListOperations(Resource):
         proposal = Spo.from_dict(api.payload)
 
         if proposal is not None:
-            newspo = adm.create_spo(proposal)
+            newspo = adm.create_spo(proposal,kwargs['user'])
             return newspo, 200
         else:
             return '', 500
@@ -296,7 +293,7 @@ class SpoIdOperations(Resource):
     @sposystem.marshal_with(spo)
     @sposystem.expect(spo, validate=True)
     @secured
-    def put(self, id):
+    def put(self, id,**kwargs):
         """
         Update eines bestimmten SPO-Objekts.
         **ACHTUNG: ** relevante id ist die id, die mittels URI bereitgestellt und somit als Methodenparameter
@@ -363,27 +360,7 @@ class SpoSemStudOperations(Resource):
         spo = adm.get_spo_by_startsem_studycourse(semester_hash, studycourse_hash)
         return spo
 
-@sposystem.route('/spo/validities')
-@sposystem.response(500, 'Falles es zu einem Server-seitigen Fehler kommt.')
-class ValidityListOperations(Resource):
-
-    @sposystem.marshal_with(validity)
-    @sposystem.expect(validity)
-    @secured
-    def post(self):
-        """
-        Erstellen einer Gültigkeit in der Datenbank.
-        """
-        adm = Administration()
-        proposal = Spo.from_dict(api.payload)
-        if proposal is not None:
-            newspo = adm.create_validity(proposal)
-            return newspo, 200
-        else:
-            return '', 500
-
 """
-
 @sposystem.route('/spos/<semester: startsemester>')
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
 @sposystem.param('start_semester', 'Das Startsemester des SPO-Objekts')
@@ -409,7 +386,7 @@ class ModuleListOperations(Resource):
     @sposystem.marshal_with(module, code=200)
     @sposystem.expect(module)
     # @secured
-    def post(self):
+    def post(self,**kwargs):
         """
         Erstellen eines Module-Objekts in der Datenbank.
          """
@@ -418,7 +395,7 @@ class ModuleListOperations(Resource):
         print("post-method")
         print(proposal)
         if proposal is not None:
-            mo = adm.create_module(proposal)
+            mo = adm.create_module(proposal,kwargs['user'])
             return mo, 200
         else:
             return '', 500
@@ -439,7 +416,7 @@ class ModuleIdOperations(Resource):
     @sposystem.marshal_with(module)
     @sposystem.expect(module, validate=True)
     @secured
-    def put(self, id):
+    def put(self, id,**kwargs):
         """Update eines bestimmten Module-Objekts.
         **ACHTUNG: ** relevante id ist die id, die mittels URI bereitgestellt und somit als Methodenparameter
         verwendet wird. Dieser Parameter überschreibt das ID-Attribut des im Payload der Anfrage übermittelten
@@ -506,14 +483,14 @@ class ModulePartListOperations(Resource):
     @sposystem.marshal_with(modulepart)
     @sposystem.expect(modulepart)
     # @secured
-    def post(self):
+    def post(self,**kwargs):
         """
         Erstellen eines Modulepart-Objekts in der Datenbank.
         """
         adm = Administration()
         proposal = Modulepart.from_dict(api.payload)
         if proposal is not None:
-            mopart = adm.create_modulepart(proposal)
+            mopart = adm.create_modulepart(proposal,kwargs['user'])
             return mopart, 200
         else:
             return '', 500
@@ -534,7 +511,7 @@ class ModulePartOperations(Resource):
     @sposystem.marshal_with(modulepart)
     @sposystem.expect(modulepart, validate=True)
     @secured
-    def put(self, id):
+    def put(self, id,**kwargs):
         """Update eines bestimmten Modulepart-Objekts.
         **ACHTUNG: ** relevante id ist die id, die mittels URI bereitgestellt und somit als Methodenparameter
         verwendet wird. Dieser Parameter überschreibt das ID-Attribut des im Payload der Anfrage übermittelten
@@ -594,8 +571,8 @@ class StudycourseListOperations(Resource):
 
     @sposystem.marshal_list_with(studycourse, code=200)
     @sposystem.expect(studycourse)
-    # @secured
-    def post(self):
+    @secured
+    def post(self,**kwargs):
         """
         Erstellen eines StudyCourse-Objekts in der Datenbank.
         """
@@ -603,7 +580,7 @@ class StudycourseListOperations(Resource):
         proposal = StudyCourse.from_dict(api.payload)
 
         if proposal is not None:
-            sc = adm.create_studycourse(proposal)
+            sc = adm.create_studycourse(proposal,kwargs['user'])
             return sc, 200
         else:
             return '', 500
@@ -636,7 +613,7 @@ class StudycourseOperations(Resource):
     @sposystem.marshal_with(studycourse)
     @sposystem.expect(studycourse, validate=True)
     # @secured
-    def put(self, id):
+    def put(self, id,**kwargs):
         """Update eines bestimmten Studycourse-Objekts.
         **ACHTUNG: ** relevante id ist die id, die mittels URI bereitgestellt und somit als Methodenparameter
         verwendet wird. Dieser Parameter überschreibt das ID-Attribut des im Payload der Anfrage übermittelten
@@ -675,7 +652,7 @@ class PersonListOperations(Resource):
     @sposystem.marshal_list_with(person, code=200)
     @sposystem.expect(person)
     # @secured
-    def post(self):
+    def post(self,**kwargs):
         """
         Erstellen eines Person-Objekts in der Datenbank.
         """
@@ -684,7 +661,7 @@ class PersonListOperations(Resource):
         proposal = Person.from_dict(api.payload)
 
         if proposal is not None:
-            pe = adm.create_person(proposal)
+            pe = adm.create_person(proposal,kwargs['user'])
             return pe, 200
         else:
             return '', 500
@@ -717,7 +694,7 @@ class PersonOperations(Resource):
     @sposystem.marshal_with(person)
     @sposystem.expect(person, validate=True)
     @secured
-    def put(self, id):
+    def put(self, id,**kwargs):
         """Update eines bestimmten Studycourse-Objekts.
         **ACHTUNG: ** relevante id ist die id, die mittels URI bereitgestellt und somit als Methodenparameter
         verwendet wird. Dieser Parameter überschreibt das ID-Attribut des im Payload der Anfrage übermittelten
@@ -751,14 +728,14 @@ class SemesterListOperations(Resource):
     @sposystem.marshal_with(semester, code=200)
     @sposystem.expect(semester)
     # @secured
-    def post(self):
+    def post(self,**kwargs):
         """
         Erstellen eines Semester-Objekts in der Datenbank.
         """
         adm = Administration()
         proposal = Semester.from_dict(api.payload)
         if proposal is not None:
-            se = adm.create_semester(proposal)
+            se = adm.create_semester(proposal,kwargs['user'])
             return se, 200
         else:
             return '', 500
@@ -779,7 +756,7 @@ class SemesterOperations(Resource):
     @sposystem.marshal_with(semester)
     @sposystem.expect(semester, validate=True)
     @secured
-    def put(self, id):
+    def put(self, id,**kwargs):
         """Update eines bestimmten Semester-Objekts.
         **ACHTUNG: ** relevante id ist die id, die mittels URI bereitgestellt und somit als Methodenparameter
         verwendet wird. Dieser Parameter überschreibt das ID-Attribut des im Payload der Anfrage übermittelten

@@ -37,7 +37,8 @@ def secured(function):
                         user = adm.create_user(firstname, email, google_user_id)
                     
                     print(request.method. request.path, "angefragt durch:", firstname, email)
-                    
+                    if request.method == 'POST' or request.method == 'PUT':
+                        kwargs['user'] = user
                     objects = function(*args, **kwargs)
                     return objects
                 else:
