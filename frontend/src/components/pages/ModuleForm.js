@@ -7,10 +7,18 @@ import {
   IconButton,
   Dialog,
   DialogContent,
-  DialogContentText,
   DialogTitle,
   DialogActions,
-  TextField,
+  TextField, 
+  Stepper,
+  Step,
+  StepLabel, 
+  Checkbox,
+  ListItem,
+  Grid, 
+  ListItemText,
+  Paper,
+  List,
 } from "@mui/material";
 import CloseIcon from "@material-ui/icons/Close";
 import ContextErrorMessage from "./ContextErrorMessage";
@@ -63,6 +71,14 @@ class ModuleForm extends Component {
 
       updatingError: null,
       updatingInProgress: false,
+
+       //Iterator für den Stepper
+       activeStep: 0,
+
+       //Variablen für die Modulauswahl
+       modulepart:[],
+       modulepartInModule: [],
+       checked: [],
     };
     this.baseState = this.state;
   }
@@ -78,6 +94,10 @@ class ModuleForm extends Component {
     newModule.set_outcome(this.state.outcome);
     newModule.set_examtype(this.state.set_examtype);
     newModule.set_instructor(this.state.set_instructor);
+
+    //die Modulepart müssen zur module hinzugefügt werden, entweder durch eine update methode fürs modulpart im backend oder indem die modulepart direkt im spobo hinzugefügt werden
+    //let modulIDs=this.state.moduleInSPO.map(module => module.getID());
+    //newSPO.setModules(modulIDs);
 
     API.getAPI()
       .addModule(newModule)
@@ -149,87 +169,140 @@ class ModuleForm extends Component {
       });
     }
   };
+  getModulepart = () => {
+    const { module } = this.props;
+    //TODO: Überprüfen, ob diese Methode wirklich alle Moduleparts aus der DB holt
+    API.getAPI().getAllModule().then((response) => {
+      if (module) {
+        //TODO: anpassen auf die passende Methode in API
+        API.getAPI().getAllModulepartForMODULE(module.id).then((modulepart) => {
+          //alle moduleparts die in der spo sind aus der response entfernen
+          let modulepartOhneModule = response.filter((m) => {
+            //Array.some überprüft, ob ein Element in dem Array vorkommt, wenn das Element schon in Module vorhanden ist, wird es dann aus der response rausgefiltert
+            return !modulepart.some((m2) => m2.id === m.id);
+          });
+          this.setState({
+            modulepartInModule: modulepart,
+            modulepart: modulepartOhneModule,
+          });
+        });
+      }
+      else{
+        this.setState({
+          modulepart: response,
+        });
+      }
+    });
+    
+  };
 
   handleClose = () => {
     this.setState(this.baseState);
     this.props.onClose(null);
   };
 
-  render() {
-    const { show, module } = this.props;
-    const {
-      id,
-      idValidationFailed,
-      idEdited,
-
-      name,
-      nameValidationFailed,
-      nameEdited,
-
-      edvnr,
-      edvnrValidationFailed,
-      edvnrEdited,
-
-      ects,
-      ectsValidationFailed,
-      ectsEdited,
-
-      workload,
-      workloadValidationFailed,
-      workloadEdited,
-
-      requirement,
-      requirementValidationFailed,
-      requirementEdited,
-
-      outcome,
-      outcomeValidationFailed,
-      outcomeEdited,
-
-      examtype,
-      examtypeValidationFailed,
-      examtypeEdited,
-
-      instructor,
-      instructorValidationFailed,
-      instructorEdited,
-
-      addingInProgress,
-      addingError,
-      updatingInProgress,
-      updatingError,
-    } = this.state;
-
-    let title = "";
-    let header = "";
-
-    if (module) {
-      // Projekt objekt true, somit ein edit
-      title = `Module "${module.name}" bearbeiten`;
-      header = "Neue module Daten einfügen";
-    } else {
-      title = "Erstelle eine neue module";
-      header = "module Daten einfügen";
+   //Stepper Methoden
+   handleBack = () => {
+    this.setState({
+      activeStep: 0,
+    });
+  };
+  handleNext = () => {
+    const {module} = this.props;
+    if (this.state.activeStep === 0){
+      this.getModulepart()
+      this.setState({
+        activeStep: 1,
+      })}
+    else if (this.state.activeStep === 1){
+    module? this.updateModule() : this.addModule();
     }
+    
+  };
 
-    return show ? (
-      <Dialog
-        open={show}
-        onEnter={this.getInfos}
-        onClose={this.handleClose}
-        maxWidth="xs"
-        fullWidth
-      >
-        <DialogTitle>
-          {title}
-          <IconButton onClick={this.handleClose}>
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText>{header}</DialogContentText>
+  //Modulepart hinzufügen Methoden
+  handleToggle = (value) => () => {
+    //überprüfen ob das value schon in dem checked array ist, wenn es drin ist wird es entfernt und ansonsten hinzugefügt
+    const { checked } = this.state;
+    const currentIndex = checked.indexOf(value);
+    const newChecked = checked;
 
-          <form noValidate autoComplete="off">
+    if (currentIndex === -1) {
+      newChecked.push(value);
+    } else {
+      newChecked.splice(currentIndex, 1);
+    }
+    this.setState({
+      checked: newChecked,
+    });
+  }
+
+  handleAllLeft = () => {
+    const newModulepart = this.state.modulepart;
+    //alle moduleparts aus this.state.modulepartInModule in newModulepart hinzufügen
+    this.state.modulepartInModule.forEach((m) => {
+      newModulepart.push(m);
+    });
+    this.setState({
+      checked: [],
+      modulepartInModule: [],
+      modulepart: newModulepart,
+    });
+  }
+  handleAllRight = () => {
+    const newModulepart = this.state.modulepartInModule;
+    //alle modulepart aus this.state.modulepart in newModulepart hinzufügen
+    this.state.modulepart.forEach((m) => {
+      newModulepart.push(m);
+    });
+    this.setState({
+      checked: [],
+      modulepart: [],
+      modulepartInModule: newModulepart,
+    });
+  }
+  handleCheckedLeft = () => {
+    const newModulepart = this.state.modulepart;
+    //alle checked modulepart aus this.state.modulepartInmodule in newModulepart hinzufügen
+    this.state.modulepartInModule.forEach((m) => {
+      if (this.state.checked.includes(m.id)) {
+        newModulepart.push(m);
+      }
+    });
+
+    this.setState({
+      checked: [],
+      modulepartInModule: newModulepart,
+      modulepart: this.state.modulepart.filter((m) => !this.state.checked.includes(m.id)),
+    });
+  }
+  handleCheckedRight = () => {
+    const newModulepart = this.state.modulepartInModule;
+    //alle checked modulepart aus this.state.modulepart in newModulepart hinzufügen
+    this.state.modulepart.forEach((m) => {
+      if (this.state.checked.includes(m.id)) {
+        newModulepart.push(m);
+      }
+    });
+    this.setState({
+      checked: [],
+      modulepart: newModulepart,
+      modulepartInModule: this.state.modulepartInModule.filter((m) => !this.state.checked.includes(m.id)),
+    });
+  }
+
+  intersection = (checkedarray, modulepart) => {
+    //überprüft ob ein modulpart in dem checkedarray vorhanden ist
+    const modulpartIDs = modulepart.map((m) => m.id);
+    return checkedarray.filter((c) => modulpartIDs.tabIndexOf(c) !== -1);
+  }
+
+
+renderTextfields(){
+  const{name,nameValidationFailed,edvnr,edvnrValidationFailed, ects, ectsValidationFailed, workload, workloadValidationFailed, requirement, requirementValidationFailed, outcome, outcomeValidationFailed, examtype, examtypeValidationFailed, instructor, instructorValidationFailed} = this.state;
+  return (
+    <>
+    <form noValidate autoComplete="off">
             <TextField
               autoFocus
               type="text"
@@ -238,19 +311,6 @@ class ModuleForm extends Component {
               margin="small"
               id="name"
               label="Modulname"
-              variant="outlined"
-              value={name}
-              onChange={this.textFieldValueChange}
-              error={nameValidationFailed}
-            />
-
-            <TextField
-              type="text"
-              required
-              fullWidth
-              margin="small"
-              id="name"
-              label="Modulename"
               variant="outlined"
               value={name}
               onChange={this.textFieldValueChange}
@@ -352,8 +412,179 @@ class ModuleForm extends Component {
               error={instructorValidationFailed}
             />
           </form>
+      </>
+    );
+  }
+  render AddModulepart() {
+    const {modulepart, modulepartInModule, checked} = this.state
+
+ //Modulepart, die jeweils auf der linken und rechten Seite ausgewählt sind
+ const leftChecked = this.intersection(checked, modulepart);
+ const rightChecked = this.intersection(checked, modulepartInModule);
+
+   const customList = (items) => (
+     <Paper sx={{ width: 200, height: 230, overflow: 'auto' }}>
+       <List dense component="div" role="list">
+         {items.map((m) => {
+           const labelId = `transfer-list-item-${m.id}-label`;
+ 
+           return (
+             <ListItem
+               key={m.id}
+               role="listitem"
+               button
+               onClick={this.handleToggle(m.id)}
+             >
+               <ListItemIcon>
+                 <Checkbox
+                   checked={checked.indexOf(m.id) !== -1}
+                   tabIndex={-1}
+                   disableRipple
+                   inputProps={{
+                     'aria-labelledby': labelId,
+                   }}
+                 />
+               </ListItemIcon>
+               <ListItemText id={labelId} primary={`${m.name}`} />
+             </ListItem>
+           );
+         })}
+         <ListItem />
+       </List>
+     </Paper>
+   );
+   return (
+     <>
+         <Grid container spacing={2} justifyContent="center" alignItems="center">
+     <Grid item>{customList(module)}</Grid>
+     <Grid item>
+       <Grid container direction="column" alignItems="center">
+         <Button
+           sx={{ my: 0.5 }}
+           variant="outlined"
+           size="small"
+           onClick={this.handleAllRight}
+           disabled={modulepart.length === 0}
+           aria-label="move all right"
+         >
+           ≫
+         </Button>
+         <Button
+           sx={{ my: 0.5 }}
+           variant="outlined"
+           size="small"
+           onClick={this.handleCheckedRight}
+           disabled={leftChecked.length === 0}
+           aria-label="move selected right"
+         >
+           &gt;
+         </Button>
+         <Button
+           sx={{ my: 0.5 }}
+           variant="outlined"
+           size="small"
+           onClick={this.handleCheckedLeft}
+           disabled={rightChecked.length === 0}
+           aria-label="move selected left"
+         >
+           &lt;
+         </Button>
+         <Button
+           sx={{ my: 0.5 }}
+           variant="outlined"
+           size="small"
+           onClick={this.handleAllLeft}
+           disabled={modulepartInModule.length === 0}
+           aria-label="move all left"
+         >
+           ≪
+         </Button>
+       </Grid>
+     </Grid>
+     <Grid item>{customList(modulepartInModule)}</Grid>
+   </Grid>
+     </>
+   );  
+}
+
+render() {
+    const { show, module } = this.props;
+    const {
+      
+      nameValidationFailed,
+      nameEdited,
+
+      edvnrValidationFailed,
+      edvnrEdited,
+
+      ectsValidationFailed,
+      ectsEdited,
+
+      workloadValidationFailed,
+      workloadEdited,
+
+      
+      requirementValidationFailed,
+      requirementEdited,
+
+      outcomeValidationFailed,
+      outcomeEdited,
+
+      examtypeValidationFailed,
+      examtypeEdited,
+
+    
+      instructorValidationFailed,
+      instructorEdited,
+
+      addingInProgress,
+      addingError,
+      updatingInProgress,
+      updatingError,
+
+      activeStep,
+    } = this.state;
+
+    let title = "";
+    let header = "";
+
+    if (module) {
+      // Projekt objekt true, somit ein edit
+      title = `Module "${module.name}" bearbeiten`;
+      header = "Neue module Daten einfügen";
+    } else {
+      title = "Erstelle eine neue module";
+      header = "module Daten einfügen";
+    }
+
+    return show ? (
+      <Dialog
+        open={show}
+        onEnter={this.getInfos}
+        onClose={this.handleClose}
+        maxWidth="xs"
+        fullWidth
+      >
+        <DialogTitle>
+          {title}
+          <IconButton onClick={this.handleClose}>
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent>
+          <Stepper activeStep={activeStep}>
+            {header.map((label, index) => (
+            <Step key={index}>
+              <StepLabel>{label}</StepLabel>
+            </Step>
+            ))}
+          </Stepper>
+          {activeStep===0? this.renderTextfields():this.renderAddModulpart()}
           <LoadingProgress show={addingInProgress || updatingInProgress} />
           {
+            // Show error message in dependency of Projektart prop
+
+         
             // Show error message in dependency of Projektart prop
             module ? (
               <ContextErrorMessage
@@ -371,15 +602,21 @@ class ModuleForm extends Component {
           }
         </DialogContent>
         <DialogActions>
+          {activeStep===0?
           <Button onClick={this.handleClose} color="secondary">
             Abbrechen
           </Button>
+          :
+          <Button onClick={this.handleBack} color="secondary">
+            Zurück
+          </Button>
+          }
           {
-            // If a Projekt is given, show an update button, else an add button
+          
+          // If a Projekt is given, show an update button, else an add button
             module ? (
               <Button
                 disabled={
-                  idValidationFailed ||
                   nameValidationFailed ||
                   edvnrValidationFailed ||
                   ectsValidationFailed ||
@@ -393,13 +630,11 @@ class ModuleForm extends Component {
                 onClick={this.updateModule}
                 color="primary"
               >
-                Speichern
+                {activeStep===0? "Weiter":"Speichern"}  
               </Button>
             ) : (
               <Button
                 disabled={
-                  idValidationFailed ||
-                  !idEdited ||
                   nameValidationFailed ||
                   !nameEdited ||
                   edvnrValidationFailed ||
@@ -421,7 +656,7 @@ class ModuleForm extends Component {
                 onClick={this.addModule}
                 color="primary"
               >
-                Hinzufügen
+                 {activeStep===0? "Weiter":"Hinzufügen"}
               </Button>
             )
           }

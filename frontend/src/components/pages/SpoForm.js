@@ -353,8 +353,6 @@ class SpoForm extends Component {
               error={studyCourseValidationFailed}
             />
           </form>
-
-
       </>
     );
   }
@@ -471,7 +469,7 @@ class SpoForm extends Component {
       studyCourseValidationFailed,
       studyCourseEdited,
 
-      //anpassen ID?
+    
 
       addingInProgress,
       addingError,
