@@ -52,16 +52,16 @@ class Mapper (AbstractContextManager, ABC):
         pass
 
     @abstractmethod
-    def insert(self, object):
+    def insert(self, businessobject):
         """Füge das folgende Objekt als Datensatz in die DB ein."""
         pass
 
     @abstractmethod
-    def update(self, object):
+    def update(self, businessobject):
         """Ein Objekt auf einen bereits in der DB enthaltenen Datensatz abbilden."""
         pass
 
     @abstractmethod
-    def delete(self, object):
+    def delete(self, businessobject):
         """Den Datensatz, der das gegebene Objekt in der DB repräsentiert löschen."""
         pass
