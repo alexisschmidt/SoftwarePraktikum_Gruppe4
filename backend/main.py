@@ -1,41 +1,71 @@
 # -- coding:utf-8 --
+
+# Unser Service basiert auf Flask 2.0.2
 from flask import Flask
+# Auf Flask aufbauend nutzen wir RestX 3.0.10
 from flask_restx import Api, Resource, fields
+# Wir benutzen noch CORS 0.5.1, eine Flask-Erweiterung für Cross-Origin Resource Sharing
 from flask_cors import CORS
 
-# Wir greifen natürlich auf unsere Applikationslogik inkl. BusinessObject-Klassen zurück
-
-from server.bo.Spo import Spo
-from server.bo.User import User
-from server.bo.Module import Module
-from server.bo.Modulepart import Modulepart
-from server.bo.StudyCourse import StudyCourse
-from server.bo.Person import Person
-from server.bo.Semester import Semester
-from server.Administration import Administration
-
-# Außerdem nutzen wir einen selbstgeschriebenen Decorator der die Authentifikation übernimmt
+# Wir nutzen einen selbstgeschriebenen Decorator der die Authentifikation übernimmt
 from server.SecurityDecorator import secured
 
+# Wir greifen natürlich auch auf unsere Applikationslogik inkl. BusinessObject-Klassen zurück
+from server.Administration import Administration
+from server.bo.Module import Module
+from server.bo.Modulepart import Modulepart
+from server.bo.Person import Person
+from server.bo.Semester import Semester
+from server.bo.Spo import Spo
+from server.bo.StudyCourse import StudyCourse
+from server.bo.User import User
+
+
+"""
+Instanzieren von Flask. Am Ende dieser Datei erfolgt dann erst der 'Start' von Flask.
+"""
 app = Flask(__name__)
+
+"""
+Alle Ressourcen mit dem Präfix /sposystem für **Cross-Origin Resource Sharing** (CORS) freigeben.
+Diese eine Zeile setzt die Installation des Package flask-cors voraus. 
+
+Sofern Frontend und Backend auf getrennte Domains/Rechnern deployed würden, wäre sogar eine Formulierung
+wie etwa diese erforderlich:
+CORS(app, resources={r"/sposytem/*": {"origins": "*"}})
+Allerdings würde dies dann eine Missbrauch Tür und Tor öffnen, so dass es ratsamer wäre, nicht alle
+"origins" zuzulassen, sondern diese explizit zu nennen. Weitere Infos siehe Doku zum Package flask-cors.
+"""
 CORS(app, resources=r'/sopra/*')
 
+"""
+In dem folgenden Abschnitt bauen wir ein Modell auf, das die Datenstruktur beschreibt, 
+auf deren Basis Clients und Server Daten austauschen. Grundlage hierfür ist das Package flask-restx.
+"""
 api = Api(app, version='1.0', title='Sopra API',
-          description='Datenverarbeitungssystem für SpOs.')
+          description='Datenverarbeitungssystem für SPOs.')
 
-"""Anlegen von Namespaces 
-Namespaces erlauben uns die Strukturierung von APIs.
+"""
+Anlegen eines Namespace
+
+Namespaces erlauben die Strukturierung von APIs. Dieser Namespace beinhaltet alle
+SPO-relevanten Operationen unter dem Präfix /sposystem. 
+Eine alternative bzw. ergänzende Nutzung von Namespace könnte etwa sein, unter-
+schiedliche API-Versionen voneinander zu trennen, um etwa Abwärtskompatibilität 
+(vgl. Lehrveranstaltungen zu Software Engineering) zu gewährleisten. 
+Dies ließe sich z.B. umsetzen durch /sposystem/v1, /sposystem/v2 usw.
 """
 sposystem = api.namespace('sopra', description='Funktionen des SpoSystems')
 
-"""Nachfolgend werden analog zu unseren BusinessObject-Klassen transferierbare Strukturen angelegt.
-BusinessObject dient als Basisklasse, auf der die weiteren Strukturen "" aufsetzen."""
-
+"""
+Nachfolgend werden analog zu unseren BusinessObject-Klassen transferierbare Strukturen angelegt.
+BusinessObject und NamedBo dienen als Basisklassen, auf der die weiteren Strukturen basieren.
+"""
 bo = api.model('BusinessObject', {
     'id': fields.Integer(attribute='_id', description='Einzigartige Identität eines Objects')
 })
 
-"""Alle anderen BusinessObjects"""
+"""Alle BusinessObjects"""
 user = api.inherit('User', bo, {
     'firstname': fields.String(attribute='_firstname', description='Vorname eines Users'),
     'lastname': fields.String(attribute='_lastname', description='Nachname eines Users'),
@@ -49,6 +79,7 @@ namedbo = api.clone('Namedbo', bo, {
     'title': fields.String(attribute='_title', description='Titel eines NamedBOs')
 })
 
+"""Alle NamedBos:"""
 spo = api.inherit('Spo', namedbo, {
     'start_semester': fields.Integer(attribute='_start_semester', description='Anfangssemester der SPO-gültigkeit'),
     'end_semester': fields.Integer(attribute='_end_semester', description='Endsemester der SPO-gültigkeit'),
@@ -86,10 +117,17 @@ studycourse = api.inherit('StudyCourse', namedbo)
 
 semester = api.inherit('Semester', namedbo)
 
-person = api.inherit('Person', namedbo, {
+person = api.inherit('Person', bo, {
     'firstname': fields.String(attribute='_firstname', description='Vorname einer Person'),
     'lastname': fields.String(attribute='_lastname', description='Nachname einer Person'),
     'email': fields.String(attribute='_email', description='Email adresse einer Person')
+})
+
+validity = api.inherit('Validity', bo, {
+    'spo': fields.Integer(attribute='spo', description='Hash der Spo'),
+    'semester': fields.Integer(attribute='semester', description='Hash des Semesters'),
+    'startsem': fields.Boolean(attribute='startsem', description='Startpunkt der Gültigkeit?'),
+    'endsem': fields.Boolean(attribute='endsem', description='Endpunkt der Gültigkeit?')
 })
 
 """Alles @sposystem.route('')"""
@@ -113,7 +151,9 @@ class UserListOperations(Resource):
     @sposystem.expect(user)
     # @secured
     def post(self):
-
+        """
+        Erstellen eines User-Objekts in der Datenbank.
+        """
         adm = Administration()
         proposal = User.from_dict(api.payload)
 
@@ -131,9 +171,10 @@ class UserOperations(Resource):
     @sposystem.marshal_with(user)
     @secured
     def get(self, id):
-        """Auslesen eines bestimmten Customer-Objekts.
-        Das auszulesende Objekt wird durch die ```id``` in dem URI bestimmt."""
-
+        """
+        Auslesen eines bestimmten Customer-Objekts.
+        Das auszulesende Objekt wird durch die ```id``` in dem URI bestimmt.
+        """
         adm = Administration()
         us = adm.get_user_by_id(id)
         return us
@@ -142,11 +183,12 @@ class UserOperations(Resource):
     @sposystem.expect(user, validate=True)
     @secured
     def put(self, id):
-        """Update eines bestimmten User-Objekts.
+        """
+        Update eines bestimmten User-Objekts.\n
         **ACHTUNG: ** relevante id ist die id, die mittels URI bereitgestellt und somit als Methodenparameter
         verwendet wird. Dieser Parameter überschreibt das ID-Attribut des im Payload der Anfrage übermittelten
-        User-Objekts."""
-
+        User-Objekts.
+        """
         adm = Administration()
         us = User.from_dict(api.payload)
 
@@ -162,13 +204,30 @@ class UserOperations(Resource):
 
     @secured
     def delete(self, id):
-        """Löschen eines bestimmten User-Objekts.
-        Das zu löschende Objekt wird durch die ```id``` in dem URI bestimmt."""
-
+        """
+        Löschen eines bestimmten User-Objekts.\n
+        Das zu löschende Objekt wird durch die ```id``` in dem URI bestimmt.
+        """
         adm = Administration()
         us = adm.get_user_by_id(id)
         adm.delete_user(us)
         return '', 200
+
+
+@sposystem.route('/user/<int:user_hash>')
+@sposystem.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
+@sposystem.param('lastname', 'Der Hash des User-Objekts')
+class ModuleHashOperations(Resource):
+    @sposystem.marshal_with(user)
+    @secured
+    def get(self, user_hash):
+        """
+        Auslesen eines Customer-Objekts, das durch sein Hash bestimmt wird.\n
+        Das auszulesende Objekt wird durch ```user_hash``` in dem URI bestimmt.
+        """
+        adm = Administration()
+        us = adm.get_user_by_hash(user_hash)
+        return us
 
 
 @sposystem.route('/users-by-name/<string:lastname>')
@@ -179,10 +238,9 @@ class UserByNameOperations(Resource):
     @secured
     def get(self, lastname):
         """
-        Auslesen von Customer-Objekten, die durch den Nachnamen bestimmt werden.
+        Auslesen von Customer-Objekten, die durch den Nachnamen bestimmt werden.\n
         Die auszulesenden Objekte werden durch ```lastname``` in dem URI bestimmt.
         """
-
         adm = Administration()
         us = adm.get_user_by_name(lastname)
         return us
@@ -206,6 +264,9 @@ class SpoListOperations(Resource):
     @sposystem.expect(spo, validate=True)
     # @secured
     def post(self):
+        """
+        Erstellen eines Spo-Objekts in der Datenbank.
+        """
         adm = Administration()
         proposal = Spo.from_dict(api.payload)
 
@@ -223,12 +284,11 @@ class SpoIdOperations(Resource):
 
     @sposystem.marshal_with(spo)
     @secured
-    def get_by_id(self, id):
+    def get(self, id):
         """
         Auslesen eines bestimmten SPO-Objekts.
         Das auszulesende Objekt wird durch die ```id``` in dem URI bestimmt.
         """
-
         adm = Administration()
         spo = adm.get_spo_by_id(id)
         return spo
@@ -243,7 +303,6 @@ class SpoIdOperations(Resource):
         verwendet wird. Dieser Parameter überschreibt das ID-Attribut des im Payload der Anfrage übermittelten
         SPO-Objekts.
         """
-
         adm = Administration()
         spo = Spo.from_dict(api.payload)
 
@@ -266,38 +325,28 @@ class SpoOperations(Resource):
 
     @sposystem.marshal_with(spo)
     @secured
-    def get_by_hash(self, spo_hash):
+    def get(self, spo_hash):
         """
         Auslesen eines bestimmten SPO-Objekts.
         Das auszulesende Objekt wird durch die ```id``` in dem URI bestimmt.
         """
-
         adm = Administration()
         spo = adm.get_spo_by_hash(spo_hash)
         return spo
 
     @secured
-    def delete(self, id):
+    def delete(self, spo_hash):
         """
         Löschen eines bestimmten SPO-Objekts.
         Das zu löschende Objekt wird durch die ```id``` in dem URI bestimmt.
         """
-
         adm = Administration()
-        spo = adm.get_spo_by_id(id)
+        spo = adm.get_spo_by_id(spo_hash)
         adm.delete_spo(spo)
         return '', 200
 
-    @sposystem.marshal_list_with(spo)
-    @secured
-    def get_modules_by_spo(self, id):
-        adm = Administration()
-        s = adm.get_spo_by_id(id)
-        molist = adm.get_all_modules(s)
-        return molist
 
-
-@sposystem.route('/spo-by-startsemester-and-studycourse/<int:semester_hash><int:studycourse_hash>')
+@sposystem.route('/spo-by-startsemester-and-studycourse/<int:semester_hash>/<int:studycourse_hash>')
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
 @sposystem.param('semester_hash', 'Der Hash des Startsemesters')
 @sposystem.param('studycourse_hash', 'Der Hash des Studiengangs')
@@ -311,11 +360,27 @@ class SpoSemStudOperations(Resource):
         Das auszulesende Objekt wird durch die ```id``` in dem URI bestimmt.
         """
         adm = Administration()
-        spo = adm.get_spo_by_starstem_studycourse(semester_hash, studycourse_hash)
-        if spo is None:
-            print('verkackt')
+        spo = adm.get_spo_by_startsem_studycourse(semester_hash, studycourse_hash)
         return spo
 
+@sposystem.route('/spo/validities')
+@sposystem.response(500, 'Falles es zu einem Server-seitigen Fehler kommt.')
+class ValidityListOperations(Resource):
+
+    @sposystem.marshal_with(validity)
+    @sposystem.expect(validity)
+    @secured
+    def post(self):
+        """
+        Erstellen einer Gültigkeit in der Datenbank.
+        """
+        adm = Administration()
+        proposal = Spo.from_dict(api.payload)
+        if proposal is not None:
+            newspo = adm.create_validity(proposal)
+            return newspo, 200
+        else:
+            return '', 500
 
 """
 
@@ -345,7 +410,9 @@ class ModuleListOperations(Resource):
     @sposystem.expect(module)
     # @secured
     def post(self):
-
+        """
+        Erstellen eines Module-Objekts in der Datenbank.
+         """
         adm = Administration()
         proposal = Module.from_dict(api.payload)
         print("post-method")
@@ -440,7 +507,9 @@ class ModulePartListOperations(Resource):
     @sposystem.expect(modulepart)
     # @secured
     def post(self):
-
+        """
+        Erstellen eines Modulepart-Objekts in der Datenbank.
+        """
         adm = Administration()
         proposal = Modulepart.from_dict(api.payload)
         if proposal is not None:
@@ -527,6 +596,9 @@ class StudycourseListOperations(Resource):
     @sposystem.expect(studycourse)
     # @secured
     def post(self):
+        """
+        Erstellen eines StudyCourse-Objekts in der Datenbank.
+        """
         adm = Administration()
         proposal = StudyCourse.from_dict(api.payload)
 
@@ -604,6 +676,10 @@ class PersonListOperations(Resource):
     @sposystem.expect(person)
     # @secured
     def post(self):
+        """
+        Erstellen eines Person-Objekts in der Datenbank.
+        """
+
         adm = Administration()
         proposal = Person.from_dict(api.payload)
 
@@ -676,7 +752,9 @@ class SemesterListOperations(Resource):
     @sposystem.expect(semester)
     # @secured
     def post(self):
-
+        """
+        Erstellen eines Semester-Objekts in der Datenbank.
+        """
         adm = Administration()
         proposal = Semester.from_dict(api.payload)
         if proposal is not None:

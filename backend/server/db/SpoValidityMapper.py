@@ -37,7 +37,7 @@ class SpoValidityMapper(Mapper):
         """Lies den einen Tupel mit der gegebenen ID (vgl. Primärschlüssel) aus."""
         pass
 
-    def find_spo_by_semester_hash(self, hashcode: int):
+    def find_spos_by_semester_hash(self, hashcode: int):
 
         result = []
 
@@ -99,28 +99,34 @@ class SpoValidityMapper(Mapper):
 
         cursor = self._cnx.cursor()
         cursor.execute("SELECT MAX(id) AS maxid FROM spovalidity")
-        newid = 1
-        if cursor.fetchone()[0] is not None:
-            newid += 1
-        cursor.execute("SET FOREIGN_KEY_CHECKS=0")
+        maxid = cursor.fetchone()[0]
 
-        if not endsemester:
-            cursor.execute(f"SELECT id FROM semester WHERE semester_hash={spo.get_start_semester()}")
-            ssid = int(cursor.fetchone()[0])
-            command = "INSERT INTO spovalidity VALUES " \
-                      f"(id={newid}, spo_id={spo.get_id()}, spo_hash={hash(spo)}, " \
-                      f"semester_id={ssid}, semester_hash={spo.get_start_semester()}, " \
-                      f"startsem={1}, endsem={0}) "
-
+        if maxid is None:
+            newid = 1
         else:
+            newid = maxid + 1
+
+        # cursor.execute("SET FOREIGN_KEY_CHECKS=0")
+        if endsemester is True:
             cursor.execute(f"SELECT id FROM semester WHERE semester_hash={spo.get_end_semester()}")
-            esid = int(cursor.fetchone())
-            command = "INSERT INTO spovalidity VALUES " \
+            esid = int(cursor.fetchone()[0])
+            command = "INSERT INTO spovalidity (id, spo_id, spo_hash, semester_id, semester_hash, startsem, endsem) " \
+                      "VALUES " \
                       f"(id={newid}, spo_id={spo.get_id()}, spo_hash={hash(spo)}, " \
                       f"semester_id={esid}, semester_hash={spo.get_end_semester()}, " \
-                      f"startsem={0}, endsem={1}) "
+                      f"startsem=0, endsem=1)"
+        else:
+            cursor.execute(f"SELECT id FROM semester WHERE semester_hash={spo.get_start_semester()}")
+            ssid = int(cursor.fetchone()[0])
+            command = "INSERT INTO spovalidity (id, spo_id, spo_hash, semester_id, semester_hash, startsem, endsem) " \
+                      "VALUES " \
+                      f"(id={newid}, spo_id={spo.get_id()}, spo_hash={hash(spo)}, " \
+                      f"semester_id={ssid}, semester_hash={spo.get_start_semester()}, " \
+                      f"startsem=1, endsem=0)"
+
+        print(command)
         cursor.execute(command)
-        cursor.execute("SET FOREIGN_KEY_CHECKS=1")
+        # cursor.execute("SET FOREIGN_KEY_CHECKS=1")
         self._cnx.commit()
         cursor.close()
         return spo
