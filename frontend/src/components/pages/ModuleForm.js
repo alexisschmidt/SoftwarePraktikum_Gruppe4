@@ -16,11 +16,11 @@ import CloseIcon from "@material-ui/icons/Close";
 import ContextErrorMessage from "./ContextErrorMessage";
 import LoadingProgress from "./LoadingProgress";
 
-export class ModuleForm extends Component {
+class ModuleForm extends Component {
   constructor(props) {
     super(props);
+      this.state = {
 
-    this.state = {
       id: null,
       name: "",
       nameValidationFailed: false,
@@ -82,7 +82,6 @@ export class ModuleForm extends Component {
     API.getAPI()
       .addModule(newModule)
       .then((module) => {
-        this.props.getmodule();
         this.setState(this.baseState);
         this.props.onClose(module); //Aufrufen parent in backend
       })
@@ -237,16 +236,15 @@ export class ModuleForm extends Component {
               required
               fullWidth
               margin="small"
-              id="id"
-              label="id"
+              id="name"
+              label="Modulname"
               variant="outlined"
-              value={id}
-              onChange={this.numberFieldValueChange}
-              error={idValidationFailed}
+              value={name}
+              onChange={this.textFieldValueChange}
+              error={nameValidationFailed}
             />
 
             <TextField
-              autoFocus
               type="text"
               required
               fullWidth
@@ -432,5 +430,17 @@ export class ModuleForm extends Component {
     ) : null;
   }
 }
+/** PropTypes */
+ModuleForm.propTypes = {
+  /** If true, the form is rendered */
+  show: PropTypes.bool.isRequired,
+  /**
+   * Handler function which is called, when the dialog is closed.
+   * Sends the edited or created projektBO's as parameter or null, if cancel was pressed.
+   *
+   * Signature: onClose(ProjektBO's projekt);
+   */
+  onClose: PropTypes.func.isRequired,
+};
 
 export default ModuleForm;
