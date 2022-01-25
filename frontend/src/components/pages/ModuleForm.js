@@ -19,6 +19,7 @@ import {
   ListItemText,
   Paper,
   List,
+  ListItemIcon
 } from "@mui/material";
 import CloseIcon from "@material-ui/icons/Close";
 import ContextErrorMessage from "./ContextErrorMessage";
@@ -415,7 +416,7 @@ renderTextfields(){
       </>
     );
   }
-  render AddModulepart() {
+  renderAddModulepart() {
     const {modulepart, modulepartInModule, checked} = this.state
 
  //Modulepart, die jeweils auf der linken und rechten Seite ausgewählt sind
@@ -509,7 +510,7 @@ renderTextfields(){
 
 render() {
     const { show, module } = this.props;
-    const {
+    let {
       
       nameValidationFailed,
       nameEdited,

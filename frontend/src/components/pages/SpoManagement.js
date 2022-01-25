@@ -19,7 +19,16 @@ class Administration extends Component {
       loadingInProgress: false,
       spoFormIsOpen: false,
     };
+
+    this.state = {
+      tabindex: 0,
+      error: null,
+      loadingInProgress: false,
+      ModuleFormOpen: false,
+    };
   }
+
+
 
   // Lifecycle methode, wird aufgerufen wenn componente in den DOM eingesetzt wird
   componentDidMount() {}
@@ -31,17 +40,30 @@ class Administration extends Component {
       });
     }
   };
+  moduleFormHandler = (event) => {
+    if (!this.ModuleFormOpen) {
+      this.setState({
+        ModuleFormOpen: true,
+      });
+    }
+  };
 
   spoFormClosed = (event) => {
     this.setState({
       spoFormIsOpen: false,
     });
   };
+  ModuleFormClosed = (event) =>{
+    this.setState({
+      ModuleFormIsOpen: false,
+    });
+  };
 
   /** Renders the component */
   render() {
     const { classes } = this.props;
-    const { loadingInProgress, error, spoFormIsOpen } = this.state;
+    const { loadingInProgress, error, spoFormIsOpen, moduleFormIsOpen } = this.state;
+
 
     return (
       <div className={classes.root}>
@@ -50,7 +72,14 @@ class Administration extends Component {
           <Button variant="contained" onClick={this.spoFormHandler}>
             SPO ERSTELLEN
           </Button>
+          <Button variant="contained" onClick={this.moduleFormHandler}>
+            Module ERSTELLEN
+          </Button>
+
+
           <SpoForm show={spoFormIsOpen} onClose={this.spoFormClosed} />
+          <ModuleForm show={moduleFormIsOpen} onClose={this.modeleFormClosed} />
+          
           <ContextErrorMessage
             error={error}
             contextErrorMsg={`Die Seite konnte nicht geladen werden.`}
