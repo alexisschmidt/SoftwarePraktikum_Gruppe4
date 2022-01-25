@@ -11,15 +11,15 @@ class SpoMapper(Mapper):
 
         result = []
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT id, creationdate, name, title, studycourse_id FROM spo")
+        cursor.execute("SELECT id, creationdate, name, title, studycourse_hash FROM spo")
         tuples = cursor.fetchall()
 
-        for (id, creationdate, name, title, studycourse_id) in tuples:
+        for (id, creationdate, name, title, studycourse_hash) in tuples:
             spo = Spo()
             spo.set_id(id)
             spo.set_name(name)
             spo.set_title(title)
-            spo.set_studycourse(studycourse_id)
+            spo.set_studycourse(studycourse_hash)
             result.append(spo)
 
         self._cnx.commit()
@@ -31,12 +31,13 @@ class SpoMapper(Mapper):
 
         result = []
         cursor = self._cnx.cursor()
-        command = f"SELECT id, creationdate, name, title, studycourse_id " \
+        command = f"SELECT id, creationdate, name, title, studycourse_hash " \
                   f"FROM spo WHERE name LIKE '{name}' ORDER BY name"
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for (id, creationdate, name, title, studycourse_id) in tuples:
+        for (id, creationdate, name, title, studycourse_id) \
+                in tuples:
             spo = Spo()
             spo.set_id(id)
             spo.set_name(name)
@@ -78,70 +79,81 @@ class SpoMapper(Mapper):
     def find_by_hash(self, hashcode):
 
         result = None
-
         cursor = self._cnx.cursor()
-        command = "SELECT id, creationdate, name, title, studycourse_id FROM spo WHERE spo_hash={}".format(hashcode)
+
+        # finden der SPO in der DB:
+        command = f"SELECT id, creationdate, createdby, name, title, studycourse_hash FROM spo WHERE spo_hash={hashcode}"
         cursor.execute(command)
         tuples = cursor.fetchall()
 
+        # finden der zugehörigen Module in der DB:
+        cursor.execute(f"SELECT module_hash FROM spocomposition WHERE spo_hash={hashcode}")
+        modules = list(cursor)
+
+        # erstellen des Objekts
         try:
-            (id, creationdate, name, title, studycourse_id) = tuples[0]
+            (id, creationdate, createdby, name, title, studycourse_hash) = tuples[0]
             spo = Spo()
             spo.set_id(id)
+            spo.set_creationdate(creationdate)
+            spo.set_creator(createdby)
             spo.set_name(name)
             spo.set_title(title)
-            spo.set_studycourse(studycourse_id)
+            spo.set_studycourse(studycourse_hash)
+            spo.set_modules(modules)
             result = spo
         except IndexError:
-
             result = None
 
         self._cnx.commit()
         cursor.close()
-
         return result
 
-    def find_all_by_studycourse(self, studycourse):
+    def find_all_by_studycourse(self, studycoursehash):
         result = []
         cursor = self._cnx.cursor()
-        command = "SELECT id, creationdate, name, title, studycourse_id FROM spo " \
-                  f"WHERE studycourse_id LIKE '{studycourse}' " \
-                  "ORDER BY studycourse_id"
+
+        # finden der SPOs in der DB:
+        command = "SELECT * FROM spo " \
+                  f"WHERE studycourse_hash ={studycoursehash}"
         cursor.execute(command)
         tuples = cursor.fetchall()
-
-        try:
-            (id, creationdate, name, title, studycourse) = tuples[0]
+        # Erstellen einer Liste von Objekten
+        for (id, creationdate, createdby, name, title, spo_hash, studycourse_hash) \
+                in tuples:
+            cursor.execute(f"SELECT module_hash FROM spocomposition WHERE spo_hash={spo_hash}")
+            modules = [cursor.fetchall]
             spo = Spo()
             spo.set_id(id)
+            spo.set_creationdate(creationdate)
+            spo.set_creator(createdby)
             spo.set_name(name)
             spo.set_title(title)
-            spo.set_studycourse(studycourse)
-            result = spo
-        except IndexError:
-
-            result = None
+            spo.set_studycourse(studycourse_hash)
+            spo.set_modules()
+            result.append(spo)
 
         self._cnx.commit()
         cursor.close()
-
         return result
 
     def find_latest_by_studycourse(self, studycourse):
         result = []
         cursor = self._cnx.cursor()
-        command = "SELECT id, creationdate, name, title, studycourse_hash " \
+        command = "SELECT id, creationdate, createdby, name, title, studycourse_hash " \
                   f"FROM spo WHERE studycourse_hash = '{studycourse}' " \
                   "ORDER BY creationdate DESC LIMIT 1"
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for (id, creationdate, name, title, studycourse) in tuples:
+        for (id, creationdate, createdby, name, title, studycourse_hash) in tuples:
             spo = Spo()
             spo.set_id(id)
+            spo.get_creationdate(creationdate)
+            spo.get_creator(createdby)
             spo.set_name(name)
             spo.set_title(title)
-            spo.set_studycourse(studycourse)
+            spo.set_studycourse(studycourse_hash)
 
             result.append(spo)
 
@@ -233,42 +245,6 @@ class SpoMapper(Mapper):
         self._cnx.commit()
         cursor.close()
         return result
-
-    def insert(self, spo: Spo, endsemester=False):
-
-        cursor = self._cnx.cursor()
-        cursor.execute("SELECT MAX(id) AS maxid FROM spovalidity")
-        maxid = cursor.fetchone()[0]
-
-        if maxid is None:
-            newid = 1
-        else:
-            newid = maxid + 1
-
-        # cursor.execute("SET FOREIGN_KEY_CHECKS=0")
-        if endsemester is True:
-            cursor.execute(f"SELECT id FROM semester WHERE semester_hash={spo.get_end_semester()}")
-            esid = int(cursor.fetchone()[0])
-            command = "INSERT INTO spovalidity (id, spo_id, spo_hash, semester_id, semester_hash, startsem, endsem) " \
-                      "VALUES " \
-                      f"(id={newid}, spo_id={spo.get_id()}, spo_hash={hash(spo)}, " \
-                      f"semester_id={esid}, semester_hash={spo.get_end_semester()}, " \
-                      f"startsem=0, endsem=1)"
-        else:
-            cursor.execute(f"SELECT id FROM semester WHERE semester_hash={spo.get_start_semester()}")
-            ssid = int(cursor.fetchone()[0])
-            command = "INSERT INTO spovalidity (id, spo_id, spo_hash, semester_id, semester_hash, startsem, endsem) " \
-                      "VALUES " \
-                      f"(id={newid}, spo_id={spo.get_id()}, spo_hash={hash(spo)}, " \
-                      f"semester_id={ssid}, semester_hash={spo.get_start_semester()}, " \
-                      f"startsem=1, endsem=0)"
-
-        print(command)
-        cursor.execute(command)
-        # cursor.execute("SET FOREIGN_KEY_CHECKS=1")
-        self._cnx.commit()
-        cursor.close()
-        return spo
 
     def insert(self, spo: Spo):
 
