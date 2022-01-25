@@ -3,16 +3,16 @@ import json
 
 
 class Spo (Nbo.NamedBo):
-    _start_semester: int
-    _end_semester: int
-    _studycourse: int
-    _modules: list[int]
+    _start_semester: int    # Anfangssemester der SPO Gültigkeit
+    _end_semester: int      # Endsemester der SPO Gültigkeit
+    _studycourse: int       # Studiengang der SPO
+    _modules: list[int]     # Module der SPO
 
     def __init__(self):
         super().__init__()
-        self._start_semester = 0  # Anfangssemester der SPO Gültigkeit
-        self._end_semester = 0    # Endsemester der SPO Gültigkeit
-        self._studycourse = 0     # Studiengang der SPO
+        self._start_semester = 0
+        self._end_semester = 0
+        self._studycourse = 0
         self._modules = []
 
     def get_start_semester(self):

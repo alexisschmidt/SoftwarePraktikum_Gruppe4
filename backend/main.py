@@ -788,5 +788,8 @@ class SemesterOperations(Resource):
 
 """**ACHTUNG:** Diese Zeile wird nur in der lokalen Entwicklungsumgebung ausgeführt und hat in der Cloud keine Wirkung!
 """
+
+print(app.url_map)
+
 if __name__ == '__main__':
     app.run(debug=True)
