@@ -70,6 +70,9 @@ class SpoForm extends Component {
     };
     this.baseState = this.state;
   }
+  componentDidMount = () =>{
+    this.getInfos()
+  }
 
   addSpo = () => {
     let newSpo = new Spobo();
@@ -494,7 +497,6 @@ class SpoForm extends Component {
     return show ? (
       <Dialog
         open={show}
-        onEnter={this.getInfos}
         onClose={this.handleClose}
         maxWidth="xs"
         fullWidth

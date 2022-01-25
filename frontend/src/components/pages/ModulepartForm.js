@@ -15,8 +15,8 @@ import {
 } from "@mui/material";
 
 import CloseIcon from "@material-ui/icons/Close";
-import ContextErrorMessage from "./ContextErrorMessage";
-import LoadingProgress from "./LoadingProgress";
+import ContextErrorMessage from "../dialogs/ContextErrorMessage";
+import LoadingProgress from "../dialogs/LoadingProgress";
 
 export class ModulepartForm extends Component {
   constructor(props) {
@@ -71,9 +71,18 @@ export class ModulepartForm extends Component {
       professor: null,
       professorValidationFailed: false,
       professorEdited: false,
+
+      addingError: null,
+      addingInProgress: false,
+
+      updatingError: null,
+      updatingInProgress: false,
     };
     this.baseState = this.state;
   }
+  componentDidMount = () => {
+    this.getInfos();
+  };
 
   addModulepart = () => {
     let newModulepart = new Modulepartbo();
@@ -175,10 +184,6 @@ export class ModulepartForm extends Component {
   render() {
     const { show, modulepart } = this.props;
     const {
-      id,
-      idValidationFailed,
-      idEdited,
-
       name,
       nameValidationFailed,
       nameEdited,
@@ -246,13 +251,7 @@ export class ModulepartForm extends Component {
     }
 
     return show ? (
-      <Dialog
-        open={show}
-        onEnter={this.getInfos}
-        onClose={this.handleClose}
-        maxWidth="xs"
-        fullWidth
-      >
+      <Dialog open={show} onClose={this.handleClose} maxWidth="xs" fullWidth>
         <DialogTitle>
           {title}
           <IconButton onClick={this.handleClose}>
@@ -268,21 +267,6 @@ export class ModulepartForm extends Component {
               type="text"
               required
               fullWidth
-              margin="small"
-              id="id"
-              label="id"
-              variant="outlined"
-              value={id}
-              onChange={this.numberFieldValueChange}
-              error={idValidationFailed}
-            />
-
-            <TextField
-              autoFocus
-              type="text"
-              required
-              fullWidth
-              margin="small"
               id="name"
               label="Modulename"
               variant="outlined"
@@ -295,7 +279,18 @@ export class ModulepartForm extends Component {
               type="text"
               required
               fullWidth
-              margin="small"
+              id="description"
+              label="description"
+              variant="outlined"
+              value={ects}
+              onChange={this.textFieldValueChange}
+              error={descriptionValidationFailed}
+            />
+
+            <TextField
+              type="text"
+              required
+              fullWidth
               id="edvnr"
               label="EDVNR"
               variant="outlined"
@@ -308,7 +303,6 @@ export class ModulepartForm extends Component {
               type="text"
               required
               fullWidth
-              margin="small"
               id="ects"
               label="ECTS"
               variant="outlined"
@@ -321,7 +315,6 @@ export class ModulepartForm extends Component {
               type="text"
               required
               fullWidth
-              margin="small"
               id="workload"
               label="Arbeitszeit für das Spoelement"
               variant="outlined"
@@ -335,12 +328,11 @@ export class ModulepartForm extends Component {
               type="text"
               required
               fullWidth
-              margin="small"
               id="sws"
               label="sws"
               variant="outlined"
               value={sws}
-              onChange={this.textValueChange}
+              onChange={this.numberValueChange}
               error={swsValidationFailed}
             />
 
@@ -349,7 +341,6 @@ export class ModulepartForm extends Component {
               type="text"
               required
               fullWidth
-              margin="small"
               id="language"
               label="language des Modules"
               variant="outlined"
@@ -363,7 +354,6 @@ export class ModulepartForm extends Component {
               type="text"
               required
               fullWidth
-              margin="small"
               id="connection"
               label="connection"
               variant="outlined"
@@ -377,7 +367,6 @@ export class ModulepartForm extends Component {
               type="text"
               required
               fullWidth
-              margin="small"
               id="literature"
               label="literature"
               variant="outlined"
@@ -391,7 +380,6 @@ export class ModulepartForm extends Component {
               type="text"
               required
               fullWidth
-              margin="small"
               id="sources"
               label="sources"
               variant="outlined"
@@ -405,12 +393,11 @@ export class ModulepartForm extends Component {
               type="text"
               required
               fullWidth
-              margin="small"
               id="semester"
               label="semester"
               variant="outlined"
               value={semester}
-              onChange={this.numberFieldValueChange}
+              onChange={this.numberValueChange}
               error={semesterValidationFailed}
             />
 
@@ -419,7 +406,6 @@ export class ModulepartForm extends Component {
               type="text"
               required
               fullWidth
-              margin="small"
               id="professor"
               label="professor"
               variant="outlined"
@@ -455,7 +441,6 @@ export class ModulepartForm extends Component {
             modulepart ? (
               <Button
                 disabled={
-                  idValidationFailed ||
                   nameValidationFailed ||
                   edvnrValidationFailed ||
                   ectsValidationFailed ||
@@ -478,8 +463,6 @@ export class ModulepartForm extends Component {
             ) : (
               <Button
                 disabled={
-                  idValidationFailed ||
-                  !idEdited ||
                   nameValidationFailed ||
                   !nameEdited ||
                   edvnrValidationFailed ||
@@ -518,74 +501,5 @@ export class ModulepartForm extends Component {
     ) : null;
   }
 }
-
-function SelectTextFields() {
-  const [currency, setCurrency] = React.useState("Semester");
-
-  const handleChange = (event) => {
-    setCurrency(event.target.value);
-  };
-
-  return (
-    <Box
-      component="form"
-      sx={{
-        "& .MuiTextField-root": { m: 1, width: "25ch" },
-      }}
-      noValidate
-      autoComplete="off"
-    >
-      <div>
-        <TextField
-          id="outlined-select-currency"
-          select
-          label="Semester"
-          value={currency}
-          onChange={handleChange}
-        >
-          {currencies.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
-              {option.label}
-            </MenuItem>
-          ))}
-        </TextField>
-      </div>
-    </Box>
-  );
-}
-
-const currencies = [
-  {
-    value: "1",
-    label: "1",
-  },
-  {
-    value: "2",
-    label: "2",
-  },
-  {
-    value: "3",
-    label: "3",
-  },
-  {
-    value: "4",
-    label: "4",
-  },
-
-  {
-    value: "5",
-    label: "5",
-  },
-
-  {
-    value: "6",
-    label: "6",
-  },
-
-  {
-    value: "7",
-    label: "7",
-  },
-];
 
 export default ModulepartForm;

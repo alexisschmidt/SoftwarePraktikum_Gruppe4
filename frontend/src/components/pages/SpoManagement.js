@@ -7,6 +7,7 @@ import LoadingProgress from "../dialogs/LoadingProgress";
 import SpoForm from "./SpoForm";
 import Button from "@mui/material/Button";
 import ModuleForm from "./ModuleForm";
+import ModulepartForm from "./ModulepartForm";
 
 class Administration extends Component {
   constructor(props) {
@@ -18,17 +19,10 @@ class Administration extends Component {
       error: null,
       loadingInProgress: false,
       spoFormIsOpen: false,
-    };
-
-    this.state = {
-      tabindex: 0,
-      error: null,
-      loadingInProgress: false,
-      ModuleFormOpen: false,
+      moduleFormOpen: false,
+      modulepartFormOpen: false,
     };
   }
-
-
 
   // Lifecycle methode, wird aufgerufen wenn componente in den DOM eingesetzt wird
   componentDidMount() {}
@@ -41,9 +35,17 @@ class Administration extends Component {
     }
   };
   moduleFormHandler = (event) => {
-    if (!this.ModuleFormOpen) {
+    if (!this.moduleFormOpen) {
       this.setState({
-        ModuleFormOpen: true,
+        moduleFormOpen: true,
+      });
+    }
+  };
+
+  modulepartFormHandler = (event) => {
+    if (!this.modulepartFormOpen) {
+      this.setState({
+        modulepartFormOpen: true,
       });
     }
   };
@@ -53,17 +55,22 @@ class Administration extends Component {
       spoFormIsOpen: false,
     });
   };
-  ModuleFormClosed = (event) =>{
+  moduleFormClosed = (event) => {
     this.setState({
-      ModuleFormIsOpen: false,
+      moduleFormOpen: false,
+    });
+  };
+  modulepartFormClosed = (event) => {
+    this.setState({
+      modulepartFormOpen: false,
     });
   };
 
   /** Renders the component */
   render() {
     const { classes } = this.props;
-    const { loadingInProgress, error, spoFormIsOpen, moduleFormIsOpen } = this.state;
-
+    const { loadingInProgress, error, spoFormIsOpen, moduleFormOpen, modulepartFormOpen } =
+      this.state;
 
     return (
       <div className={classes.root}>
@@ -75,11 +82,15 @@ class Administration extends Component {
           <Button variant="contained" onClick={this.moduleFormHandler}>
             Module ERSTELLEN
           </Button>
-
+          <Button variant="contained" onClick={this.modulepartFormHandler}>
+            Modulteile ERSTELLEN
+          </Button>
 
           <SpoForm show={spoFormIsOpen} onClose={this.spoFormClosed} />
-          <ModuleForm show={moduleFormIsOpen} onClose={this.modeleFormClosed} />
-          
+          <ModuleForm show={moduleFormOpen} onClose={this.moduleFormClosed} />
+          <ModulepartForm show={modulepartFormOpen} onClose={this.modulepartFormClosed} />
+
+
           <ContextErrorMessage
             error={error}
             contextErrorMsg={`Die Seite konnte nicht geladen werden.`}
