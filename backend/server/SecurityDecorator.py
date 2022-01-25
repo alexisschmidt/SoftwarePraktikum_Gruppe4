@@ -15,7 +15,13 @@ def secured(function):
         error_message = None
         claims = None
         objects = None
-        
+
+        if id_token is None:
+            try:
+                id_token = request.headers['Authorization'].split(' ').pop()
+            except BaseException:
+                id_token = None
+
         if id_token:
             try:
                 claims = google.oauth2.id_token.verify_firebase_token(

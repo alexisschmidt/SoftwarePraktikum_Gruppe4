@@ -8,7 +8,7 @@ class Module(Spe.SpoElement):
     _outcome: str
     _examtype: str
     _instructor: int
-    _parts: int
+    _parts: list[int]
 
     def __init__(self):
         super().__init__()
@@ -58,6 +58,18 @@ class Module(Spe.SpoElement):
     def set_instructor(self, instructor):
         """Setzen des Modulverantwortlichen"""
         self._instructor = instructor
+
+    def get_parts(self):
+        return self._modules
+
+    def set_parts(self, parts: list[int]):
+        self._modules = parts
+
+    def append_part(self, part: int):
+        self._modules.append(part)
+
+    def remove_part(self, part: int):
+        self._modules.remove(part)
 
     def __str__(self):
         astring = (

@@ -88,19 +88,23 @@ class ModuleMapper(Mapper):
     def find_by_id(self, key: int):
 
         result = None
-        command = f"SELECT * FROM module WHERE id={key}"
+        command = f"SELECT id, creationdate, createdby, name, title, " \
+                  f"requirement, examtype, outcome, type, " \
+                  f"ects, edvnr, workload, instructor_hash " \
+                  f"FROM module WHERE id={key}"
         cursor = self._cnx.cursor()
         cursor.execute(command)
         tuples = cursor.fetchall()
 
         try:
-            (id, creationdate, name, title,
+            (id, creationdate, createdby, name, title,
              requirement, examtype, outcome, type,
              ects, edvnr, workload,
              instructor_hash) = tuples[0]
             module = Module()
             module.set_id(id)
             module.set_creationdate(creationdate)
+            module.set_creator(createdby)
             module.set_name(name)
             module.set_title(title)
             module.set_requirement(requirement)
@@ -121,19 +125,26 @@ class ModuleMapper(Mapper):
         return result
 
     def find_by_hash(self, hashcode: int):
-        result = None
 
-        command = f"SELECT * module WHERE module_hash={hashcode}"
+        result = None
         cursor = self._cnx.cursor()
+
+        # finden des Moduls in der DB:
+        command = f"SELECT * FROM module WHERE module_hash={hashcode}"
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        module = Module()
+        # finden der Moduleparts des Moduls in der DB:
+        cursor.execute(f"SELECT modulepart_hash FROM modulepart WHERE module_hash={hashcode}")
+        parts = list(cursor.fetchall())
+
+        # Erstellen des Objekts
         try:
             (id, creationdate, name, title,
              requirement, examtype, outcome, type,
              ects, edvnr, workload,
              instructor_hash) = tuples[0]
+            module = Module()
             module.set_id(id)
             module.set_creationdate(creationdate)
             module.set_name(name)
@@ -146,6 +157,7 @@ class ModuleMapper(Mapper):
             module.set_edvnr(edvnr)
             module.set_workload(workload)
             module.set_instructor(instructor_hash)
+            module.set_parts(parts)
         except IndexError:
             result = None
 
@@ -155,7 +167,7 @@ class ModuleMapper(Mapper):
 
         return result
 
-    def insert(self, module: Module, ):
+    def insert(self, module: Module):
 
         cursor = self._cnx.cursor()
         cursor.execute("SELECT MAX(id) AS maxid FROM module ")
@@ -167,22 +179,15 @@ class ModuleMapper(Mapper):
             else:
                 module.set_id(1)
 
-        try:
-            cursor.execute(f"SELECT id FROM person WHERE person_hash={module.get_instructor()}")
-        except ValueError:
-            print("module needs an instructor to be created!")
-
-        instructor = int(cursor.fetchone()[0])
-        command = "INSERT INTO module (id, creationdate, name, title, " \
+        command = "INSERT INTO module (id, creationdate, createdby, name, title, " \
                   "requirement, examtype, outcome, type, " \
                   "ects, edvnr, workload, " \
-                  "module_hash, instructor_id, instructor_hash)" \
+                  "module_hash, instructor_hash)" \
                   "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-        data = (module.get_id(), module.get_creationdate(), module.get_name(), module.get_title(),
-                module.get_requirement(), module.get_examtype(), module.get_outcome(),
-                module.get_type(),
+        data = (module.get_id(), module.get_creationdate(), module.get_creator(), module.get_name(), module.get_title(),
+                module.get_requirement(), module.get_examtype(), module.get_outcome(), module.get_type(),
                 module.get_ects(), module.get_edvnr(), module.get_workload(),
-                hash(module), instructor, module.get_instructor())
+                hash(module), module.get_instructor())
         cursor.execute(command, data)
 
         self._cnx.commit()

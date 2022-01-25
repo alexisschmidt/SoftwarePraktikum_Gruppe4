@@ -78,18 +78,20 @@ class ModulePartMapper(Mapper):
         result = None
 
         cursor = self._cnx.cursor()
-        command = "SELECT id, creationdate, name, title, "\
+        command = "SELECT id, creationdate, createdby, name, title, "\
                   "language, literature, semester, sources, connection, description, sws, "\
                   f"ects, edvnr, workload FROM modulepart WHERE id={key}"
         cursor.execute(command)
         tuples = cursor.fetchall()
 
         try:
-            (id, creationdate, name, title,
+            (id, creationdate, createdby, name, title,
              language, literature, semester, sources, connection, description, sws,
              ects, edvnr, workload) = tuples[0]
             modulepart = Modulepart()
             modulepart.set_id(id)
+            modulepart.set_creationdate(creationdate)
+            modulepart.set_creator(createdby)
             modulepart.set_name(name)
             modulepart.set_title(title)
             modulepart.set_language(language)
@@ -102,7 +104,7 @@ class ModulePartMapper(Mapper):
             modulepart.set_ects(ects)
             modulepart.set_edvnr(edvnr)
             modulepart.set_workload(workload)
-            result = modulepart
+            obj = modulepart
         except IndexError:
             result = None
 
@@ -139,6 +141,7 @@ class ModulePartMapper(Mapper):
             modulepart.set_ects(ects)
             modulepart.set_edvnr(edvnr)
             modulepart.set_workload(workload)
+
             result = modulepart
         except IndexError:
             result = None

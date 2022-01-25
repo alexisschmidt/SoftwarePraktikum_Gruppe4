@@ -50,7 +50,7 @@ class SpoValidityMapper(Mapper):
         spos = []
         for (spo_hash) in tuples:
             cursor.execute(
-                f"SELECT id, creationdate, name, title, studycourse_id FROM spo "
+                f"SELECT id, creationdate, name, title FROM spo "
                 f"WHERE spo_hash ={spo_hash}")
             spos.append(cursor.fetchall())
         for i in spos:

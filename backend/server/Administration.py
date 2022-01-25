@@ -24,13 +24,19 @@ class Administration (object):
    
     """Modul-spezifische Methoden"""
 
-    def create_module(self, proposal):
+    def create_module(self, proposal: Module, creator: int):
+        """
+        Legt das Objekt in der Datenbank an und setzt creationate und creator.
 
+        :param proposal: Ein Modul Objekt
+        :param creator: Ein User-Hash, creator des Objekts
+        """
         proposal.set_creationdate(datetime.date.today())
+        proposal.set_creator(creator)
         with ModuleMapper() as mapper:
             return mapper.insert(proposal)
 
-    def get_module_by_name(self, name):
+    def get_module_by_name(self, name: str):
         """Alle Module mit Namen name auslesen."""
         with ModuleMapper() as mapper:
             return mapper.find_by_name(name)
@@ -61,8 +67,15 @@ class Administration (object):
 
     """Modulteil-spezifische Methoden"""
 
-    def create_modulepart(self, proposal):
+    def create_modulepart(self, proposal: Modulepart, creator: int):
+        """
+        Legt das Objekt in der Datenbank an und setzt creationate und creator.
+
+        :param proposal: Ein Modulepart Objekt
+        :param creator: Ein User-Hash, creator des Objekts
+        """
         proposal.set_creationdate(datetime.date.today())
+        proposal.set_creator(creator)
         with ModulePartMapper() as mapper:
             return mapper.insert(proposal)
 
@@ -93,9 +106,15 @@ class Administration (object):
 
     """Person-spezifische Methoden"""
 
-    def create_person(self, proposal):
-        """Eine Person anlegen"""
+    def create_person(self, proposal: Person, creator: int):
+        """
+        Legt das Objekt in der Datenbank an und setzt creationate und creator.
+
+        :param proposal: Ein Person Objekt
+        :param creator: Ein User-Hash, creator des Objekts
+        """
         proposal.set_creationdate(datetime.date.today())
+        proposal.set_creator(creator)
         with PersonMapper() as mapper:
             return mapper.insert(proposal)
 
@@ -126,9 +145,15 @@ class Administration (object):
 
     """Semester-spezifische Methoden"""
 
-    def create_semester(self, proposal):
+    def create_semester(self, proposal: Semester, creator: int):
+        """
+        Legt das Objekt in der Datenbank an und setzt creationate und creator.
+
+        :param proposal: Ein Semester Objekt
+        :param creator: Ein User-Hash, creator des Objekts
+        """
         proposal.set_creationdate(datetime.date.today())
-        """Ein Semester anlegen"""
+        proposal.set_creator(creator)
         with SemesterMapper() as mapper:
             return mapper.insert(proposal)
 
@@ -160,23 +185,26 @@ class Administration (object):
     """SpoValidity-spezifische Methoden"""
 
     def get_spo_by_semester_hash(self, hashcode: int):
-        with SpoValidityMapper() as mapper:
+        with SpoMapper() as mapper:
             mapper.find_spos_by_semester_hash(hashcode)
 
     def get_semester_by_spo_hash(self, hashcode: int):
-        with SpoValidityMapper() as mapper:
+        with SpoMapper() as mapper:
             mapper.find_semesters_by_spo_hash(hashcode)
-
-    def create_validity(self, proposal):
-        proposal.set_creationdate(datetime.date.today())
-        with SpoValidityMapper() as mapper:
-            mapper.insert(proposal)
 
     """Spo-spezifische Methoden"""
 
-    def create_spo(self, proposal):
-        """Eine SPO anlegen"""
+    def create_spo(self, proposal: Spo, creator: int):
+        """
+        Legt das Objekt in der Datenbank an und setzt creationate und creator.
+
+        Zusätzlich wird für eine SPO ein bzw. 2 Einträge in spovalidity erstellt, die die Attribute _start_semester und _end_semester darstellen.
+
+        :param proposal: Ein Spo Objekt
+        :param creator: Ein User-Hash, creator des Objekts
+        """
         proposal.set_creationdate(datetime.date.today())
+        proposal.set_creator(creator)
         with SpoMapper() as mapper:
             newobj = mapper.insert(proposal)
         return newobj
@@ -226,8 +254,15 @@ class Administration (object):
 
     """Studycourse-spezifische Methoden"""
 
-    def create_studycourse(self, proposal):
+    def create_studycourse(self, proposal: StudyCourse, creator: int):
+        """
+        Legt das Objekt in der Datenbank an und setzt creationate und creator.
+
+        :param proposal: Ein Studycourse Objekt
+        :param creator: Ein User-Hash, creator des Objekts
+        """
         proposal.set_creationdate(datetime.date.today())
+        proposal.set_creator(creator)
         with StudyCourseMapper() as mapper:
             return mapper.insert(proposal)
 
@@ -258,8 +293,15 @@ class Administration (object):
 
     """User-spezifische Methoden"""
 
-    def create_user(self, user):
+    def create_user(self, user: User, creator: int):
+        """
+        Legt das Objekt in der Datenbank an und setzt creationate und creator.
+
+        :param proposal: Ein User Objekt
+        :param creator: Ein User-Hash, creator des Objekts
+        """
         proposal.set_creationdate(datetime.date.today())
+        proposal.set_creator(creator)
         with UserMapper() as mapper:
             return mapper.insert(user)
 
