@@ -1,3 +1,5 @@
+import datetime
+
 from server.bo.Module import Module
 from server.bo.Modulepart import Modulepart
 from server.bo.Person import Person
@@ -23,6 +25,8 @@ class Administration (object):
     """Modul-spezifische Methoden"""
 
     def create_module(self, proposal):
+
+        proposal.set_creationdate(datetime.date.today())
         with ModuleMapper() as mapper:
             return mapper.insert(proposal)
 
@@ -58,6 +62,7 @@ class Administration (object):
     """Modulteil-spezifische Methoden"""
 
     def create_modulepart(self, proposal):
+        proposal.set_creationdate(datetime.date.today())
         with ModulePartMapper() as mapper:
             return mapper.insert(proposal)
 
@@ -90,6 +95,7 @@ class Administration (object):
 
     def create_person(self, proposal):
         """Eine Person anlegen"""
+        proposal.set_creationdate(datetime.date.today())
         with PersonMapper() as mapper:
             return mapper.insert(proposal)
 
@@ -121,12 +127,13 @@ class Administration (object):
     """Semester-spezifische Methoden"""
 
     def create_semester(self, proposal):
+        proposal.set_creationdate(datetime.date.today())
         """Ein Semester anlegen"""
         with SemesterMapper() as mapper:
             return mapper.insert(proposal)
 
     def get_semester_by_name(self, name):
-        """Alle Semester mit Namen name auslesen."""
+        """Alle Semester mit Namen 'name' auslesen."""
         with SemesterMapper() as mapper:
             return mapper.find_by_name(name)
 
@@ -152,35 +159,35 @@ class Administration (object):
 
     """SpoValidity-spezifische Methoden"""
 
-    def get_spo_by_semester_hash(self, hashcode: int ):
+    def get_spo_by_semester_hash(self, hashcode: int):
         with SpoValidityMapper() as mapper:
-            mapper.find_spo_by_semester_hash(hashcode)
+            mapper.find_spos_by_semester_hash(hashcode)
 
-    def get_semester_by_spo_hash(self, hashcode: int ):
+    def get_semester_by_spo_hash(self, hashcode: int):
         with SpoValidityMapper() as mapper:
-            mapper.find_semester_by_spo_hash(hashcode)
+            mapper.find_semesters_by_spo_hash(hashcode)
 
-    def create_validity(self, proposal, endsemester):
+    def create_validity(self, proposal):
+        proposal.set_creationdate(datetime.date.today())
         with SpoValidityMapper() as mapper:
-            mapper.insert(proposal, endsemester)
+            mapper.insert(proposal)
 
     """Spo-spezifische Methoden"""
 
     def create_spo(self, proposal):
-        """Eine Spo anlegen"""
+        """Eine SPO anlegen"""
+        proposal.set_creationdate(datetime.date.today())
         with SpoMapper() as mapper:
             newobj = mapper.insert(proposal)
-        with SpoValidityMapper() as mapper:
-            mapper.insert(newobj)
         return newobj
 
     def get_spo_by_name(self, name):
-        """Alle Spos mit Namen name auslesen."""
+        """Alle SPOs mit Namen name auslesen."""
         with SpoMapper() as mapper:
             return mapper.find_by_name(name)
 
     def get_spo_by_id(self, number):
-        """Die Spo mit der gegebenen ID auslesen."""
+        """Die SPO mit der gegebenen ID auslesen."""
         with SpoMapper() as mapper:
             return mapper.find_by_key(number)
 
@@ -188,17 +195,17 @@ class Administration (object):
         pass
 
     def get_latest_by_studycourse(self, studycourse):
-        """Die aktuelle Spo eines Studienganges auslesen"""
+        """Die aktuelle SPO eines Studienganges auslesen"""
         with SpoMapper() as mapper:
             return mapper.find_by_latest_creationdate(studycourse)
 
-    def get_spo_by_starstem_studycourse(self, semesterhash: int, studycoursehash: int):
+    def get_spo_by_startsem_studycourse(self, semesterhash: int, studycoursehash: int):
         """Die Spo mit den ausgewählten Startsemester und Studiengang auslesen."""
         with SpoMapper() as mapper:
             return mapper.find_by_startsemester_and_studycourse(semesterhash, studycoursehash)
 
     def get_all_spos(self):
-        """Alle Spo auslesen."""
+        """Alle SPOs auslesen."""
         with SpoMapper() as mapper:
             return mapper.find_all()
 
@@ -220,7 +227,7 @@ class Administration (object):
     """Studycourse-spezifische Methoden"""
 
     def create_studycourse(self, proposal):
-
+        proposal.set_creationdate(datetime.date.today())
         with StudyCourseMapper() as mapper:
             return mapper.insert(proposal)
 
@@ -252,6 +259,7 @@ class Administration (object):
     """User-spezifische Methoden"""
 
     def create_user(self, user):
+        proposal.set_creationdate(datetime.date.today())
         with UserMapper() as mapper:
             return mapper.insert(user)
 
@@ -264,6 +272,11 @@ class Administration (object):
 
         with UserMapper() as mapper:
             return mapper.find_by_key(number)
+
+    def get_user_by_hash(self, userhash):
+        """Einen User anhand seines Hashes ausgeben."""
+        with UserMapper() as mapper:
+            return mapper.find_by_hash(userhash)
 
     def get_all_users(self):
 
@@ -280,9 +293,8 @@ class Administration (object):
         with UserMapper() as mapper:
             mapper.delete(user)
 
-    def get_user_by_google_user_id(self, id):
+    def get_user_by_google_user_id(self, gid):
         """Den Benutzer mit der gegebenen Google ID auslesen."""
         with UserMapper() as mapper:
-            return mapper.find_by_google_user_id(id)
-
+            return mapper.find_by_google_user_id(gid)
 

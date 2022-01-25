@@ -8,6 +8,7 @@ class Module(Spe.SpoElement):
     _outcome: str
     _examtype: str
     _instructor: int
+    _parts: int
 
     def __init__(self):
         super().__init__()

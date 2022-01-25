@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DdlMappings">
+    <mapping uuid="2199f41f-b219-4ec1-947e-927bc9372574" name="DDL Mapping">
+      <data-sources db="c26532f7-a14e-467b-a0dd-b27dd6d4bff6" ddl="f1cd9d09-c9a9-4317-9159-2fa2f706b12e" />
+      <scope>
+        <node kind="schema" qname="spoverwaltung" />
+      </scope>
+    </mapping>
+    <mapping uuid="8c36021e-1d8f-4d50-873e-a842fb07bcaa" name="dump Mapping">
+      <data-sources db="c26532f7-a14e-467b-a0dd-b27dd6d4bff6" ddl="3060d220-f716-4965-a0f4-402e093fcd9d" />
+      <scope>
+        <node kind="schema" qname="spoverwaltung" />
+      </scope>
+    </mapping>
+  </component>
+</project>

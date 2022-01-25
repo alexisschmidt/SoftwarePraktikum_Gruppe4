@@ -39,8 +39,8 @@ class SpoElement(Nbo.NamedBo, ABC):
 
     def __eq__(self, other):
         return super().__eq__() and \
-               self.get_edvnr() == other.get_name() and \
-               self.get_ects() == other.get_title() and \
+               self.get_edvnr() == other.get_edvnr() and \
+               self.get_ects() == other.get_ects() and \
                self.get_workload() == other.get_workload()
 
     __hash__ = Nbo.NamedBo.__hash__
