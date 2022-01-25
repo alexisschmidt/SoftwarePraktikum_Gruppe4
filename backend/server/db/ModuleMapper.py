@@ -158,10 +158,10 @@ class ModuleMapper(Mapper):
             module.set_workload(workload)
             module.set_instructor(instructor_hash)
             module.set_parts(parts)
+            result.append(module)
         except IndexError:
             result = None
 
-        result = module
         self._cnx.commit()
         cursor.close()
 

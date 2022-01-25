@@ -144,9 +144,9 @@ class UserListOperations(Resource):
         users = adm.get_all_users()
         return users
 
-    @sposystem.marshal_with(user, code=200)
+    @sposystem.marshal_list_with(user, code=200)
     @sposystem.expect(user)
-    # @secured
+    @secured
     def post(self,**kwargs):
         """
         Erstellen eines User-Objekts in der Datenbank.
@@ -259,7 +259,7 @@ class SpoListOperations(Resource):
 
     @sposystem.marshal_with(spo, code=200)
     @sposystem.expect(spo, validate=True)
-    # @secured
+    @secured
     def post(self,**kwargs):
         """
         Erstellen eines Spo-Objekts in der Datenbank.
@@ -651,7 +651,7 @@ class PersonListOperations(Resource):
 
     @sposystem.marshal_list_with(person, code=200)
     @sposystem.expect(person)
-    # @secured
+    @secured
     def post(self,**kwargs):
         """
         Erstellen eines Person-Objekts in der Datenbank.
