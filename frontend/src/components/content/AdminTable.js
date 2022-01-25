@@ -6,8 +6,8 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import Button from '@mui/material/Button'
-import Input from '@mui/material/Input'
+import Button from '@mui/material/Button';
+import Input from '@mui/material/Input';
 
 function createData(semester, edvnr, modul, sws, ects, prüfung) {
   return { semester, edvnr, modul, sws, ects, prüfung };

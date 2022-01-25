@@ -11,12 +11,15 @@ import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-
+import Button from '@mui/material/Button';
+import TableCell from '@mui/material/TableCell';
+import TableRow from '@mui/material/TableRow';
+import Input from '@mui/material/Input';
 import API from '../api/API';
 
 
 
-class StudentSpoAnsicht extends Component {
+class AdminSpoEdit extends Component {
 
     constructor(props) {
         super(props);
@@ -64,6 +67,10 @@ class StudentSpoAnsicht extends Component {
         };
     }
 
+	deleteRow(index){
+		// TOOD: send deleted row to backend with index or id
+		this.setState({rows: this.state.rows.filter((row, i) => i !== index)})
+	  }
  
 
     getAllStudycoursesById = () => {
@@ -345,6 +352,32 @@ class StudentSpoAnsicht extends Component {
                                                             <div className="admin-spo-accord-box-pruefung">
                                                             </div>
 
+															{this.state.rows.map((row, index) => (
+              													<TableRow
+																	key={row.name}
+																	sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+																>
+																<TableCell component="th" scope="row">
+																{row.semester}
+																</TableCell>
+															<TableCell align="right">
+                  												{this.state.editedCell === index ?
+                    												<Input value={row.edvnr} onChange={e => this.setState({editedEdvNr: e.target.value})} />
+                    												: 
+                    												row.edvnr
+                  												}
+                											</TableCell>
+															<TableCell align="right">
+                  												{this.state.editedCell === index ?
+                    												<Input value={row.modul} />
+                    												: 
+                   													row.modul
+                  												}
+															<Button onClick={() => this.setState({editedCell: index})}>Bearbeiten</Button>
+                   											<Button onClick={() => this.deleteRow(index)}>Löschen</Button>
+															</TableCell>
+															</TableRow>
+            											))}
                                                         </div>
                                                     </AccordionSummary>
                                                     <AccordionDetails>
@@ -396,7 +429,7 @@ const styles = theme => ({
 });
 
 /** PropTypes */
-StudentSpoAnsicht.propTypes = {
+AdminSpoEdit.propTypes = {
     /** @ignore */
     classes: PropTypes.object.isRequired,
     /** @ignore */
@@ -405,4 +438,4 @@ StudentSpoAnsicht.propTypes = {
 }
 
 
-export default withRouter(withStyles(styles)(StudentSpoAnsicht));
+export default withRouter(withStyles(styles)(AdminSpoEdit));
