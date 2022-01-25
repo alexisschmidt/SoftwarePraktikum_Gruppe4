@@ -118,17 +118,15 @@ class SpoMapper(Mapper):
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        try:
-            (id, creationdate, name, title, studycourse_id) = tuples[0]
+        
+        for (id, creationdate, name, title, studycourse_id) in tuples:
             spo = Spo()
             spo.set_id(id)
             spo.set_name(name)
             spo.set_title(title)
             spo.set_studycourse_id(studycourse_id)
-            result = spo
-        except IndexError:
+            result.append(spo)
 
-            result = None
 
         self._cnx.commit()
         cursor.close()

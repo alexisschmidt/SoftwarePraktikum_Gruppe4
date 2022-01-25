@@ -36,3 +36,99 @@
     transform: rotate(360deg);
   }
 }
+
+/* Admin Spo Aansicht */
+.fix-header-box {
+  width: calc(100% - 24px) !important;
+  font-weight: bold;
+}
+
+.admin-spo-box {
+  width: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  height: 48px;
+  font-weight: bolder;
+}
+
+.admin-spo-box::before {
+  position: absolute;
+  left: 0;
+  top: -1px;
+  right: 0;
+  height: 1px;
+  content: "";
+  opacity: 1;
+  background-color: rgba(0, 0, 0, 0.12);
+  -webkit-transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+} 
+
+.admin-spo-box-semster {
+    width: 60px;
+}
+
+.admin-spo-box-edv {
+  width: 60px;
+}
+
+.admin-spo-box-module {
+  width: 210px;
+}
+
+.admin-spo-box-sws {
+  width: 40px;
+}
+
+.admin-spo-box-ects {
+  width: 40px;
+}
+
+.admin-spo-box-pruefung {
+  width: 100px;
+}
+
+.admin-spo-accord-box {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  height: 28px;
+}
+
+.admin-spo-accord-box-semster {
+    width: 60px;
+}
+
+.admin-spo-accord-box-edv {
+  width: 60px;
+}
+
+.admin-spo-accord-box-module {
+  width: 210px;
+}
+
+.admin-spo-accord-box-sws {
+  width: 40px;
+}
+
+.admin-spo-accord-box-ects {
+  width: 40px;
+}
+
+.admin-spo-accord-box-pruefung {
+  width: 100px;
+}
+
+
+
+.css-1elwnq4-MuiPaper-root-MuiAccordion-root {
+  box-shadow: none !important;
+}
+
+.css-sh22l5-MuiButtonBase-root-MuiAccordionSummary-root {
+  padding: 0 0 0 0 !important;
+}

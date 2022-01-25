@@ -70,7 +70,7 @@ class AllStudyCourses extends Component {
         const { loadingProgress, error, studycourses} = this.state;
         return (
 
-            <Box sx={{ width: '100%', maxWidth: 650 }}>
+            <Box sx={{ width: '100%', maxWidth: 650, marginLeft: 'auto', marginRight: 'auto'}}>
      
                 <Typography variant="h6" textAlign={'center'} gutterBottom component="div">
                     Studiengang-Auswählen

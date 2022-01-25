@@ -2,15 +2,19 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { withStyles } from '@material-ui/core';
-import Stack from '@mui/material/Stack';
+
 import Box from '@mui/material/Box';
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+
+
 import API from '../api/API';
-import ContextErrorMessage from './dialogs/ContextErrorMessage';
-import LoadingProgress from './dialogs/LoadingProgress';
-import AllStudycoursesEntry from './AllStudycoursesEntry';
-import { useNavigate } from "react-router-dom";
+
 
 
 class AdminSpoAnsicht extends Component {
@@ -20,7 +24,38 @@ class AdminSpoAnsicht extends Component {
 
         this.state = {
             studycourses: [],
-			modules: [],
+			modules: [
+                {
+                    id: 1,
+                    moduleparts:[]
+                },
+                {
+                    id: 2,
+                    moduleparts:[
+                        {
+                            id: 2345
+                        },
+                        {
+                            id: 123
+                        },
+                        {
+                            id: 222
+                        }
+                    ]
+                },
+                {
+                    id: 3,
+                    moduleparts:[
+                        {
+                            id: 8
+                        }
+                    ]
+                },
+                {
+                    id: 4,
+                    moduleparts:[]
+                }
+            ],
 			moduleparts: [],
 			semester: [],
             loadingProgress: false,
@@ -192,6 +227,10 @@ class AdminSpoAnsicht extends Component {
     }
 
     componentDidMount() {
+        const studyCourseId = this.props.match.params.studyCourseID;
+        const spoId = this.props.match.params.spoID;
+        
+        /*
         this.getAllStudycoursesById();
         this.getAllModulesById();
         this.getAllModulePartsById();
@@ -199,49 +238,134 @@ class AdminSpoAnsicht extends Component {
         this.getAllPersonsById();
         this.getAllSposById();
         this.getAllUsersById();
-
+        */
     }
 
     render() {
         const { classes } = this.props;
         const { loadingProgress, error, studycourses, modules, moduleparts, semester, person, spo, user} = this.state;
         return (
+            <Box sx={{ width: '100%', maxWidth: 650, marginLeft: 'auto', marginRight: 'auto' }} className="admin-spo-container">
+            <div>
+                <Card>
+                    <CardContent>
 
-            <Box sx={{ width: '100%', maxWidth: 650 }}>
-     
-                <Typography variant="h6" textAlign={'center'} gutterBottom component="div">
-                    SPO
-                </Typography>
-                    
-                <Stack spacing={2} direction="column">
-                    {
-                        studycourses.map((studycourse) => (
-                        <Button
-                            variant="contained"
-                            key={studycourse.id}
-                            onClick={this.buttonNavigateToCourseClicked.bind(this, studycourse.id)}
-                            show ={this.props.show}>
-                                {studycourse.title}
-                        </Button>
-                        ))
-						
-                    }
-                </Stack>
-				<Stack spacing={2} direction="column">
-                    {
-                        modules.map((module) => (
-                        <Button
-                            variant="contained"
-                            key={module.id}
-                            onClick={this.buttonNavigateToCourseClicked.bind(this, module.id)}
-                            show ={this.props.show}>
-                                {module.title}
-                        </Button>
-                        ))
-						
-                    }
-                </Stack>
-            </Box>
+                        <div className="admin-spo-box fix-header-box">
+                            
+                            <div className="admin-spo-box-semster">
+                                Semester
+                            </div>
+
+                            <div className="admin-spo-box-edv">
+                                EDV-Nr.
+                            </div>
+
+                            <div className="admin-spo-box-module">
+                                Modul (Kursbezeichnung)
+                            </div>
+
+                            <div className="admin-spo-box-sws">
+                                SWS
+                            </div>
+
+                            <div className="admin-spo-box-ects">
+                                ECTS
+                            </div>
+
+                            <div className="admin-spo-box-pruefung">
+                                Prüfung
+                            </div>
+                            
+                        </div>
+
+                        {
+                            modules.map((moduleElement) => {
+                                return (
+                                    <>
+                                    <div className="admin-spo-box fix-header-box">
+
+                                        <div className="admin-spo-box-semster">
+                                            {/* TODO ALexis. Wenn backend ready, erstze alle static daten mit den aus der dantenbank. module sollte das modul object sein"! */}
+                                            {moduleElement.id}
+                                        </div>
+
+                                        <div className="admin-spo-box-edv">
+                                            VS: 3350
+                                        </div>
+
+                                        <div className="admin-spo-box-module">
+                                            Einstuifungs englisch
+                                        </div>
+
+                                        <div className="admin-spo-box-sws">
+                                            0
+                                        </div>
+
+                                        <div className="admin-spo-box-ects">
+                                            0
+                                        </div>
+
+                                        <div className="admin-spo-box-pruefung">
+                                            VS:LU
+                                        </div>
+
+                                    </div>
+                                    
+                                    {
+                                        moduleElement.moduleparts.map((modulePartElement) => {
+                                
+                                            return (
+                                                <Accordion>
+                                                    <AccordionSummary
+                                                        expandIcon={<ExpandMoreIcon />}
+                                                        aria-controls="panel1a-content"
+                                                        id="panel1a-header"
+                                                    >
+                                                        <div className="admin-spo-accord-box">
+
+                                                            <div className="admin-spo-accord-box-semster">
+                                                            </div>
+
+                                                            <div className="admin-spo-box-edv">
+                                                                {/* TODO ALexis. Wenn backend ready, erstze alle static daten mit den aus der dantenbank. modulePartElement sollte das part modul object sein"! */}
+                                                                {modulePartElement.id}
+                                                            </div>
+
+                                                            <div className="admin-spo-accord-box-module">
+                                                                Was auch immer
+                                                            </div>
+
+                                                            <div className="admin-spo-accord-box-sws">
+                                                                0
+                                                            </div>
+
+                                                            <div className="admin-spo-accord-box-ects">
+                                                                0
+                                                            </div>
+
+                                                            <div className="admin-spo-accord-box-pruefung">
+                                                            </div>
+
+                                                        </div>
+                                                    </AccordionSummary>
+                                                    <AccordionDetails>
+                                                        <Typography>
+                                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+                                                            malesuada lacus ex, sit amet blandit leo lobortis eget.
+                                                        </Typography>
+                                                    </AccordionDetails>
+                                                </Accordion>
+                                            )
+                                        })
+                                    }
+                                    </>
+                                )
+                            })
+                        }
+                    </CardContent>
+                </Card>
+            </div>
+        </Box>
         )
     }
 

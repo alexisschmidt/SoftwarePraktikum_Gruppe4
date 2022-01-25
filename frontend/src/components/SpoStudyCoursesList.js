@@ -17,18 +17,27 @@ class SpoStudyCoursesList extends Component {
         this.state = {
 			spoStudyCoursesList: [],
             loadingProgress: false,
+            studyCourseId: null,
             error: null,
         };
     }
 
 	componentDidMount() {
-		const id = this.props.match.params.spoID;
+		const id = this.props.match.params.studyCourseID;
 		API.getAPI().getAllSpoRelated(id).then((spos) => {
-			this.setState({
-				spoStudyCoursesList: spos,
-				loadingProgress: false,
-				error: null
-			});
+            if (spos && spos.length) {
+                this.setState({
+                    spoStudyCoursesList: spos,
+                    loadingProgress: false,
+                    error: null
+                });
+            } else {
+                this.setState({
+                    spoStudyCoursesList: [],
+                    loadingProgress: false,
+                    error: null
+                });
+            }			
 		}).catch((error) => {
 			this.setState({
 				loadingProgress: false,
@@ -37,12 +46,13 @@ class SpoStudyCoursesList extends Component {
 		});
 		this.setState({
             loadingProgress: true,
+            studyCourseId: id,
             error: null
         });
     }
 
     onButtonSpoClocked(id) {
-        console.log(id);
+        this.props.history.push(`/admin/${this.state.studyCourseId}/${id}`);
     }
 
     render() {
@@ -50,7 +60,7 @@ class SpoStudyCoursesList extends Component {
         const { loadingProgress, error, spoStudyCoursesList} = this.state;
         return (
 
-            <Box sx={{ width: '100%', maxWidth: 650 }}>
+            <Box sx={{ width: '100%', maxWidth: 650, marginLeft: 'auto', marginRight: 'auto'    }}>
      
                 <Typography variant="h6" textAlign={'center'} gutterBottom component="div">
                     Wähle ein Semester
