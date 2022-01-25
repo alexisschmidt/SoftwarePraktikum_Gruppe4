@@ -11,6 +11,7 @@ import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
+import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
@@ -352,7 +353,7 @@ class AdminSpoEdit extends Component {
                                                             <div className="admin-spo-accord-box-pruefung">
                                                             </div>
 
-															{this.state.rows.map((row, index) => (
+															{/* {this.state.rows.map((row, index) => (
               													<TableRow
 																	key={row.name}
 																	sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -377,13 +378,18 @@ class AdminSpoEdit extends Component {
                    											<Button onClick={() => this.deleteRow(index)}>Löschen</Button>
 															</TableCell>
 															</TableRow>
-            											))}
+            											))} */}
                                                         </div>
                                                     </AccordionSummary>
                                                     <AccordionDetails>
                                                         <Typography>
-                                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-                                                            malesuada lacus ex, sit amet blandit leo lobortis eget.
+														<TextField required id="outlined-required" label="Required" defaultValue="Language"/>
+														<TextField required id="outlined-required" label="Required" defaultValue="Literature"/>
+														<TextField required id="outlined-required" label="Required" defaultValue="Sources"/>
+														<TextField required id="outlined-required" label="Required" defaultValue="Connection"/>
+														<TextField required id="outlined-required" label="Required" defaultValue="Description"/>
+														<TextField required id="outlined-required" label="Required" defaultValue="Workload"/>
+														<TextField required id="outlined-required" label="Required" defaultValue="Professor"/>
                                                         </Typography>
                                                     </AccordionDetails>
                                                 </Accordion>
