@@ -94,15 +94,16 @@ class User(Bo.BusinessObject):
     @staticmethod
     def from_dict(dictionary=dict()):
         """Umwandeln eines Python dict() in einen User()."""
-        print(dictionary)
         obj = User()
         obj.set_id(dictionary["id"])  # Teil von BusinessObject!
         obj.set_firstname(dictionary["firstname"])
         obj.set_lastname(dictionary["lastname"])
         obj.set_email(dictionary["email"])
         obj.set_google_user_id(dictionary["google_user_id"])
-        obj.set_isadmin(["isadmin"])
+        obj.set_isadmin(dictionary["isadmin"])
         obj.set_spo(dictionary["spo"])
+        
+
         return obj
 
     def __eq__(self, other):
