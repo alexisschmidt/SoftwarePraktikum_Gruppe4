@@ -73,7 +73,8 @@ user = api.inherit('User', bo, {
     'lastname': fields.String(attribute='_lastname', description='Nachname eines Users'),
     'email': fields.String(attribute='_email', description='Email adresse eines Users'),
     'google_user_id': fields.String(attribute='_google_user_id', description='Google ID des Users'),
-    'isadmin': fields.Integer(attribute='_isadmin', description='Anzeige ob Adminstatus oder nicht')
+    'isadmin': fields.Integer(attribute='_isadmin', description='Anzeige ob Adminstatus oder nicht'),
+    'spo':  fields.Integer(attribute='_spo', description='Die hinterlegte SPO eines Studentenaccounts')
 })
 
 namedbo = api.clone('Namedbo', bo, {

@@ -194,6 +194,7 @@ CREATE TABLE IF NOT EXISTS `spoverwaltung`.`user` (
   `email` VARCHAR(45) NOT NULL,
   `google_user_id` VARCHAR(60) NOT NULL,
   `isadmin` TINYINT(1) NOT NULL,
+  `spo_hash` BIGINT NOT NULL,
   `user_hash` BIGINT NOT NULL,
   PRIMARY KEY (`id`, `user_hash`))
 ENGINE = InnoDB
