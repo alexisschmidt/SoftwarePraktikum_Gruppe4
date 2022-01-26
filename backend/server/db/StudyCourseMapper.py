@@ -10,12 +10,14 @@ class StudyCourseMapper(Mapper):
     def find_all(self):
         result = []
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT id, creationdate, name, title FROM studycourse")
+        cursor.execute("SELECT id, creationdate, createdby, name, title, studycourse_hash FROM studycourse")
         tuples = cursor.fetchall()
 
-        for (id, creationdate, name, title, studycourse_hash) in tuples:
+        for (id, creationdate, createdby, name, title, studycourse_hash) in tuples:
             studycourse = StudyCourse()
             studycourse.set_id(id)
+            studycourse.set_creationdate(creationdate)
+            studycourse.set_creator(createdby)
             studycourse.set_name(name)
             studycourse.set_title(title)
 
