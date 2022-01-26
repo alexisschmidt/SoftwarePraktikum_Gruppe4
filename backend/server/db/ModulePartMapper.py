@@ -44,8 +44,8 @@ class ModulePartMapper(Mapper):
 
         result = []
         cursor = self._cnx.cursor()
-        command = "SELECT id, creationdate, name, title, "\
-                  "language, literature, semester, sources, connection, description, sws, "\
+        command = "SELECT id, creationdate, name, title, " \
+                  "language, literature, semester, sources, connection, description, sws, " \
                   f"ects, edvnr, workload FROM modulepart WHERE name LIKE '{name}' ORDER BY name"
         cursor.execute(command)
         tuples = cursor.fetchall()
@@ -78,8 +78,8 @@ class ModulePartMapper(Mapper):
         result = None
 
         cursor = self._cnx.cursor()
-        command = "SELECT id, creationdate, createdby, name, title, "\
-                  "language, literature, semester, sources, connection, description, sws, "\
+        command = "SELECT id, creationdate, createdby, name, title, " \
+                  "language, literature, semester, sources, connection, description, sws, " \
                   f"ects, edvnr, workload FROM modulepart WHERE id={key}"
         cursor.execute(command)
         tuples = cursor.fetchall()
@@ -117,8 +117,8 @@ class ModulePartMapper(Mapper):
         result = None
 
         cursor = self._cnx.cursor()
-        command = "SELECT id, creationdate, name, title, "\
-                  "language, literature, semester, sources, connection, description, sws, "\
+        command = "SELECT id, creationdate, name, title, " \
+                  "language, literature, semester, sources, connection, description, sws, " \
                   f"ects, edvnr, workload FROM modulepart WHERE modulepart_hash={hashcode}"
         cursor.execute(command)
         tuples = cursor.fetchall()
@@ -196,14 +196,14 @@ class ModulePartMapper(Mapper):
 
         cursor = self._cnx.cursor()
 
-        command = "UPDATE modulepart " + "SET name=%s, SET title=%s, SET language=%s, SET literature=%s, " \
-                                         "SET semester_id=%s, SET sources=%s, SET connection=%s, SET description=%s, " \
-                                         "SET sws=%s, SET ects=%s,SET edvnr=%s,SET workload=%s WHERE id=%s "
+        command = "UPDATE modulepart SET name=%s, title=%s, language=%s, literature=%s, " \
+                  "semester_id=%s, sources=%s, connection=%s, description=%s, " \
+                  "sws=%s, ects=%s, edvnr=%s, workload=%s WHERE id=%s AND modulepart_hash=%s "
         data = (
             modulepart.get_name(), modulepart.get_title(), modulepart.get_language(),
             modulepart.get_literature(), modulepart.get_semester(), modulepart.get_sources(),
             modulepart.get_connection(), modulepart.get_description(), modulepart.get_sws(), modulepart.get_ects(),
-            modulepart.get_edvnr(), modulepart.get_workload(), modulepart.get_id())
+            modulepart.get_edvnr(), modulepart.get_workload(), modulepart.get_id(), hash(modulepart))
         cursor.execute(command, data)
 
         self._cnx.commit()
