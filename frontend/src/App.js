@@ -22,6 +22,9 @@ import SpoAuswählenOMM from "./components/pages/SpoAuswählenOMM";
 import Spowi from "./components/pages/Spowi";
 import SpoForm from "./components/pages/SpoForm";
 import Administration from "./components/pages/SpoManagement";
+import SpoAuswahlStudent from "./components/pages/SpoAuswahlStudent";
+import AuswahlStudentAdmin from "./components/pages/AuswahlStudentAdmin";
+import SpoUeberblick from "./components/pages/SpoUeberblick";
 
 class App extends React.Component {
   /** Konstrukteur der App, Firebase initialisiert */
@@ -120,6 +123,18 @@ Globales CSS-Reset und Browser-Normalisierung. CssBaseline startet eine elegante
                 <>
                   <Route path="/" exact component={About} />
                   <Route path="/SpoForm" exact component={SpoForm} />
+                  <Route
+                    path="/SpoAuswahlStudent"
+                    exact
+                    component={SpoAuswahlStudent}
+                  />
+                  
+                  <Route path="/SpoUeberblick" exact component={SpoUeberblick} />
+                  <Route
+                    path="/AuswahlStudenAdmin"
+                    exact
+                    component={AuswahlStudentAdmin}
+                  />
                   {/* <Route path="/Studiengangauswahl" exact component={StudyCourses}/> */}
                   <Route
                     path="/AdminStudiengangAuswahl"
