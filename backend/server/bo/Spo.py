@@ -62,7 +62,6 @@ class Spo (Nbo.NamedBo):
 
     def json(self):
         return json.dumps({
-            'id': self.get_id(),
             'name': self.get_name(),
             'title': self.get_title(),
             'start_semester': self.get_start_semester(),

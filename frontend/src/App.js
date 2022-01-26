@@ -26,8 +26,6 @@ import AdminSpoEdit from './components/AdminSpoEdit';
 import AdminTable from './components/content/AdminTable';
 import './App.css'
 import AdminStudiengangAuswahl from "./components/pages/AdminStudiengangAuswahl";
-import SpoAuswählenOMM from "./components/pages/SpoAuswählenOMM";
-import Spowi from "./components/pages/Spowi";
 import SpoForm from "./components/pages/SpoForm";
 import Administration from "./components/pages/SpoManagement";
 import SpoAuswahlStudent from "./components/pages/SpoAuswahlStudent";
