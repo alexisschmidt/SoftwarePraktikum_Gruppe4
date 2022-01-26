@@ -29,7 +29,7 @@ class Mapper (AbstractContextManager, ABC):
             also auf einem Local Development Server. Hierbei stellen wir eine einfache Verbindung zu einer lokal
             installierten mySQL-Datenbank her."""
 
-            self._cnx = connector.connect(user='root', password='Einhorn100?',
+            self._cnx = connector.connect(user='root', password='x10609230020Y',
                                           host='127.0.0.1',
                                           database='spoverwaltung')
 
@@ -47,26 +47,21 @@ class Mapper (AbstractContextManager, ABC):
         pass
 
     @abstractmethod
-    def find_by_key(self, key):
-        """Lies den einen Tupel mit der gegebenen ID (vgl. Primärschlüssel) aus."""
+    def find_by_hash(self, key):
+        """Lies den einen Tupel mit dem gegebenen Hash (vgl. Primärschlüssel) aus."""
         pass
 
     @abstractmethod
-    def find_by_hash(self, hashcode):
-        """Lies ein Tupel mit dem angegebenen hashcode aus. """
-        pass
-
-    @abstractmethod
-    def insert(self, object):
+    def insert(self, businessobject):
         """Füge das folgende Objekt als Datensatz in die DB ein."""
         pass
 
     @abstractmethod
-    def update(self, object):
+    def update(self, businessobject):
         """Ein Objekt auf einen bereits in der DB enthaltenen Datensatz abbilden."""
         pass
 
     @abstractmethod
-    def delete(self, object):
+    def delete(self, businessobject):
         """Den Datensatz, der das gegebene Objekt in der DB repräsentiert löschen."""
         pass

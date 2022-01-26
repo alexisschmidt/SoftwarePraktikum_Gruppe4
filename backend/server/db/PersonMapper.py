@@ -14,7 +14,7 @@ class PersonMapper(Mapper):
         cursor.execute("SELECT * from person")
         tuples = cursor.fetchall()
 
-        for (id, creationdate, firstname, lastname, email) in tuples:
+        for (id, creationdate, firstname, lastname, email, person_hash) in tuples:
             person = Person()
             person.set_id(id)
             person.set_firstname(firstname)
@@ -50,38 +50,12 @@ class PersonMapper(Mapper):
 
         return result
 
-    def find_by_key(self, key):
-
-        result = None
-
-        cursor = self._cnx.cursor()
-        command = "SELECT * person WHERE id={}".format(key)
-        cursor.execute(command)
-        tuples = cursor.fetchall()
-
-        try:
-            (id, creationdate, name, firstname, lastname, email) = tuples[0]
-            person = Person()
-            person.set_id(id)
-            person.set_firstname(firstname)
-            person.set_lastname(lastname)
-            person.set_email(email)
-            result = person
-        except IndexError:
-
-            result = None
-
-        self._cnx.commit()
-        cursor.close()
-
-        return result
-
     def find_by_hash(self, hashcode):
 
         result = None
 
         cursor = self._cnx.cursor()
-        command = "SELECT * person WHERE person_hash={}".format(hashcode)
+        command = "SELECT * from person WHERE person_hash={}".format(hashcode)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
@@ -105,7 +79,7 @@ class PersonMapper(Mapper):
     def insert(self, person):
 
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT MAX(id) AS maxid FROM person ")
+        cursor.execute("SELECT MAX(id) AS maxid FROM person")
         tuples = cursor.fetchall()
 
         for (maxid) in tuples:
@@ -127,8 +101,10 @@ class PersonMapper(Mapper):
 
         cursor = self._cnx.cursor()
 
-        command = "UPDATE person " + "SET name=%s, SET title=%s, SET firstname=%s, SET lastname=%s, SET email=%s WHERE id=%s "
-        data = (person.get_name(), person.get_title(), person.get_firstname(), person.get_lastname(), person.get_email(), person.get_id())
+        command = "UPDATE person " \
+                  "SET firstname=%s, lastname=%s, email=%s " \
+                  "WHERE id=%s "
+        data = (person.get_firstname(), person.get_lastname(), person.get_email(), person.get_id())
         cursor.execute(command, data)
 
         self._cnx.commit()

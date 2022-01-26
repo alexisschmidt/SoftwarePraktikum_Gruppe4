@@ -3,88 +3,96 @@ import json
 
 
 class Modulepart(Spe.SpoElement):
-    __sws: str
-    __language: str
-    __description: str
-    __connection: str
-    __literature: str
-    __sources: str
-    __semester: int
-    __professor: int
+    _sws: str
+    _language: str
+    _description: str
+    _connection: str
+    _literature: str
+    _sources: str
+    _semester: int
+    _professor: int
+    _module:   int
 
     def __init__(self):
         super().__init__()
-        self.__sws = ""
-        self.__language = ""
-        self.__description = ""
-        self.__connection = ""
-        self.__literature = ""
-        self.__sources = ""
-        self.__semester = 0
-        self.__professor = 0
+        self._sws = ""
+        self._language = ""
+        self._description = ""
+        self._connection = ""
+        self._literature = ""
+        self._sources = ""
+        self._semester = 0
+        self._professor = 0
+        self._module = 0
 
     def get_sws(self):
         """Auslesen der Semesterwochenstunden"""
-        return self.__sws
+        return self._sws
 
     def set_sws(self, sws):
         """Setzen der Semesterwochenstunden"""
-        self.__sws = sws
+        self._sws = sws
 
     def get_language(self):
         """Auslesen der Modulteilsprache"""
-        return self.__language
+        return self._language
 
     def set_language(self, language):
         """Setzen der Modulteilsprache"""
-        self.__language = language
+        self._language = language
 
     def get_description(self):
         """Auslesen der Modulteilbeschreibung"""
-        return self.__description
+        return self._description
 
     def set_description(self, description):
         """Setzen der Modulteilbeschreibung"""
-        self.__description = description
+        self._description = description
 
     def get_connection(self):
-        return self.__connection
+        return self._connection
 
     def set_connection(self, connection: str):
         """Setzten der Verbindung"""
-        self.__connection = connection
+        self._connection = connection
 
     def get_literature(self):
         """Auslesen der Lektüre"""
-        return self.__literature
+        return self._literature
 
     def set_literature(self, literature):
         """Setzen der Lektüre"""
-        self.__literature = literature
+        self._literature = literature
 
     def get_sources(self):
         """Auslesen der Quelle(n)"""
-        return self.__sources
+        return self._sources
 
     def set_sources(self, sources):
         """Setzen der Quelle(n)"""
-        self.__sources = sources
+        self._sources = sources
 
     def get_semester(self):
         """Auslesen des Semesters"""
-        return self.__semester
+        return self._semester
 
     def set_semester(self, semester):
         """Setzen des Semesters"""
-        self.__semester = semester
+        self._semester = semester
 
     def get_professor(self):
         """Auslesen des Professors"""
-        return self.__professor
+        return self._professor
 
     def set_professor(self, professor):
         """Setzen des Modulverantwortlichen"""
-        self.__professor = professor
+        self._professor = professor
+
+    def get_module(self):
+        return self._module
+
+    def set_module(self, module: int):
+        self._module = module
 
     def __str__(self):
         astring = (f"Modulepart:"
@@ -93,39 +101,47 @@ class Modulepart(Spe.SpoElement):
                    f"title: {self._title}, "
                    f"edvnr: {self._edvnr}, "
                    f"ects: {self._ects}, "
-                   f"workload: {self.workload}, "
-                   f"SWS: {self.__sws}, "
-                   f"language: {self.__language}, "
-                   f"description: {self.__description}, "
-                   f"connection: {self.__connection}, "
-                   f"literature: {self.__literature}, "
-                   f"sources: {self.__sources}, "
-                   f"semester: {self.__semester}, "
-                   f"professor: {self.__professor}"
+                   f"workload: {self._workload}, "
+                   f"SWS: {self._sws}, "
+                   f"language: {self._language}, "
+                   f"description: {self._description}, "
+                   f"connection: {self._connection}, "
+                   f"literature: {self._literature}, "
+                   f"sources: {self._sources}, "
+                   f"semester: {self._semester}, "
+                   f"professor: {self._professor}, "
+                   f"module: {self._module}"
                    )
         return astring
+
 
     def json(self):
         return json.dumps({
             'id': self.get_id(),
-            'sws': self.get_sws(),
-            'language': self.get_language(),
+            'name': self._name,
+            'title': self._title,
             'edvnr': self.get_edvnr(),
             'ects': self.get_ects(),
             'workload': self.get_workload(),
+            'sws': self.get_sws(),
+            'language': self.get_language(),
             'description': self.get_description(),
             'connection': self.get_connection(),
             'literature': self.get_literature(),
             'sources': self.get_sources(),
             'semester': self.get_semester(),
-            'professor': self.get_professor()
+            'professor': self.get_professor(),
+            'module': self.get_module()
         })
+
 
     @staticmethod
     def from_dict(dictionary=dict()):
         """Umwandeln eines Python dict() in ein Modulepart()."""
         obj = Modulepart()
         obj.set_id(dictionary["id"])  # Teil von BusinessObject!
+        obj.set_name(dictionary["name"])
+        obj.set_title(dictionary["title"])
         obj.set_sws(dictionary["sws"])  # Teil von NamedBo!
         obj.set_language(dictionary["language"])  # Teil von NamedBo!
         obj.set_edvnr(dictionary["edvnr"])  # Teil von SpoElement!
@@ -137,11 +153,10 @@ class Modulepart(Spe.SpoElement):
         obj.set_sources(dictionary["sources"])
         obj.set_semester(dictionary["semester"])
         obj.set_professor(dictionary["professor"])
+        obj.set_module(dictionary["module"])
         return obj
 
-    def __hash__(self):
-        super().__hash__()
-
+    __hash__ = Spe.SpoElement.__hash__
 
 """
 # Test Script

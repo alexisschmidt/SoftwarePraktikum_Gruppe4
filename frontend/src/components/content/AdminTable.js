@@ -6,8 +6,8 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import Button from '@mui/material/Button'
-import Input from '@mui/material/Input'
+import Button from '@mui/material/Button';
+import Input from '@mui/material/Input';
 
 function createData(semester, edvnr, modul, sws, ects, prüfung) {
   return { semester, edvnr, modul, sws, ects, prüfung };
@@ -19,7 +19,7 @@ const rows = [
    
   
     createData(<b>1</b>, <b>PL: 335120</b>, <b>Marketing & Organisation</b>,<b>4</b>,<b>5</b>,<b>PL: KMP</b>),
-    createData('','335120a','Marketing',2,2,'' ),
+    createData('','335120a','Marketing',2,2,'Language', 'Literature', 'Sources', 'Connection', 'Description',  'Workload', 'Professor' ),
     createData('','335120b','Organisation',2,3,''),
     createData('', '', '', '', '',''),
   
