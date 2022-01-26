@@ -1,6 +1,6 @@
-import BusinessObject from './Businessobject';
+import SpoElementbo from './SpoElementbo';
 
-export default class Modulebo extends BusinessObject{
+export default class Modulebo extends SpoElementbo{
   /**
    * Constructs a new Modulebo object with a given owner.
    * 

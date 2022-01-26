@@ -8,6 +8,7 @@ class Module(Spe.SpoElement):
     _outcome: str
     _examtype: str
     _instructor: int
+    _parts: list[int]
 
     def __init__(self):
         super().__init__()
@@ -58,6 +59,18 @@ class Module(Spe.SpoElement):
         """Setzen des Modulverantwortlichen"""
         self._instructor = instructor
 
+    def get_parts(self):
+        return self._modules
+
+    def set_parts(self, parts: list[int]):
+        self._modules = parts
+
+    def append_part(self, part: int):
+        self._modules.append(part)
+
+    def remove_part(self, part: int):
+        self._modules.remove(part)
+
     def __str__(self):
         astring = (
             f"Module: "
@@ -66,7 +79,7 @@ class Module(Spe.SpoElement):
             f"title: {self._title}, "
             f"edvnr: {self._edvnr}, "
             f"ects: {self._ects}, "
-            f"workload: {self.workload}, "
+            f"workload: {self._workload}, "
             f"type: {self._type}, "
             f"requirement: {self._requirement}, "
             f"outcome: {self._outcome}, "
@@ -115,8 +128,7 @@ class Module(Spe.SpoElement):
                self.get_examtype() == other.get_examtype() and \
                self.get_instructor() == other.get_instructor()
 
-    def __hash__(self):
-        super().__hash__()
+    __hash__ = Spe.SpoElement.__hash__
 
 
 """

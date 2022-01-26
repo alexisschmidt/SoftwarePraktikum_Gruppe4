@@ -1,8 +1,9 @@
+
 export default class BusinessObject {
 
-	constructor(aId, aCreationdate) {
-	  this.id = aId;
-	  this._creationdate = aCreationdate //aktuelles Datum
+	constructor() {
+	  this.id = 0;
+	  this._creationdate = new Date() //aktuelles Datum
 	}
   
 	/**

@@ -1,4 +1,3 @@
-
 from server.bo import NamedBo as Nbo
 import json
 

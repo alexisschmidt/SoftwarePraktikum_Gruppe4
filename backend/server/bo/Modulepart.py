@@ -11,6 +11,7 @@ class Modulepart(Spe.SpoElement):
     _sources: str
     _semester: int
     _professor: int
+    _module:   int
 
     def __init__(self):
         super().__init__()
@@ -22,6 +23,7 @@ class Modulepart(Spe.SpoElement):
         self._sources = ""
         self._semester = 0
         self._professor = 0
+        self._module = 0
 
     def get_sws(self):
         """Auslesen der Semesterwochenstunden"""
@@ -86,6 +88,12 @@ class Modulepart(Spe.SpoElement):
         """Setzen des Modulverantwortlichen"""
         self._professor = professor
 
+    def get_module(self):
+        return self._module
+
+    def set_module(self, module: int):
+        self._module = module
+
     def __str__(self):
         astring = (f"Modulepart:"
                    f"id: {self.get_id()}, "
@@ -93,7 +101,7 @@ class Modulepart(Spe.SpoElement):
                    f"title: {self._title}, "
                    f"edvnr: {self._edvnr}, "
                    f"ects: {self._ects}, "
-                   f"workload: {self.workload}, "
+                   f"workload: {self._workload}, "
                    f"SWS: {self._sws}, "
                    f"language: {self._language}, "
                    f"description: {self._description}, "
@@ -101,31 +109,39 @@ class Modulepart(Spe.SpoElement):
                    f"literature: {self._literature}, "
                    f"sources: {self._sources}, "
                    f"semester: {self._semester}, "
-                   f"professor: {self._professor}"
+                   f"professor: {self._professor}, "
+                   f"module: {self._module}"
                    )
         return astring
+
 
     def json(self):
         return json.dumps({
             'id': self.get_id(),
-            'sws': self.get_sws(),
-            'language': self.get_language(),
+            'name': self._name,
+            'title': self._title,
             'edvnr': self.get_edvnr(),
             'ects': self.get_ects(),
             'workload': self.get_workload(),
+            'sws': self.get_sws(),
+            'language': self.get_language(),
             'description': self.get_description(),
             'connection': self.get_connection(),
             'literature': self.get_literature(),
             'sources': self.get_sources(),
             'semester': self.get_semester(),
-            'professor': self.get_professor()
+            'professor': self.get_professor(),
+            'module': self.get_module()
         })
+
 
     @staticmethod
     def from_dict(dictionary=dict()):
         """Umwandeln eines Python dict() in ein Modulepart()."""
         obj = Modulepart()
         obj.set_id(dictionary["id"])  # Teil von BusinessObject!
+        obj.set_name(dictionary["name"])
+        obj.set_title(dictionary["title"])
         obj.set_sws(dictionary["sws"])  # Teil von NamedBo!
         obj.set_language(dictionary["language"])  # Teil von NamedBo!
         obj.set_edvnr(dictionary["edvnr"])  # Teil von SpoElement!
@@ -137,9 +153,10 @@ class Modulepart(Spe.SpoElement):
         obj.set_sources(dictionary["sources"])
         obj.set_semester(dictionary["semester"])
         obj.set_professor(dictionary["professor"])
+        obj.set_module(dictionary["module"])
         return obj
 
-    __hash__ = Spe.__hash__()
+    __hash__ = Spe.SpoElement.__hash__
 
 """
 # Test Script

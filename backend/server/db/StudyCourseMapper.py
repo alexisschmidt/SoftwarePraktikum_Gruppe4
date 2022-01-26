@@ -10,7 +10,7 @@ class StudyCourseMapper(Mapper):
     def find_all(self):
         result = []
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT * from studycourse")
+        cursor.execute("SELECT id, creationdate, name, title FROM studycourse")
         tuples = cursor.fetchall()
 
         for (id, creationdate, name, title, studycourse_hash) in tuples:
@@ -48,32 +48,6 @@ class StudyCourseMapper(Mapper):
 
         return result
 
-    def find_by_key(self, key):
-	
-        result = None
-
-        cursor = self._cnx.cursor()
-        command = "SELECT id, creationdate, name, title FROM studycourse WHERE id= {}".format(key)
-        cursor.execute(command)
-        tuples = cursor.fetchall()
-
-        try:
-            (id, creationdate, name, title) = tuples[0]
-            studycourse = StudyCourse()
-            studycourse.set_id(id)
-            studycourse.set_name(name)
-            studycourse.set_title(title)
-
-            result = studycourse
-        except IndexError:
-
-            result = None
-
-        self._cnx.commit()
-        cursor.close()
-
-        return result
-
     def find_by_hash(self, hashcode):
 
         result = None
@@ -100,7 +74,7 @@ class StudyCourseMapper(Mapper):
 
         return result
 
-    def insert(self, studycourse):
+    def insert(self, studycourse: StudyCourse):
 
         cursor = self._cnx.cursor()
         cursor.execute("SELECT MAX(id) AS maxid FROM studycourse ")
@@ -108,15 +82,14 @@ class StudyCourseMapper(Mapper):
 
         for (maxid) in tuples:
             if maxid[0] is not None:
-
                 studycourse.set_id(maxid[0] + 1)
             else:
-
                 studycourse.set_id(1)
 
-        command = "INSERT INTO studycourse (id, creationdate, name, title, studycourse_hash) " \
-                  "VALUES (%s,%s,%s,%s,%s)"
-        data = (studycourse.get_id(), studycourse.get_creationdate(), studycourse.get_name(), studycourse.get_title(), hash(studycourse))
+        command = "INSERT INTO studycourse (id, creationdate, createdby, name, title, studycourse_hash) " \
+                  "VALUES (%s,%s,%s,%s,%s,%s)"
+        data = (studycourse.get_id(), studycourse.get_creationdate(), studycourse.get_creator(),
+                studycourse.get_name(), studycourse.get_title(), hash(studycourse))
         cursor.execute(command, data)
 
         self._cnx.commit()
@@ -124,18 +97,19 @@ class StudyCourseMapper(Mapper):
 
         return studycourse
 
-    def update(self, studycourse):
+    def update(self, studycourse: StudyCourse):
 
         cursor = self._cnx.cursor()
 
-        command = "UPDATE studycourse " + "SET name=%s, SET title=%s WHERE id=%s "
-        data = (studycourse.get_name(), studycourse.get_title(), studycourse.get_id())
-        cursor.execute(command, data)
+        command = f"UPDATE studycourse " + f"SET name='{studycourse.get_name()}', " \
+                                           f"title='{studycourse.get_title()}'" \
+                                           f" WHERE id={studycourse.get_id()} "
+        cursor.execute(command)
 
         self._cnx.commit()
         cursor.close()
 
-    def delete(self, studycourse):
+    def delete(self, studycourse: StudyCourse):
 
         cursor = self._cnx.cursor()
 

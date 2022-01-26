@@ -32,4 +32,4 @@ class NamedBo(bo.BusinessObject, ABC):
                self.get_name() == other.get_name() and \
                self.get_title() == other.get_title()
 
-    __hash__ = bo.__hash__
+    __hash__ = bo.BusinessObject.__hash__

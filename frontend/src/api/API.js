@@ -1,4 +1,3 @@
-import Modulebo from './BusinessObjects/Modulebo';
 import Modulepartbo from './BusinessObjects/Modulepartbo';
 import Personbo from './BusinessObjects/Personbo';
 import Semesterbo from './BusinessObjects/Semesterbo';

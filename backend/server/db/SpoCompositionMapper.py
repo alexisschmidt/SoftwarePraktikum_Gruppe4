@@ -1,140 +1,90 @@
-from server.bo.ModuleList import ModuleList
+from server.bo.Spo import Spo
 from server.db.Mapper import Mapper
 
 
-class ModuleListMapper(Mapper):
+class SpoCompositionMapper(Mapper):
 
     def __init__(self):
         super().__init__()
 
+    def insert_composition(self, spo: Spo):
+
+        cursor = self._cnx.cursor()
+        for module_hash in spo.get_modules():
+
+            # bestimmen der ID der SpoComposition-Zeile
+            newid = 1
+            cursor.execute("SELECT MAX(id) AS maxid FROM spocomposition")
+            tuples = cursor.fetchall()
+            for (maxid) in tuples:
+                if maxid[0] is not None:
+                    newid = maxid[0] + 1
+
+            # Erstellen der Zeile
+            cursor.execute("INSERT INTO spocomposition (id, module_hash, spo_hash) "
+                           "VALUES "
+                           f"(id={newid}, module_hash={module_hash}, spo_hash={hash(spo)})")
+
+        self._cnx.commit()
+        cursor.close()
+        return spo
+
+    def copy_composition(self, copy: Spo):
+
+        cursor = self._cnx.cursor()
+        for module_hash in copy.get_modules():
+            # bestimmen der ID der SpoComposotion-Zeile
+            newidc = 1
+            cursor.execute("SELECT MAX(id) AS maxidc FROM spocomposition")
+            tuples = cursor.fetchall()
+            for (maxidc) in tuples:
+                if maxidc[0] is not None:
+                    newidc = maxidc[0] + 1
+                    # Erstellen der Zeile
+            cursor.execute("INSERT INTO spocomposition (id, module_hash, spo_hash) "
+                           "VALUES "
+                           f"(id={newidc}, module_hash={module_hash}, spo_hash={hash(copy)})")
+
+            self._cnx.commit()
+            cursor.close()
+            return copy
+
+    def get_composition_id(self, spo: Spo):
+        cursor = self._cnx.cursor()
+        result = []
+
+        for module in spo.get_modules():
+            mo = cursor.execute(f"SELECT id FROM spocomposition "
+                                f"WHERE spo_hash={hash(spo)} "
+                                f"AND module_hash={module} ")
+            result.append(mo)
+
+        return result
+
+    def update_composition(self, spo: Spo, modules: list[int]):
+        cursor = self._cnx.cursor()
+        modulenumber = -1
+        for id in modules:
+            modulenumber += 1
+            cursor.execute(f"UPDATE spocomposition SET id={id}, module_hash={spo.get_modules()[modulenumber]} "
+                           f"WHERE spo_hash={hash(spo)}")
+
     def find_all(self):
-        result = []
-        cursor = self._cnx.cursor()
+        """Lies alle Tupel aus und gib sie als Objekte zurück."""
+        pass
 
-        cursor.execute("SELECT + from modulelist")
-        tuples = cursor.fetchall()
+    def find_by_hash(self, key):
+        """Lies den einen Tupel mit dem gegebenen Hash (vgl. Primärschlüssel) aus."""
+        pass
 
-        for (id, creationdate, modulepart, module) in tuples:
-            modulelist = ModuleList()
-            modulelist.set_id(id)
-            modulelist.set_creationdate(creationdate)
-            modulelist.set_modulepart(modulepart)
-            modulelist.set_module(module)
-            result.append(modulelist)
+    def insert(self, businessobject):
+        """Füge das folgende Objekt als Datensatz in die DB ein."""
+        pass
 
-        self._cnx.commit()
-        cursor.close()
+    def update(self, businessobject):
+        """Ein Objekt auf einen bereits in der DB enthaltenen Datensatz abbilden."""
+        pass
 
-        return result
-
-    def find_by_module(self, module):
-        result = []
-        cursor = self._cnx.cursor()
-        command = "SELECT * FROM modulelist WHERE module={} ORDER BY id".format(module)
-        cursor.execute(command)
-        tuples = cursor.fetchall()
-
-        for (id, creationdate, modulepart, module) in tuples:
-            modulelist = ModuleList()
-            modulelist.set_id(id)
-            modulelist.set_creationdate(creationdate)
-            modulelist.set_modulepart(modulepart)
-            modulelist.set_module(module)
-            result.append(modulelist)
-
-        self._cnx.commit()
-        cursor.close()
-
-        return result
-
-    def find_by_modulepart(self, modulepart):
-        result = []
-        cursor = self._cnx.cursor()
-        command = "SELECT * FROM modulelist WHERE modulepart={} ORDER BY id".format(modulepart)
-        cursor.execute(command)
-        tuples = cursor.fetchall()
-
-        for (id, creationdate, modulepart, module) in tuples:
-            modulelist = ModuleList()
-            modulelist.set_id(id)
-            modulelist.set_creationdate(creationdate)
-            modulelist.set_modulepart(modulepart)
-            modulelist.set_module(module)
-            result.append(modulelist)
-
-        self._cnx.commit()
-        cursor.close()
-
-        return result
-
-    def find_by_key(self, key):
-
-        result = None
-
-        cursor = self._cnx.cursor()
-        command = "SELECT * modulelist WHERE id={}".format(key)
-        cursor.execute(command)
-        tuples = cursor.fetchall()
-
-        try:
-            (
-                id, creationdate, modulepart, module) = tuples[0]
-            modulelist = ModuleList()
-            modulelist.set_id(id)
-            modulelist.set_creationdate(creationdate)
-            modulelist.set_modulepart(modulepart)
-            modulelist.set_module(module)
-            result.append(modulelist)
-
-        except IndexError:
-            result = None
-
-        self._cnx.commit()
-        cursor.close()
-
-        return result
-
-    def insert(self, modulelist):
-
-        cursor = self._cnx.cursor()
-        cursor.execute("SELECT MAX(id) AS maxid FROM modulelist ")
-        tuples = cursor.fetchall()
-
-        for (maxid) in tuples:
-            if maxid[0] is not None:
-
-                modulelist.set_id(maxid[0] + 1)
-            else:
-
-                modulelist.set_id(1)
-
-        command = "INSERT INTO modulelist (id, creationdate, modulepart, module) VALUES (%s,%s,%s,%s) "
-        data = (
-        modulelist.get_id(), modulelist.get_creationdate(), modulelist.get_modulepart(), modulelist.get_module())
-        cursor.execute(command, data)
-
-        self._cnx.commit()
-        cursor.close()
-
-        return modulelist
-
-    def update(self, modulelist):
-        cursor = self._cnx.cursor()
-
-        command = "UPDATE modulelist " + "SET module=%s, modulepart=%s WHERE id=%s"
-        data = (modulelist.get_module(module),
-                modulelist.get_modulepart(modulepart),
-                modulelist.get__id())
-        cursor.execute(command, data)
-
-        self._cnx.commit()
-        cursor.close()
-
-    def delete(self, modulelist):
-        cursor = self._cnx.cursor()
-
-        command = "DELETE FROM modulelist WHERE id={}".format(modulelist.get_id())
-        cursor.execute(command)
-
-        self._cnx.commit()
-        cursor.close()
+    def delete(self, businessobject):
+        """Den Datensatz, der das gegebene Objekt in der DB repräsentiert löschen."""
+        pass

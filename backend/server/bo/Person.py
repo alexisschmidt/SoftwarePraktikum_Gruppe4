@@ -1,8 +1,8 @@
-from server.bo import Businessobject as bo
+from server.bo import Businessobject as Bo
 import json
 
 
-class Person(bo.BusinessObject):
+class Person(Bo.BusinessObject):
     _firstname: str
     _lastname: str
     _email: str
@@ -67,9 +67,8 @@ class Person(bo.BusinessObject):
         return obj
 
     def __eq__(self, other):
-        return super().__eq__(other) and self.get_firstname() == other.get_name() and \
+        return super().__eq__(other) and self.get_firstname() == other.get_firstname() and \
                self.get_lastname() == other.get_lastname() and \
                self.get_email() == other.get_email()
 
-    def __hash__(self):
-        super().__hash__()
+    __hash__ = Bo.BusinessObject.__hash__
