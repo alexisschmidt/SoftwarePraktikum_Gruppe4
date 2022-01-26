@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS `spoverwaltung`.`module` (
   `workload` VARCHAR(200) NOT NULL,
   `module_hash` BIGINT NOT NULL,
   `instructor_hash` BIGINT NOT NULL,
-  PRIMARY KEY (`id`, `module_hash`))
+  PRIMARY KEY (`module_hash`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS `spoverwaltung`.`modulepart` (
   `modulepart_hash` BIGINT NOT NULL,
   `professor_hash` BIGINT NOT NULL,
   `module_hash` BIGINT NOT NULL,
-  PRIMARY KEY (`id`, `modulepart_hash`))
+  PRIMARY KEY (`modulepart_hash`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -87,7 +87,7 @@ CREATE TABLE IF NOT EXISTS `spoverwaltung`.`person` (
   `lastname` VARCHAR(45) NOT NULL,
   `email` VARCHAR(45) NOT NULL,
   `person_hash` BIGINT NOT NULL,
-  PRIMARY KEY (`id`, `person_hash`))
+  PRIMARY KEY (`person_hash`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -105,7 +105,7 @@ CREATE TABLE IF NOT EXISTS `spoverwaltung`.`semester` (
   `name` VARCHAR(45) NOT NULL,
   `title` VARCHAR(45) NOT NULL,
   `semester_hash` BIGINT NOT NULL,
-  PRIMARY KEY (`id`, `semester_hash`))
+  PRIMARY KEY (`semester_hash`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -124,7 +124,7 @@ CREATE TABLE IF NOT EXISTS `spoverwaltung`.`spo` (
   `title` VARCHAR(45) NOT NULL,
   `spo_hash` BIGINT NOT NULL,
   `studycourse_hash` BIGINT NOT NULL,
-  PRIMARY KEY (`id`, `spo_hash`))
+  PRIMARY KEY (`spo_hash`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -174,7 +174,7 @@ CREATE TABLE IF NOT EXISTS `spoverwaltung`.`studycourse` (
   `name` VARCHAR(45) NOT NULL,
   `title` VARCHAR(45) NOT NULL,
   `studycourse_hash` BIGINT NOT NULL,
-  PRIMARY KEY (`id`, `studycourse_hash`))
+  PRIMARY KEY (`studycourse_hash`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -194,9 +194,9 @@ CREATE TABLE IF NOT EXISTS `spoverwaltung`.`user` (
   `email` VARCHAR(45) NOT NULL,
   `google_user_id` VARCHAR(60) NOT NULL,
   `isadmin` TINYINT(1) NOT NULL,
-  `spo_hash` BIGINT DEFAULT NULL,
   `user_hash` BIGINT NOT NULL,
-  PRIMARY KEY (`id`, `user_hash`))
+  `spo_hash` BIGINT NULL DEFAULT NULL,
+  PRIMARY KEY (`user_hash`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;

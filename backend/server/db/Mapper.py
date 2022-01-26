@@ -47,8 +47,8 @@ class Mapper (AbstractContextManager, ABC):
         pass
 
     @abstractmethod
-    def find_by_id(self, key):
-        """Lies den einen Tupel mit der gegebenen ID (vgl. Primärschlüssel) aus."""
+    def find_by_hash(self, key):
+        """Lies den einen Tupel mit dem gegebenen Hash (vgl. Primärschlüssel) aus."""
         pass
 
     @abstractmethod
