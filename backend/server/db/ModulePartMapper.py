@@ -73,45 +73,6 @@ class ModulePartMapper(Mapper):
         cursor.close()
         return result
 
-    def find_by_id(self, key: int):
-
-        result = None
-
-        cursor = self._cnx.cursor()
-        command = "SELECT id, creationdate, createdby, name, title, " \
-                  "language, literature, semester, sources, connection, description, sws, " \
-                  f"ects, edvnr, workload FROM modulepart WHERE id={key}"
-        cursor.execute(command)
-        tuples = cursor.fetchall()
-
-        try:
-            (id, creationdate, createdby, name, title,
-             language, literature, semester, sources, connection, description, sws,
-             ects, edvnr, workload) = tuples[0]
-            modulepart = Modulepart()
-            modulepart.set_id(id)
-            modulepart.set_creationdate(creationdate)
-            modulepart.set_creator(createdby)
-            modulepart.set_name(name)
-            modulepart.set_title(title)
-            modulepart.set_language(language)
-            modulepart.set_literature(literature)
-            modulepart.set_semester(semester)
-            modulepart.set_sources(sources)
-            modulepart.set_connection(connection)
-            modulepart.set_description(description)
-            modulepart.set_sws(sws)
-            modulepart.set_ects(ects)
-            modulepart.set_edvnr(edvnr)
-            modulepart.set_workload(workload)
-            obj = modulepart
-        except IndexError:
-            result = None
-
-        self._cnx.commit()
-        cursor.close()
-        return result
-
     def find_by_hash(self, hashcode: int):
 
         result = None
@@ -160,32 +121,21 @@ class ModulePartMapper(Mapper):
             if maxid[0] is not None:
                 modulepart.set_id(maxid[0] + 1)
             else:
-
                 modulepart.set_id(1)
 
-        try:
-            cursor.execute(f'SELECT id FROM person WHERE person_hash={modulepart.get_professor()}')
-            profid = int(cursor.fetchone()[0])
-        except ValueError:
-            print('modulepart needs a professor to be created!')
-
-        try:
-            cursor.execute(f'SELECT id FROM module WHERE module_hash={modulepart.get_module()}')
-            modid = int(cursor.fetchone()[0])
-        except ValueError:
-            print('modulepart needs a professor to be created!')
-
-        command = "INSERT INTO modulepart (id, creationdate, name, title, " \
+        command = "INSERT INTO modulepart " \
+                  "(id, creationdate, createdby, name, title, " \
                   "language, literature, semester, sources, connection, description, sws, " \
                   "ects, edvnr, workload, " \
-                  "modulepart_hash, professor_id, professor_hash, module_id, module_hash) " \
-                  "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+                  "modulepart_hash, professor_hash, module_hash) " \
+                  "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
 
-        data = (modulepart.get_id(), modulepart.get_creationdate(), modulepart.get_name(), modulepart.get_title(),
+        data = (modulepart.get_id(), modulepart.get_creationdate(), modulepart.get_creator(),
+                modulepart.get_name(), modulepart.get_title(),
                 modulepart.get_language(), modulepart.get_literature(), modulepart.get_semester(),
                 modulepart.get_sources(), modulepart.get_connection(), modulepart.get_description(),
                 modulepart.get_sws(), modulepart.get_ects(), modulepart.get_edvnr(), modulepart.get_workload(),
-                hash(modulepart), profid, modulepart.get_professor(), modid, modulepart.get_module())
+                hash(modulepart), modulepart.get_professor(), modulepart.get_module())
 
         cursor.execute(command, data)
         self._cnx.commit()
