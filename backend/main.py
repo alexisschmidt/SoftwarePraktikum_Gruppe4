@@ -102,6 +102,7 @@ module = api.inherit('Module', spoelement, {
     'outcome': fields.String(attribute='_outcome', description='Outcome des Moduls'),
     'examtype': fields.String(attribute='_examtype', description='Prüfungstyp des Moduls'),
     'instructor': fields.Integer(attribute='_instructor', description='Modulverantwortlicher'),
+    'parts':  fields.List(fields.Integer(attribute='_parts', description='Teile eines Moduls'))
 })
 
 modulepart = api.inherit('Modulepart', spoelement, {
@@ -376,7 +377,7 @@ class SpoStartSemesterOperations:
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
 class ModuleListOperations(Resource):
     @sposystem.marshal_list_with(module, code=200)
-    # @secured
+    @secured
     def get(self):
 
         adm = Administration()
@@ -385,7 +386,7 @@ class ModuleListOperations(Resource):
 
     @sposystem.marshal_with(module, code=200)
     @sposystem.expect(module)
-    # @secured
+    @secured
     def post(self,**kwargs):
         """
         Erstellen eines Module-Objekts in der Datenbank.
@@ -482,7 +483,7 @@ class ModulePartListOperations(Resource):
 
     @sposystem.marshal_with(modulepart)
     @sposystem.expect(modulepart)
-    # @secured
+    @secured
     def post(self,**kwargs):
         """
         Erstellen eines Modulepart-Objekts in der Datenbank.
@@ -727,7 +728,7 @@ class SemesterListOperations(Resource):
 
     @sposystem.marshal_with(semester, code=200)
     @sposystem.expect(semester)
-    # @secured
+    @secured
     def post(self,**kwargs):
         """
         Erstellen eines Semester-Objekts in der Datenbank.

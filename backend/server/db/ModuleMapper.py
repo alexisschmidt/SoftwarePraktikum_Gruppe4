@@ -90,7 +90,7 @@ class ModuleMapper(Mapper):
         result = None
         command = f"SELECT id, creationdate, createdby, name, title, " \
                   f"requirement, examtype, outcome, type, " \
-                  f"ects, edvnr, workload, instructor_hash " \
+                  f"ects, edvnr, workload, module_hash instructor_hash " \
                   f"FROM module WHERE id={key}"
         cursor = self._cnx.cursor()
         cursor.execute(command)
@@ -99,7 +99,7 @@ class ModuleMapper(Mapper):
         try:
             (id, creationdate, createdby, name, title,
              requirement, examtype, outcome, type,
-             ects, edvnr, workload,
+             ects, edvnr, workload, module_hash,
              instructor_hash) = tuples[0]
             module = Module()
             module.set_id(id)
@@ -115,6 +115,9 @@ class ModuleMapper(Mapper):
             module.set_edvnr(edvnr)
             module.set_workload(workload)
             module.set_instructor(instructor_hash)
+            cursor.execute(f"SELECT modulepart_hash FROM modulepart WHERE module_hash={module_hash}")
+            parts = list(cursor.fetchall())
+            module.set_parts(parts)
             result = module
         except IndexError:
             result = None
@@ -158,7 +161,7 @@ class ModuleMapper(Mapper):
             module.set_workload(workload)
             module.set_instructor(instructor_hash)
             module.set_parts(parts)
-            result.append(module)
+            result = module
         except IndexError:
             result = None
 

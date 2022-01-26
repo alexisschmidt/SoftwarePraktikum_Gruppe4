@@ -109,18 +109,22 @@ class Modulepart(Spe.SpoElement):
                    f"literature: {self._literature}, "
                    f"sources: {self._sources}, "
                    f"semester: {self._semester}, "
-                   f"professor: {self._professor}"
+                   f"professor: {self._professor}, "
+                   f"module: {self._module}"
                    )
         return astring
+
 
     def json(self):
         return json.dumps({
             'id': self.get_id(),
-            'sws': self.get_sws(),
-            'language': self.get_language(),
+            'name': self._name,
+            'title': self._title,
             'edvnr': self.get_edvnr(),
             'ects': self.get_ects(),
             'workload': self.get_workload(),
+            'sws': self.get_sws(),
+            'language': self.get_language(),
             'description': self.get_description(),
             'connection': self.get_connection(),
             'literature': self.get_literature(),
@@ -130,11 +134,14 @@ class Modulepart(Spe.SpoElement):
             'module': self.get_module()
         })
 
+
     @staticmethod
     def from_dict(dictionary=dict()):
         """Umwandeln eines Python dict() in ein Modulepart()."""
         obj = Modulepart()
         obj.set_id(dictionary["id"])  # Teil von BusinessObject!
+        obj.set_name(dictionary["name"])
+        obj.set_title(dictionary["title"])
         obj.set_sws(dictionary["sws"])  # Teil von NamedBo!
         obj.set_language(dictionary["language"])  # Teil von NamedBo!
         obj.set_edvnr(dictionary["edvnr"])  # Teil von SpoElement!
