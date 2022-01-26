@@ -117,9 +117,8 @@ class SpoCompositionMapper(Mapper):
     def update(self, spoc):
         cursor = self._cnx.cursor()
 
-        command = "UPDATE spocomposition " + "SET module_id=%s, spo_id=%s WHERE id=%s"
-        data = (
-            spoc.get_id(), spoc.get_module_id(), spoc.get_spo_id())
+        command = "UPDATE spocomposition SET module_id=%s, spo_id=%s WHERE id=%s"
+        data = (spoc.get_id(), spoc.get_module_id(), spoc.get_spo_id())
         cursor.execute(command, data)
 
         self._cnx.commit()

@@ -298,11 +298,8 @@ class SpoMapper(Mapper):
 
         cursor = self._cnx.cursor()
 
-        command = "UPDATE spo " + "SET name=%s, SET title=%s, SET spo_hash=%s, " \
-                                  "SET studycourse_id=%s, SET get_studycourse_studycourse_hash=%s " \
-                                  "WHERE id=%s "
-        data = (spo.get_spo(), spo.get_semester(),
-                spo.get_start_semester(), spo.get_end_semester(), spo.get_studycourse(), spo.get_id())
+        command = "UPDATE spo SET name=%s, title=%s WHERE id=%s AND spo_hash "
+        data = (spo.get_name(), spo.get_title(), spo.get_id(), hash(spo))
         cursor.execute(command, data)
 
         self._cnx.commit()

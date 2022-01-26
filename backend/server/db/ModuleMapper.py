@@ -200,14 +200,14 @@ class ModuleMapper(Mapper):
 
         cursor = self._cnx.cursor()
 
-        command = "UPDATE module " + "SET name=%s, SET title=%s, SET requirement=%s, SET examtype=%s, " \
-                                     "SET instructor=%s, SET outcome=%s, SET type=%s, SET moduleparts=%s, " \
-                                     "SET ects=%s, SET edvnr=%s, SET workload=%s WHERE id=%s "
+        command = "UPDATE module SET name=%s, title=%s, requirement=%s, examtype=%s, " \
+                  "instructor=%s, outcome=%s, type=%s" \
+                  "ects=%s, edvnr=%s, workload=%s, instructor_hash=%s WHERE id=%s AND module_hash=%s"
         data = (
             module.get_name(), module.get_title(), module.get_requirement(), module.get_examtype(),
             module.get_instructor(), module.get_outcome(), module.get_type(),
             module.get_ects(),
-            module.get_edvnr(), module.get_workload(), module.get_id())
+            module.get_edvnr(), module.get_workload(), module.get_instructor(), module.get_id(), hash(module))
         cursor.execute(command, data)
 
         self._cnx.commit()

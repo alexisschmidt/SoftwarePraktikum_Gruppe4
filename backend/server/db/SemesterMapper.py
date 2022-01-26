@@ -123,9 +123,9 @@ class SemesterMapper(Mapper):
 
         cursor = self._cnx.cursor()
 
-        command = "UPDATE semester " + "SET name=%s, SET title=%s, WHERE id=%s "
+        command = "UPDATE semester SET name=%s, title=%s, WHERE id=%s AND semester_hash=%s "
         data = (
-            semester.get_id(), semester.get_name(), semester.get_title())
+            semester.get_id(), semester.get_name(), semester.get_title(), hash(semester))
         cursor.execute(command, data)
 
         self._cnx.commit()
