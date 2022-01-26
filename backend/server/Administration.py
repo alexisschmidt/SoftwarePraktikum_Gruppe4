@@ -1,4 +1,5 @@
 import datetime
+from copy import deepcopy
 
 from server.bo.Module import Module
 from server.bo.Modulepart import Modulepart
@@ -14,6 +15,7 @@ from server.db.PersonMapper import PersonMapper
 from server.db.SemesterMapper import SemesterMapper
 from server.db.SpoMapper import SpoMapper
 from server.db.SpoValidityMapper import SpoValidityMapper
+from server.db.SpoCompositionMapper import SpoCompositionMapper
 from server.db.StudyCourseMapper import StudyCourseMapper
 from server.db.UserMapper import UserMapper
 
@@ -182,8 +184,6 @@ class Administration (object):
         with SemesterMapper() as mapper:
             mapper.delete(semester)
 
-    """SpoValidity-spezifische Methoden"""
-
     def get_spo_by_semester_hash(self, hashcode: int):
         with SpoMapper() as mapper:
             mapper.find_spos_by_semester_hash(hashcode)
@@ -198,7 +198,8 @@ class Administration (object):
         """
         Legt das Objekt in der Datenbank an und setzt creationate und creator.
 
-        Zusätzlich wird für eine SPO ein bzw. 2 Einträge in spovalidity erstellt, die die Attribute _start_semester und _end_semester darstellen.
+        Zusätzlich wird für eine SPO ein bzw. 2 Einträge in spovalidity erstellt,
+        die die Attribute _start_semester und _end_semester darstellen.
 
         :param proposal: Ein Spo Objekt
         :param creator: Ein User-Hash, creator des Objekts
@@ -208,14 +209,16 @@ class Administration (object):
 
         # Ist schon ein Ende der Gültigkeit angegeben?
         if proposal.get_end_semester() != 0:
-            valtype: bool = 1
+            valtype = 1
         else:
-            valtype: bool = 0
+            valtype = 0
 
         # Einträge in spo, spovalidity und spocomposition
         with SpoMapper() as mapper:
-            mapper.insert(proposal)
+            newobj = mapper.insert(proposal)
+        with SpoValidityMapper() as mapper:
             mapper.insert_validity(proposal, valtype)
+        with SpoCompositionMapper() as mapper:
             mapper.insert_composition(proposal)
         return newobj
 
@@ -250,28 +253,38 @@ class Administration (object):
             return mapper.find_all_by_studycourse(studycourse_id)
 
     def copy_spo(self, base: Spo, creator: int):
-        # Kopie der Basis anlegen
-        copy = base
-        # Das Erstellungsdatum und der Ertsteller der Kopie müssen angepasst werden
+        # Kopie der Basis anlegen:
+        copy = deepcopy(base)
+
+        # Das Erstellungsdatum und der Ertsteller der Kopie müssen angepasst werden:
         copy.set_creationdate(datetime.date.today())
         copy.set_creator(creator)
 
         # Ist schon ein Ende der Gültigkeit angegeben?
         if copy.get_end_semester() != 0:
-            valtype: bool = 1
+            valtype = 1
         else:
-            valtype: bool = 0
+            valtype = 0
 
+        # Anlegen der Kopie in der Datenbank:
         with SpoMapper() as mapper:
             mapper.copy_spo(base, copy)
-            mapper.copy_validity(base, copy, valtype)
-            mapper.copy_composition(base, copy)
-
+        with SpoValidityMapper() as mapper:
+            mapper.copy_validity(copy, valtype)
+        with SpoCompositionMapper() as mapper:
+            mapper.copy_composition(copy)
+        return copy
 
     def save_spo(self, spo):
         """Die gegebene Spo speichern."""
         with SpoMapper() as mapper:
             mapper.update(spo)
+        with SpoValidityMapper() as mapper:
+            valid = mapper.get_validity_id(spo)
+            mapper.update_validity(spo, valid)
+        with SpoCompositionMapper() as mapper:
+            compid = mapper.get_composition_id(spo)
+            mapper.update_composition(spo, compid)
 
     def delete_spo(self, spo):
         """Die gegebene Spo aus unserem System löschen."""
@@ -318,7 +331,7 @@ class Administration (object):
 
     """User-spezifische Methoden"""
 
-    def create_user(self, user: User, creator: int):
+    def create_user(self, proposal: User, creator: int):
         """
         Legt das Objekt in der Datenbank an und setzt creationate und creator.
 
@@ -328,7 +341,7 @@ class Administration (object):
         proposal.set_creationdate(datetime.date.today())
         proposal.set_creator(creator)
         with UserMapper() as mapper:
-            return mapper.insert(user)
+            return mapper.insert(proposal)
 
     def get_user_by_name(self, name):
 
@@ -359,4 +372,3 @@ class Administration (object):
         """Den Benutzer mit der gegebenen Google ID auslesen."""
         with UserMapper() as mapper:
             return mapper.find_by_google_user_id(gid)
-
