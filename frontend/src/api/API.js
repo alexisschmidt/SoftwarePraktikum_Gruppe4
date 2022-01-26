@@ -5,6 +5,7 @@ import Spobo from './BusinessObjects/Spobo';
 import SpoElementbo from './BusinessObjects/SpoElementbo';
 import StudyCoursebo from './BusinessObjects/StudyCoursebo';
 import Userbo from './BusinessObjects/Userbo';
+import Modulebo from './BusinessObjects/Modulebo';
 
 export default class API{
 	//Singleton instance

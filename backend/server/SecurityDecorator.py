@@ -1,6 +1,7 @@
 from flask import request
 from google.auth.transport import requests
 import google.oauth2.id_token
+from server.bo.User import User
 
 from server.Administration import Administration
 """Decorator zur Google Firebase-basierten Authentifizierung von Benutzern"""
@@ -32,6 +33,9 @@ def secured(function):
                     email = claims.get("email")
                     firstname = claims.get("firstname")
                     
+                    if not firstname:
+                        firstname = "Failed to get name"
+                    
                     user = adm.get_user_by_google_user_id(google_user_id)
                     if user is not None:
                         """Fall: Der Benutzer ist unserem System bereits bekannt."""
@@ -40,9 +44,11 @@ def secured(function):
                         adm.save_user(user)
                     else:
                         """Fall: Der Benutzer war bislang noch nicht eingelogged. """
-                        user = adm.create_user(firstname, email, google_user_id)
-                    
-                    print(request.method. request.path, "angefragt durch:", firstname, email)
+                        user = User()
+                        user.set_firstname(firstname)
+                        user.set_email(email)
+                        user.set_google_user_id(google_user_id)
+                        user = adm.create_user(user, 1)                    
                     if request.method == 'POST' or request.method == 'PUT':
                         kwargs['user'] = user
                     objects = function(*args, **kwargs)

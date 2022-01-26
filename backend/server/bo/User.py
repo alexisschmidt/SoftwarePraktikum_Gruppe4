@@ -82,7 +82,6 @@ class User(Bo.BusinessObject):
 
     def json(self):
         return json.dumps({
-            'id':               self.get_id(),
             'firstname':        self.get_firstname(),
             'lastname':         self.get_lastname(),
             'email':            self.get_email(),

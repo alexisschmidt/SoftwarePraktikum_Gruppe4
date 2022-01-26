@@ -104,7 +104,7 @@ class UserMapper(Mapper):
                   "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
         data = (user.get_id(), user.get_creationdate(), user.get_creator(),
                 user.get_firstname(), user.get_lastname(), user.get_email(),
-                user.get_google_user_id(), user.get_isadmin(), hash(user), user.set_spo())
+                user.get_google_user_id(), user.get_isadmin(), hash(user), user.get_spo())
         cursor.execute(command, data)
 
         self._cnx.commit()
@@ -118,11 +118,11 @@ class UserMapper(Mapper):
 
         command = "UPDATE user SET firstname=%s, lastname=%s, email=%s, google_user_id=%s, isadmin=%s WHERE id=%s AND" \
                   " user_hash=%s "
-        data = (user.get_firstname(), user.get.lastname(), user.get.email(), user.get_google_user_id(),
-                user.get_isadmin, user.get_id(), hash(user))
+        data = (user.get_firstname(), user.get_lastname(), user.get_email(), user.get_google_user_id(),
+                user.get_isadmin(), user.get_id(), hash(user))
         command = "UPDATE user SET firstname=%s, lastname=%s, email=%s, google_user_id=%s, isadmin=%s WHERE id=%s "
         data = (
-            user.get_firstname(), user.get.lastname(), user.get.email(), user.get_google_user_id(), user.get_isadmin,
+            user.get_firstname(), user.get_lastname(), user.get_email(), user.get_google_user_id(), user.get_isadmin(),
             user.get_id())
         cursor.execute(command, data)
 
@@ -150,23 +150,26 @@ class UserMapper(Mapper):
         result = None
 
         cursor = self._cnx.cursor()
-        command = "SELECT id, creationdate, createdby, firstname, lastname, email, google_user_id " \
+        command = "SELECT id, creationdate, createdby, firstname, lastname, email, google_user_id, user_hash, spo_hash " \
                   "FROM user " \
                   f"WHERE google_user_id='{google_user_id}'"
         cursor.execute(command)
         tuples = cursor.fetchall()
 
+
         try:
-            (id, creationdate, createdby, firstname, lastname, email, google_user_id) = tuples[0]
-            u = User()
-            u.set_id(id)
-            u.set_creationdate(creationdate)
-            u.set_creator(createdby)
-            u.set_firstname(firstname)
-            u.set_lastname(lastname)
-            u.set_email(email)
-            u.set_google_user_id(google_user_id)
-            result = u
+            (id, creationdate, createdby, firstname, lastname, email, google_user_id, isadmin, user_hash, spo_hash) = tuples[0]
+            user = User()
+            user.set_id(id)
+            user.set_creator(createdby)
+            user.set_creationdate(creationdate)
+            user.set_firstname(firstname)
+            user.set_lastname(lastname)
+            user.set_email(email)
+            user.set_google_user_id(google_user_id)
+            user.set_isadmin(isadmin)
+            user.set_spo(spo_hash)
+            result = user
         except IndexError:
             # Der IndexError wird oben beim Zugriff auf tuples[0] auftreten, wenn der vorherige SELECT-Aufruf
             # keine Tupel liefert, sondern tuples = cursor.fetchall() eine leere Sequenz zurückgibt.
@@ -181,20 +184,22 @@ class UserMapper(Mapper):
         result = None
 
         cursor = self._cnx.cursor()
-        command = "SELECT * FROM user WHERE google_user_id LIKE '{}'".format(google_user_id)
+        command = "SELECT id, creationdate,createdby, firstname, lastname, email, google_user_id, isadmin, user_hash, spo_hash FROM user WHERE google_user_id LIKE '{}'".format(google_user_id)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
         try:
-            (id, creationdate, firstname, lastname, email, google_user_id, isadmin) = tuples[0]
+            (id, creationdate,createdby, firstname, lastname, email, google_user_id, isadmin, user_hash, spo_hash) = tuples[0]
             user = User()
             user.set_id(id)
+            user.set_creator(createdby)
             user.set_creationdate(creationdate)
             user.set_firstname(firstname)
             user.set_lastname(lastname)
             user.set_email(email)
             user.set_google_user_id(google_user_id)
             user.set_isadmin(isadmin)
+            user.set_spo(spo_hash)
             result = user
 
         except IndexError:
