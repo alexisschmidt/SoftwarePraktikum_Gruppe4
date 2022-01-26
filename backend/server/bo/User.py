@@ -16,6 +16,7 @@ class User(Bo.BusinessObject):
     _email: str
     _google_user_id: str
     _isadmin: int
+    _spo: int
 
     def __init__(self):
         super().__init__()
@@ -23,9 +24,8 @@ class User(Bo.BusinessObject):
         self._lastname = ""        # Der Nachname des Nutzers
         self._email = ""           # Die E-Mail des Nutzers
         self._google_user_id = ""  # Die Google ID des Nutzers
-        self._isadmin = 0
-
-# Auslesen / des Vor-/nachnamens und Email.
+        self._isadmin = 0          # Adminstatus des Users
+        self._spo = 0              # Die SPO, falls der User ein Student ist
 
     def get_firstname(self):
         """Auslesen des Vornamens"""
@@ -65,6 +65,12 @@ class User(Bo.BusinessObject):
     def set_isadmin(self, isadmin):
         self._isadmin = isadmin
 
+    def get_spo(self):
+        return self._spo
+
+    def set_spo(self, spohash):
+        self._spo = spohash
+
     def __str__(self):
         return f"User: \
                id: {self.get_id()}, \
@@ -76,12 +82,13 @@ class User(Bo.BusinessObject):
 
     def json(self):
         return json.dumps({
-            'id': self.get_id(),
-            'firstname': self.get_firstname(),
-            'lastname': self.get_lastname(),
-            'email': self.get_email(),
-            'google_user_id': self.get_google_user_id(),
-            'isadmin': self.get_isadmin()
+            'id':               self.get_id(),
+            'firstname':        self.get_firstname(),
+            'lastname':         self.get_lastname(),
+            'email':            self.get_email(),
+            'google_user_id':   self.get_google_user_id(),
+            'isadmin':          self.get_isadmin(),
+            'spo':              self.get_spo()
             })
     
     @staticmethod
@@ -95,14 +102,17 @@ class User(Bo.BusinessObject):
         obj.set_email(dictionary["email"])
         obj.set_google_user_id(dictionary["google_user_id"])
         obj.set_isadmin(["isadmin"])
+        obj.set_spo(dictionary["spo"])
         return obj
 
     def __eq__(self, other):
-        return super().__eq__(other) and self.get_firstname() == other.get_firstname() and \
+        return super().__eq__(other) and \
+               self.get_firstname() == other.get_firstname() and \
                self.get_lastname() == other.get_lastname() and \
                self.get_email() == other.get_email() and \
-               self.get_google_user_id() == other.get_google_user_id() \
-               and self.get_isadmin() == other.get_isadmin()
+               self.get_google_user_id() == other.get_google_user_id() and \
+               self.get_isadmin() == other.get_isadmin() and \
+               self.get_spo() == other.get_spo()
 
     __hash__ = Bo.BusinessObject.__hash__
 
