@@ -14,7 +14,7 @@ class PersonMapper(Mapper):
         cursor.execute("SELECT * from person")
         tuples = cursor.fetchall()
 
-        for (id, creationdate, firstname, lastname, email) in tuples:
+        for (id, creationdate, firstname, lastname, email, person_hash) in tuples:
             person = Person()
             person.set_id(id)
             person.set_firstname(firstname)
@@ -55,7 +55,7 @@ class PersonMapper(Mapper):
         result = None
 
         cursor = self._cnx.cursor()
-        command = "SELECT * person WHERE person_hash={}".format(hashcode)
+        command = "SELECT * from person WHERE person_hash={}".format(hashcode)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
@@ -88,8 +88,8 @@ class PersonMapper(Mapper):
             else:
                 person.set_id(1)
 
-        command = "INSERT INTO person (id, creationdate, firstname, lastname, email, person_hash) VALUES (%s,%s,%s,%s,%s,%s)"
-        data = (person.get_id(), person.get_creationdate(), person.get_firstname(), person.get_lastname(), person.get_email(), hash(person))
+        command = "INSERT INTO person (id, creationdate, createdby, firstname, lastname, email, person_hash) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+        data = (person.get_id(), person.get_creationdate(), person.get_creator().get_id(), person.get_firstname(), person.get_lastname(), person.get_email(), hash(person))
         cursor.execute(command, data)
 
         self._cnx.commit()

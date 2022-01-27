@@ -90,7 +90,6 @@ class Module(Spe.SpoElement):
 
     def json(self):
         return json.dumps({
-            'id': self.get_id(),
             'name': self.get_name(),
             'title': self.get_title(),
             'edvnr': self.get_edvnr(),
