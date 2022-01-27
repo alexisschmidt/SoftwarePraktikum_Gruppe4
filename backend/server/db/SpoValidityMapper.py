@@ -82,17 +82,17 @@ class SpoValidityMapper(Mapper):
         cursor.close()
         return copy
 
-    def get_validity_id(self, spo: Spo):
+    def find_validities_by_spo(self, spohash: int):
         cursor = self._cnx.cursor()
 
-        startsemcommand = f"SELECT id FROM spovalidity WHERE spo_hash={hash(spo)} AND startsem=1"
-        endsemcommand = f"SELECT id FROM spovalidity WHERE spo_hash={hash(spo)} AND endsem=1"
+        startsemcommand = f"SELECT semester_hash FROM spovalidity WHERE spo_hash={spohash} AND startsem=1"
+        endsemcommand = f"SELECT semester_hash FROM spovalidity WHERE spo_hash={spohash} AND endsem=1"
 
         cursor.execute(startsemcommand)
-        startid = int(cursor.fetchall())
+        startid = cursor.fetchone()[0]
 
         cursor.execute(endsemcommand)
-        endid = int(cursor.fetchall())
+        endid = cursor.fetchone()[0]
         return [startid, endid]
 
     def update_validity(self, spo: Spo, ids: list[int]):
