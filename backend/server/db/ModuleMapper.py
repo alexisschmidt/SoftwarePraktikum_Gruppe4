@@ -86,7 +86,7 @@ class ModuleMapper(Mapper):
         return result
 
     def find_by_hash(self, hashcode: int):
-
+	
         result = None
         cursor = self._cnx.cursor()
 

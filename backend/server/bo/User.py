@@ -71,7 +71,7 @@ class User(Bo.BusinessObject):
     def set_spo(self, spohash):
         self._spo = spohash
 
-    def __str__(self):
+    def _str_(self):
         return f"User: \
                id: {self.get_id()}, \
                firstname: {self._firstname}, \
@@ -82,7 +82,6 @@ class User(Bo.BusinessObject):
 
     def json(self):
         return json.dumps({
-            'id':               self.get_id(),
             'firstname':        self.get_firstname(),
             'lastname':         self.get_lastname(),
             'email':            self.get_email(),

@@ -13,7 +13,7 @@ class StudyCourseMapper(Mapper):
         cursor.execute("SELECT id, creationdate, name, title FROM studycourse")
         tuples = cursor.fetchall()
 
-        for (id, creationdate, name, title) in tuples:
+        for (id, creationdate, name, title, studycourse_hash) in tuples:
             studycourse = StudyCourse()
             studycourse.set_id(id)
             studycourse.set_name(name)
@@ -88,7 +88,7 @@ class StudyCourseMapper(Mapper):
 
         command = "INSERT INTO studycourse (id, creationdate, createdby, name, title, studycourse_hash) " \
                   "VALUES (%s,%s,%s,%s,%s,%s)"
-        data = (studycourse.get_id(), studycourse.get_creationdate(), studycourse.get_creator(),
+        data = (studycourse.get_id(), studycourse.get_creationdate(), studycourse.get_creator().get_id(),
                 studycourse.get_name(), studycourse.get_title(), hash(studycourse))
         cursor.execute(command, data)
 

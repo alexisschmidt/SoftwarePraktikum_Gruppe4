@@ -117,7 +117,6 @@ class Modulepart(Spe.SpoElement):
 
     def json(self):
         return json.dumps({
-            'id': self.get_id(),
             'name': self._name,
             'title': self._title,
             'edvnr': self.get_edvnr(),

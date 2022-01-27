@@ -85,7 +85,7 @@ class ProfileDropDown extends Component {
                 <Typography align='center' variant='body2'>{user.displayName}</Typography>
                 <Typography align='center' variant='body2'>{user.email}</Typography>
                 <Divider className={classes.divider} />
-                <Grid container justify='center'>
+                <Grid container justifyContent='center'>
                   <Grid item>
                     <Button color='primary' onClick={this.handleSignOutButtonClicked}>Logout</Button>
                   </Grid>

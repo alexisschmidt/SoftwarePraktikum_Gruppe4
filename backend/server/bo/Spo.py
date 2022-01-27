@@ -31,13 +31,13 @@ class Spo (Nbo.NamedBo):
         """Setzen des Enddatums der SPO Gültigkeit """
         self._end_semester = end_semester
 
-    def get_studycourse(self):
+    def get_studycourse_id(self):
         """Auslesen des Studienganges"""
-        return self._studycourse
+        return self._studycourse_id
 
-    def set_studycourse(self, studycourse: int):
+    def set_studycourse_id(self, studycourse: int):
         """Setzen des Studiengangs"""
-        self._studycourse = studycourse
+        self._studycourse_id = studycourse
 
     def get_modules(self):
         return self._modules
@@ -56,13 +56,12 @@ class Spo (Nbo.NamedBo):
                    f'name: {self._name}, title: {self._title}, '
                    f'start Semester: {self.get_start_semester()}, '
                    f'end Semester: {self.get_end_semester()}, '
-                   f'studycourse: {self.get_studycourse()}'
+                   f'studycourse: {self.get_studycourse_id()}'
                    )
         return astring
 
     def json(self):
         return json.dumps({
-            'id': self.get_id(),
             'name': self.get_name(),
             'title': self.get_title(),
             'start_semester': self.get_start_semester(),
@@ -87,14 +86,13 @@ class Spo (Nbo.NamedBo):
     def __eq__(self, other):
         return super().__eq__(other) and self.get_start_semester() == other.get_start_semester() and \
                self.get_end_semester() == other.get_endsemester() and \
-               self.get_studycourse() == other.get_studycourse()
+               self.get_studycourse_id() == other.get_studycourse_id()
 
     __hash__ = Nbo.NamedBo.__hash__
 
 
 """
 # Test Script
-
 test = Spo()
 print(test.json())
 print(hash(test))
