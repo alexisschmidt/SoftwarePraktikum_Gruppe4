@@ -1,4 +1,5 @@
 import datetime
+from copy import deepcopy
 
 from server.bo.Module import Module
 from server.bo.Modulepart import Modulepart
@@ -14,6 +15,7 @@ from server.db.PersonMapper import PersonMapper
 from server.db.SemesterMapper import SemesterMapper
 from server.db.SpoMapper import SpoMapper
 from server.db.SpoValidityMapper import SpoValidityMapper
+from server.db.SpoCompositionMapper import SpoCompositionMapper
 from server.db.StudyCourseMapper import StudyCourseMapper
 from server.db.UserMapper import UserMapper
 
@@ -41,11 +43,6 @@ class Administration (object):
         with ModuleMapper() as mapper:
             return mapper.find_by_name(name)
 
-    def get_module_by_id(self, number):
-        """Das Modul mit der gegebenen ID auslesen."""
-        with ModuleMapper() as mapper:
-            return mapper.find_by_id(number)
-
     def get_module_by_hash(self, number):
         """Das Modul mit dem gegebenem Hash auslesen."""
         with ModuleMapper() as mapper:
@@ -55,6 +52,11 @@ class Administration (object):
         """Alle module auslesen."""
         with ModuleMapper() as mapper:
             return mapper.find_all()
+
+    def get_all_by_spo(self, spohash: int):
+        """Gibt alle Module einer SPO aus"""
+        with ModuleMapper as mapper:
+            return mapper.find_all_by_spo(spohash)
 
     def save_module(self, module):
         """Den gegebenen Benutzer speichern."""
@@ -84,10 +86,10 @@ class Administration (object):
         with ModulePartMapper() as mapper:
             return mapper.find_by_name(name)
 
-    def get_modulepart_by_id(self, number):
-        """Den Modulteil mit der gegebenen ID auslesen."""
-        with ModulePartMapper() as mapper:
-            return mapper.find_by_id(number)
+    def get_moduleprt_by_hash(self, hashcode):
+        """Das Modulteil mit dem gegebenem Hash auslesen."""
+        with ModuleMapper() as mapper:
+            return mapper.find_by_hash(hashcode)
 
     def get_all_moduleparts(self):
         """Alle Modulteile auslesen."""
@@ -123,10 +125,10 @@ class Administration (object):
         with PersonMapper() as mapper:
             return mapper.find_by_name(name)
 
-    def get_person_by_id(self, number):
-        """Die Person mit der gegebenen ID auslesen."""
+    def get_person_by_hash(self, number):
+        """Die Person mit dem gegebenem Hash auslesen."""
         with PersonMapper() as mapper:
-            return mapper.find_by_key(number)
+            return mapper.find_by_hash(number)
 
     def get_all_persons(self):
         """Alle Personen auslesen."""
@@ -162,10 +164,10 @@ class Administration (object):
         with SemesterMapper() as mapper:
             return mapper.find_by_name(name)
 
-    def get_semester_by_id(self, number):
-        """Das Semester mit der gegebenen ID auslesen."""
+    def get_semester_by_hash(self, hashcode):
+        """Das Semester mit dem gegebenem Hash auslesen."""
         with SemesterMapper() as mapper:
-            return mapper.find_by_key(number)
+            return mapper.find_by_hash(hashcode)
 
     def get_all_semesters(self):
         """Alle Semester auslesen."""
@@ -182,8 +184,6 @@ class Administration (object):
         with SemesterMapper() as mapper:
             mapper.delete(semester)
 
-    """SpoValidity-spezifische Methoden"""
-
     def get_spo_by_semester_hash(self, hashcode: int):
         with SpoMapper() as mapper:
             mapper.find_spos_by_semester_hash(hashcode)
@@ -198,15 +198,28 @@ class Administration (object):
         """
         Legt das Objekt in der Datenbank an und setzt creationate und creator.
 
-        Zusätzlich wird für eine SPO ein bzw. 2 Einträge in spovalidity erstellt, die die Attribute _start_semester und _end_semester darstellen.
+        Zusätzlich wird für eine SPO ein bzw. 2 Einträge in spovalidity erstellt,
+        die die Attribute _start_semester und _end_semester darstellen.
 
         :param proposal: Ein Spo Objekt
         :param creator: Ein User-Hash, creator des Objekts
         """
         proposal.set_creationdate(datetime.date.today())
         proposal.set_creator(creator)
+
+        # Ist schon ein Ende der Gültigkeit angegeben?
+        if proposal.get_end_semester() != 0:
+            valtype = 1
+        else:
+            valtype = 0
+
+        # Einträge in spo, spovalidity und spocomposition
         with SpoMapper() as mapper:
             newobj = mapper.insert(proposal)
+        with SpoValidityMapper() as mapper:
+            mapper.insert_validity(proposal, valtype)
+        with SpoCompositionMapper() as mapper:
+            mapper.insert_composition(proposal)
         return newobj
 
     def get_spo_by_name(self, name):
@@ -214,13 +227,10 @@ class Administration (object):
         with SpoMapper() as mapper:
             return mapper.find_by_name(name)
 
-    def get_spo_by_id(self, number):
-        """Die SPO mit der gegebenen ID auslesen."""
+    def get_spo_by_hash(self, hashcode):
+        """Die SPO mit dem gegebenem Hash auslesen."""
         with SpoMapper() as mapper:
-            return mapper.find_by_key(number)
-
-    def get_spo_by_hash(self, spo_hash):
-        pass
+            return mapper.find_by_hash(hashcode)
 
     def get_latest_by_studycourse(self, studycourse):
         """Die aktuelle SPO eines Studienganges auslesen"""
@@ -242,10 +252,39 @@ class Administration (object):
         with SpoMapper() as mapper:
             return mapper.find_all_by_studycourse(studycourse_id)
 
+    def copy_spo(self, base: Spo, creator: int):
+        # Kopie der Basis anlegen:
+        copy = deepcopy(base)
+
+        # Das Erstellungsdatum und der Ertsteller der Kopie müssen angepasst werden:
+        copy.set_creationdate(datetime.date.today())
+        copy.set_creator(creator)
+
+        # Ist schon ein Ende der Gültigkeit angegeben?
+        if copy.get_end_semester() != 0:
+            valtype = 1
+        else:
+            valtype = 0
+
+        # Anlegen der Kopie in der Datenbank:
+        with SpoMapper() as mapper:
+            mapper.copy_spo(base, copy)
+        with SpoValidityMapper() as mapper:
+            mapper.copy_validity(copy, valtype)
+        with SpoCompositionMapper() as mapper:
+            mapper.copy_composition(copy)
+        return copy
+
     def save_spo(self, spo):
         """Die gegebene Spo speichern."""
         with SpoMapper() as mapper:
             mapper.update(spo)
+        with SpoValidityMapper() as mapper:
+            valid = mapper.get_validity_id(spo)
+            mapper.update_validity(spo, valid)
+        with SpoCompositionMapper() as mapper:
+            compid = mapper.get_composition_id(spo)
+            mapper.update_composition(spo, compid)
 
     def delete_spo(self, spo):
         """Die gegebene Spo aus unserem System löschen."""
@@ -266,20 +305,19 @@ class Administration (object):
         with StudyCourseMapper() as mapper:
             return mapper.insert(proposal)
 
-    def get_studycourse_by_name(self, name):
-
-        with StudyCourseMapper() as mapper:
-            return mapper.find_by_name(name)
-
-    def get_studycourse_by_id(self, number):
-
-        with StudyCourseMapper() as mapper:
-            return mapper.find_by_id(number)
-
     def get_all_studycourses(self):
 
         with StudyCourseMapper() as mapper:
             return mapper.find_all()
+
+    def get_studycourse_by_name(self, name):
+        """Den Studiengang mit dem gegebenen Namen auslesen."""
+        with StudyCourseMapper() as mapper:
+            return mapper.find_by_name(name)
+
+    def get_studycourse_by_hash(self, hashcode: int):
+        with StudyCourseMapper() as mapper:
+            return mapper.find_by_hash(hashcode)
 
     def save_studycourse(self, studycourse):
 
@@ -293,7 +331,7 @@ class Administration (object):
 
     """User-spezifische Methoden"""
 
-    def create_user(self, user: User, creator: int):
+    def create_user(self, proposal: User, creator: int):
         """
         Legt das Objekt in der Datenbank an und setzt creationate und creator.
 
@@ -303,17 +341,12 @@ class Administration (object):
         proposal.set_creationdate(datetime.date.today())
         proposal.set_creator(creator)
         with UserMapper() as mapper:
-            return mapper.insert(user)
+            return mapper.insert(proposal)
 
     def get_user_by_name(self, name):
 
         with UserMapper() as mapper:
             return mapper.find_by_name(name)
-
-    def get_user_by_id(self, number):
-
-        with UserMapper() as mapper:
-            return mapper.find_by_key(number)
 
     def get_user_by_hash(self, userhash):
         """Einen User anhand seines Hashes ausgeben."""
@@ -339,4 +372,3 @@ class Administration (object):
         """Den Benutzer mit der gegebenen Google ID auslesen."""
         with UserMapper() as mapper:
             return mapper.find_by_google_user_id(gid)
-

@@ -85,45 +85,6 @@ class ModuleMapper(Mapper):
         cursor.close()
         return result
 
-    def find_by_id(self, key: int):
-
-        result = None
-        command = f"SELECT id, creationdate, createdby, name, title, " \
-                  f"requirement, examtype, outcome, type, " \
-                  f"ects, edvnr, workload, instructor_hash " \
-                  f"FROM module WHERE id={key}"
-        cursor = self._cnx.cursor()
-        cursor.execute(command)
-        tuples = cursor.fetchall()
-
-        try:
-            (id, creationdate, createdby, name, title,
-             requirement, examtype, outcome, type,
-             ects, edvnr, workload,
-             instructor_hash) = tuples[0]
-            module = Module()
-            module.set_id(id)
-            module.set_creationdate(creationdate)
-            module.set_creator(createdby)
-            module.set_name(name)
-            module.set_title(title)
-            module.set_requirement(requirement)
-            module.set_examtype(examtype)
-            module.set_outcome(outcome)
-            module.set_type(type)
-            module.set_ects(ects)
-            module.set_edvnr(edvnr)
-            module.set_workload(workload)
-            module.set_instructor(instructor_hash)
-            result = module
-        except IndexError:
-            result = None
-
-        self._cnx.commit()
-        cursor.close()
-
-        return result
-
     def find_by_hash(self, hashcode: int):
 
         result = None
@@ -158,13 +119,49 @@ class ModuleMapper(Mapper):
             module.set_workload(workload)
             module.set_instructor(instructor_hash)
             module.set_parts(parts)
+            result = module
         except IndexError:
             result = None
 
-        result = module
         self._cnx.commit()
         cursor.close()
 
+        return result
+
+    def find_by_spo(self, spohash: int):
+        result = []
+
+        # finden der Module anhand der SPO:
+        cursor = self._cnx.cursor()
+        command = "SELECT module.id, module.creationdate, module.createdby, module.name, module.title " \
+                  "FROM module " \
+                  "LEFT JOIN spocomposition ON module.module_hash = spocomposition.module_hash " \
+                  f"WHERE spocomposition.spo_hash = {spohash}"
+        cursor.execute(command)
+        tuples = cursor.fetchall()
+
+        for (id, creationdate, createdby, name, title,
+             requirement, examtype, outcome, type,
+             ects, edvnr, workload,
+             instructor_hash) in tuples:
+            module = Module()
+            module.set_id(id)
+            module.set_creationdate(creationdate)
+            module.set_creator(createdby)
+            module.set_name(name)
+            module.set_title(title)
+            module.set_requirement(requirement)
+            module.set_examtype(examtype)
+            module.set_outcome(outcome)
+            module.set_type(type)
+            module.set_ects(ects)
+            module.set_edvnr(edvnr)
+            module.set_workload(workload)
+            module.set_instructor(instructor_hash)
+            result.append(module)
+
+        self._cnx.commit()
+        cursor.close()
         return result
 
     def insert(self, module: Module):
@@ -173,12 +170,14 @@ class ModuleMapper(Mapper):
         cursor.execute("SELECT MAX(id) AS maxid FROM module ")
         tuples = cursor.fetchall()
 
+        # bestimmen der ID des Module-Objeks
         for (maxid) in tuples:
             if maxid[0] is not None:
                 module.set_id(maxid[0] + 1)
             else:
                 module.set_id(1)
 
+        # anlegen des Modul-Objekts in der Datenbank.
         command = "INSERT INTO module (id, creationdate, createdby, name, title, " \
                   "requirement, examtype, outcome, type, " \
                   "ects, edvnr, workload, " \
@@ -197,14 +196,14 @@ class ModuleMapper(Mapper):
 
         cursor = self._cnx.cursor()
 
-        command = "UPDATE module " + "SET name=%s, SET title=%s, SET requirement=%s, SET examtype=%s, " \
-                                     "SET instructor=%s, SET outcome=%s, SET type=%s, SET moduleparts=%s, " \
-                                     "SET ects=%s, SET edvnr=%s, SET workload=%s WHERE id=%s "
+        command = "UPDATE module SET name=%s, title=%s, requirement=%s, examtype=%s, " \
+                  "instructor=%s, outcome=%s, type=%s" \
+                  "ects=%s, edvnr=%s, workload=%s, instructor_hash=%s WHERE id=%s AND module_hash=%s"
         data = (
             module.get_name(), module.get_title(), module.get_requirement(), module.get_examtype(),
             module.get_instructor(), module.get_outcome(), module.get_type(),
             module.get_ects(),
-            module.get_edvnr(), module.get_workload(), module.get_id())
+            module.get_edvnr(), module.get_workload(), module.get_instructor(), module.get_id(), hash(module))
         cursor.execute(command, data)
 
         self._cnx.commit()

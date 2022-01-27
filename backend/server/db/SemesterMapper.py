@@ -48,30 +48,6 @@ class SemesterMapper(Mapper):
         cursor.close()
         return result
 
-
-    def find_by_id(self, key):
-        result = None
-
-        cursor = self._cnx.cursor()
-        command = "SELECT * semester WHERE id={}".format(key)
-        cursor.execute(command)
-        tuples = cursor.fetchall()
-
-        try:
-            (id, creationdate, name, title) = tuples[0]
-            semester = Semester()
-            semester.set_id(id)
-            semester.set_name(name)
-            semester.set_title(title)
-            result = semester
-
-        except IndexError:
-            result = None
-
-        self._cnx.commit()
-        cursor.close()
-        return result
-
     def find_by_hash(self, hashcode):
 
         result = None
@@ -96,6 +72,34 @@ class SemesterMapper(Mapper):
 
         return result
 
+    def find_semester_by_spo_hash(self, hashcode: int):
+
+        result = []
+
+        cursor = self._cnx.cursor()
+        command = f"SELECT semester_hash FROM spovalidity WHERE spo_hash={hashcode}"
+        cursor.execute(command)
+        tuples = cursor.fetchall()
+
+        scs = []
+        for (semester_hash) in tuples:
+            cursor.execute(
+                f"SELECT id, creationdate, name, title FROM semester "
+                f"WHERE semester_hash ={semester_hash}")
+            scs.append(cursor.fetchall())
+        for i in scs:
+            for (id, creationdate, name, title) in i:
+                semester = Semester()
+                semester.set_id(id)
+                semester.set_creationdate(creationdate)
+                semester.set_name(name)
+                semester.set_title(title)
+                result.append(semester)
+
+        self._cnx.commit()
+        cursor.close()
+        return result
+
     def insert(self, semester):
 
         cursor = self._cnx.cursor()
@@ -108,8 +112,9 @@ class SemesterMapper(Mapper):
             else:
                 semester.set_id(1)
 
-        command = "INSERT INTO semester (id, creationdate, name, title, semester_hash) VALUES (%s,%s,%s,%s,%s) "
-        data = (semester.get_id(), semester.get_creationdate(),
+        command = "INSERT INTO semester (id, creationdate, createdby, name, title, semester_hash) " \
+                  "VALUES (%s,%s,%s,%s,%s,%s) "
+        data = (semester.get_id(), semester.get_creationdate(), semester.get_creator(),
                 semester.get_name(), semester.get_title(),
                 hash(semester))
         cursor.execute(command, data)
@@ -123,9 +128,9 @@ class SemesterMapper(Mapper):
 
         cursor = self._cnx.cursor()
 
-        command = "UPDATE semester " + "SET name=%s, SET title=%s, WHERE id=%s "
+        command = "UPDATE semester SET name=%s, title=%s, WHERE id=%s AND semester_hash=%s "
         data = (
-            semester.get_id(), semester.get_name(), semester.get_title())
+            semester.get_id(), semester.get_name(), semester.get_title(), hash(semester))
         cursor.execute(command, data)
 
         self._cnx.commit()
@@ -137,8 +142,7 @@ class SemesterMapper(Mapper):
 
         cursor = self._cnx.cursor()
 
-        command = "DELETE FROM semester WHERE id={}".format(semester.get_id())
+        command = f"DELETE FROM semester WHERE semester_hash={hash(semester)}"
         cursor.execute(command)
-
         self._cnx.commit()
         cursor.close()

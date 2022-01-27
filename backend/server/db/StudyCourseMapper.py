@@ -48,32 +48,6 @@ class StudyCourseMapper(Mapper):
 
         return result
 
-    def find_by_id(self, key):
-
-        result = None
-
-        cursor = self._cnx.cursor()
-        command = "SELECT id, creationdate, name, title FROM studycourse WHERE id= {}".format(key)
-        cursor.execute(command)
-        tuples = cursor.fetchall()
-
-        try:
-            (id, creationdate, name, title) = tuples[0]
-            studycourse = StudyCourse()
-            studycourse.set_id(id)
-            studycourse.set_name(name)
-            studycourse.set_title(title)
-
-            result = studycourse
-        except IndexError:
-
-            result = None
-
-        self._cnx.commit()
-        cursor.close()
-
-        return result
-
     def find_by_hash(self, hashcode):
 
         result = None
@@ -112,9 +86,10 @@ class StudyCourseMapper(Mapper):
             else:
                 studycourse.set_id(1)
 
-        command = "INSERT INTO studycourse (id, creationdate, name, title, studycourse_hash) " \
-                  "VALUES (%s,%s,%s,%s,%s)"
-        data = (studycourse.get_id(), studycourse.get_creationdate(), studycourse.get_name(), studycourse.get_title(), hash(studycourse))
+        command = "INSERT INTO studycourse (id, creationdate, createdby, name, title, studycourse_hash) " \
+                  "VALUES (%s,%s,%s,%s,%s,%s)"
+        data = (studycourse.get_id(), studycourse.get_creationdate(), studycourse.get_creator(),
+                studycourse.get_name(), studycourse.get_title(), hash(studycourse))
         cursor.execute(command, data)
 
         self._cnx.commit()
