@@ -43,10 +43,10 @@ class Administration (object):
         with ModuleMapper() as mapper:
             return mapper.find_by_name(name)
 
-    def get_module_by_hash(self, number):
+    def get_module_by_hash(self, modulehash):
         """Das Modul mit dem gegebenem Hash auslesen."""
         with ModuleMapper() as mapper:
-            return mapper.find_by_hash(number)
+            return mapper.find_by_hash(modulehash)
 
     def get_all_modules(self):
         """Alle module auslesen."""
@@ -55,7 +55,7 @@ class Administration (object):
 
     def get_all_by_spo(self, spohash: int):
         """Gibt alle Module einer SPO aus"""
-        with ModuleMapper as mapper:
+        with ModuleMapper() as mapper:
             return mapper.find_all_by_spo(spohash)
 
     def save_module(self, module):
@@ -85,6 +85,15 @@ class Administration (object):
         """Alle Modulteile mit Namen name auslesen."""
         with ModulePartMapper() as mapper:
             return mapper.find_by_name(name)
+
+    def get_modulepart_by_module(self, modulehash):
+        result = []
+        with ModulePartMapper() as mapper:
+            mp = mapper.find_hash_by_module(modulehash)
+            for hash in mp:
+                obj = mapper.find_by_hash(hash)
+                result.append(obj)
+        return result
 
     def get_moduleprt_by_hash(self, hashcode):
         """Das Modulteil mit dem gegebenem Hash auslesen."""
@@ -212,15 +221,22 @@ class Administration (object):
             valtype = 1
         else:
             valtype = 0
-
-        # Einträge in spo, spovalidity und spocomposition
+        # Gibt es diese SPO schon?
         with SpoMapper() as mapper:
-            newobj = mapper.insert(proposal)
-        with SpoValidityMapper() as mapper:
-            mapper.insert_validity(proposal, valtype)
-        with SpoCompositionMapper() as mapper:
-            mapper.insert_composition(proposal)
-        return newobj
+            spo = mapper.find_by_hash(hash(proposal))
+
+        if spo is None:
+            with SpoMapper() as mapper:
+                newobj = mapper.insert(proposal)
+            with SpoValidityMapper() as mapper:
+                mapper.insert_validity(proposal, valtype)
+            with SpoCompositionMapper() as mapper:
+                mapper.insert_compositions(proposal)
+            return newobj
+        else:
+            with SpoMapper() as mapper:
+                newobj = mapper.update()
+        # Einträge in spo, spovalidity und spocomposition
 
     def get_spo_by_name(self, name):
         """Alle SPOs mit Namen name auslesen."""
@@ -235,22 +251,71 @@ class Administration (object):
     def get_spo_by_hash(self, hashcode):
         """Die SPO mit dem gegebenem Hash auslesen."""
         with SpoMapper() as mapper:
-            return mapper.find_by_hash(hashcode)
+            result = mapper.find_by_hash(hashcode)
+        with SpoValidityMapper() as mapper:
+            val = mapper.find_validities_by_spo(hashcode)
+            result.set_start_semester(val[0])
+            result.set_end_semester(val[1])
+        with ModuleMapper() as mapper:
+            modules = mapper.find_by_spo(hashcode)
+            result.set_modules(modules)
+        return result
+
+    def get_spo_by_id(self, id: int):
+        """Die SPO mit der gegebenen ID auslesen."""
+        with SpoMapper() as mapper:
+            spo = mapper.find_hash_by_id(id)
+            result = mapper.find_by_hash(spo)
+        with SpoValidityMapper() as mapper:
+            val = mapper.find_validities_by_spo(spo)
+            result.set_start_semester(val[0])
+            result.set_end_semester(val[1])
+        with ModuleMapper() as mapper:
+            modules = mapper.find_by_spo(spo)
+            result.set_modules(modules)
+        return result
 
     def get_latest_by_studycourse(self, studycourse):
         """Die aktuelle SPO eines Studienganges auslesen"""
         with SpoMapper() as mapper:
-            return mapper.find_by_latest_creationdate(studycourse)
+            spo = mapper.find_by_latest_creationdate(studycourse)
+            result = mapper.find_by_hash(spo)
+        with SpoValidityMapper() as mapper:
+            val = mapper.find_validities_by_spo(spo)
+            result.set_start_semester(val[0])
+            result.set_end_semester(val[1])
+        with ModuleMapper() as mapper:
+            modules = mapper.find_by_spo(spo)
+            result.set_modules(modules)
+        return result
 
     def get_spo_by_startsem_studycourse(self, semesterhash: int, studycoursehash: int):
         """Die Spo mit den ausgewählten Startsemester und Studiengang auslesen."""
         with SpoMapper() as mapper:
-            return mapper.find_by_startsemester_and_studycourse(semesterhash, studycoursehash)
+            spo = mapper.find_by_startsemester_and_studycourse(semesterhash, studycoursehash)
+            result = mapper.find_by_hash(spo)
+        with SpoValidityMapper() as mapper:
+            val = mapper.find_validities_by_spo(spo)
+            result.set_start_semester(val[0])
+            result.set_end_semester(val[1])
+        with ModuleMapper() as mapper:
+            modules = mapper.find_by_spo(spo)
+            result.set_modules(modules)
+        return result
 
     def get_all_spos(self):
         """Alle SPOs auslesen."""
         with SpoMapper() as mapper:
-            return mapper.find_all()
+            spos = mapper.find_all()
+            result = mapper.find_by_hash(spos)
+        with SpoValidityMapper() as mapper:
+            val = mapper.find_validities_by_spo(spos)
+            result.set_start_semester(val[0])
+            result.set_end_semester(val[1])
+        with ModuleMapper() as mapper:
+            modules = mapper.find_by_spo(spos)
+            result.set_modules(modules)
+        return result
 
     def get_all_by_studycourse(self, studycourse_id):
         """Alle Spos eines Studienganges auslesen"""

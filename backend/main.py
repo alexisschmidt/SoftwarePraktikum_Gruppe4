@@ -25,7 +25,7 @@ from server.bo.User import User
 """
 Instanzieren von Flask. Am Ende dieser Datei erfolgt dann erst der 'Start' von Flask.
 """
-app = Flask(__name__)
+app = Flask(__name__, static_folder='frontend/build/static', static_url_path='/')
 
 """
 Alle Ressourcen mit dem Präfix /sposystem für **Cross-Origin Resource Sharing** (CORS) freigeben.
@@ -330,7 +330,7 @@ class SpoOperations(Resource):
     def get(self, spo_hash):
         """
         Auslesen eines bestimmten SPO-Objekts.
-        Das auszulesende Objekt wird durch die ```id``` in dem URI bestimmt.
+        Das auszulesende Objekt wird durch den ```spo_hash``` in dem URI bestimmt.
         """
         adm = Administration()
         spo = adm.get_spo_by_hash(spo_hash)
@@ -341,12 +341,28 @@ class SpoOperations(Resource):
     def delete(self, spo_hash):
         """
         Löschen eines bestimmten SPO-Objekts.
-        Das zu löschende Objekt wird durch die ```id``` in dem URI bestimmt.
+        Das zu löschende Objekt wird durch die ```spo_hash``` in dem URI bestimmt.
         """
         adm = Administration()
         spo = adm.get_spo_by_hash(spo_hash)
         adm.delete_spo(spo)
         return '', 200
+
+@sposystem.route('/spo/hash/<int:id>')
+@sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
+@sposystem.param('ID', 'Die ID des SPO-Objekts')
+class SpoHashOperations(Resource):
+
+    @sposystem.marshal_with(spo)
+    @secured
+    def get(self, id):
+        """
+        Auslesen eines bestimmten SPO-Objekts.
+        Das auszulesende Objekt wird durch die ```id``` in dem URI bestimmt.
+        """
+        adm = Administration()
+        spo = adm.get_spo_by_id(id)
+        return spo
 
 
 @sposystem.route('/spo-by-startsemester-and-studycourse/<int:semester_hash>/<int:studycourse_hash>')
@@ -609,6 +625,18 @@ class ModulePartOperations(Resource):
         mopart = adm.get_modulepart_by_hash(modulepart_hash)
         return mopart
 
+
+@sposystem.route('/modulepart/<int:module_hash>')
+@sposystem.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
+@sposystem.param('module_hash', 'Der Hash des Modules')
+class ModulePartModuleOperations(Resource):
+
+    @sposystem.marshal_list_with(modulepart)
+    @secured
+    def get(self, module_hash):
+        adm = Administration()
+        mopart = adm.get_modulepart_by_module(module_hash)
+        return  mopart
 
 @sposystem.route('/studycourses')
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
