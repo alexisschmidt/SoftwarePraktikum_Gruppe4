@@ -24,38 +24,7 @@ class AdminSpoAnsicht extends Component {
 
         this.state = {
             studycourses: [],
-			modules: [
-                {
-                    id: 1,
-                    moduleparts:[]
-                },
-                {
-                    id: 2,
-                    moduleparts:[
-                        {
-                            id: 2345
-                        },
-                        {
-                            id: 123
-                        },
-                        {
-                            id: 222
-                        }
-                    ]
-                },
-                {
-                    id: 3,
-                    moduleparts:[
-                        {
-                            id: 8
-                        }
-                    ]
-                },
-                {
-                    id: 4,
-                    moduleparts:[]
-                }
-            ],
+			modules: [],
 			moduleparts: [],
 			semester: [],
             loadingProgress: false,
@@ -110,22 +79,64 @@ class AdminSpoAnsicht extends Component {
         });
     }
 
-	getAllModulePartsById = () => {
-        API.getAPI().getAllModulePartsById().then(modulepartbo => {            
+	getAllModulesBySpoId = () => {
+
+        /*
+        API.getAPI().getAllModulesBySpohash().then(modules => {            
             this.setState({
-                moduleparts: modulepartbo,
+                modules: modules,
                 loadingProgress: false,
                 error: null
             });
         }).catch(e => {
             this.setState({
-                moduleparts: [],
+                modules: [],
                 loadingProgress: false,
                 error: e
             });
         });
         
         this.setState({
+            loadingProgress: true,
+            error: null
+        });*/
+
+        const dasObjectAlexisDasVomBackendZurueckKommenSollte = [
+            {
+                /*Module*/
+                id: 1,
+                creationDate: "12:00",
+                createdBy: 2,
+                name: "Online Marketing",
+                title: "OM",
+                /* ..... alle weitere elemente von module */ 
+                moduleParts: [
+                    /* Module part */ 
+                    {
+                        id: 1,
+                        creationDate: "12:00",
+                        createdBy: 2,
+                        name: "",
+                        title: "",
+                        literature: ""
+                    },
+                    {
+                        id: 2,
+                        creationDate: "12:00",
+                        createdBy: 2,
+                        name: "",
+                        title: "",
+                        literature: ""
+                    }                   
+                ]
+            }
+        ];
+
+
+
+
+        this.setState({
+            modules: dasObjectAlexisDasVomBackendZurueckKommenSollte,
             loadingProgress: true,
             error: null
         });
@@ -226,9 +237,13 @@ class AdminSpoAnsicht extends Component {
         this.props.history.push(`/admin/${id}`);
     }
 
+    
+
     componentDidMount() {
         const studyCourseId = this.props.match.params.studyCourseID;
         const spoId = this.props.match.params.spoID;
+        
+        this.getAllModulesBySpoId(spoId);
         
         /*
         this.getAllStudycoursesById();

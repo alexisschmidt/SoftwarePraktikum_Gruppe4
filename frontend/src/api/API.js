@@ -30,7 +30,8 @@ export default class API{
 		//Admin Ansicht - Studiengänge
 		#getAllStudycoursesURL = () => `${this.#serverBaseURL}/studycourses`;
 		#getAllStudycoursesByIdURL = (id) => `${this.#serverBaseURL}/studycourses/${id}`;
-		#getAllModulesByIdURL = (id) => `${this.#serverBaseURL}/modules/${id}`;
+		#getAllModulesByIdURL = (id) => `${this.#serverBaseURL}/module/${id}`;
+		#getAllModulesBySpohashURL = (hash) => `${this.#serverBaseURL}/module/spo/${hash}`;
 		#getAllModulePartsByIdURL = (id) => `${this.#serverBaseURL}/moduleparts/${id}`;
 		#getAllSemesterByIdURL = (id) => `${this.#serverBaseURL}/semesters/${id}`;
 		#getAllPersonsByIdURL = (id) => `${this.#serverBaseURL}/persons/${id}`;
@@ -179,6 +180,10 @@ export default class API{
 
 		async getAllUsersById(userId) {
 			return this.#fetchAdvanced(this.#getAllUsersByIdURL(userId));
+		}
+
+		async getAllModulesBySpohash(hash){
+			return this.#fetchAdvanced(this.#getAllModulesBySpohashURL(hash));
 		}
 
 		/**

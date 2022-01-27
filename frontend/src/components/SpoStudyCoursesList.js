@@ -72,7 +72,7 @@ class SpoStudyCoursesList extends Component {
                         <Button
                             variant="contained"
                             key={spo.id}
-                            onClick={this.onButtonSpoClocked.bind(this, spo.id)}
+                            onClick={this.onButtonSpoClocked.bind(this, spo.hash)}
                             show ={this.props.show}>
                                 {spo.name}
                         </Button>
