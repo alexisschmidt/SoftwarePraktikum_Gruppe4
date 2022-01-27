@@ -226,6 +226,11 @@ class Administration (object):
         """Alle SPOs mit Namen name auslesen."""
         with SpoMapper() as mapper:
             return mapper.find_by_name(name)
+        
+    def get_spo_by_id(self, number):
+        """Die SPO mit dem gegebenem Hash auslesen."""
+        with SpoMapper() as mapper:
+            return mapper.find_by_key(number)
 
     def get_spo_by_hash(self, hashcode):
         """Die SPO mit dem gegebenem Hash auslesen."""
@@ -290,6 +295,18 @@ class Administration (object):
         """Die gegebene Spo aus unserem System löschen."""
         with SpoMapper() as mapper:
             mapper.delete(spo)
+    
+    def get_module_hash_by_spo_hash(self, hashcode):
+        """Die SPO mit dem gegebenem Hash auslesen."""
+        with SpoCompositionMapper() as mapper:
+            modules = mapper.find_module_by_spo_hash(hashcode)
+        with ModuleMapper() as mapper:
+            modulelist = []
+            for module in modules:
+                mo = mapper.find_by_hash(module)
+                modulelist.append(mo)
+        
+            return modulelist
 
     """Studycourse-spezifische Methoden"""
 

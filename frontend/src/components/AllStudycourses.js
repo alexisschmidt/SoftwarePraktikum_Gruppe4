@@ -20,18 +20,13 @@ class AllStudyCourses extends Component {
 
         this.state = {
             studycourses: [],
-            studycoursesFilter: [],
             loadingProgress: false,
             error: null,
-            //showStudiengangAnlegenForm: false
-
         };
     }
 
- 
-
     getAllStudycourses = () => {
-        API.getAPI().getAllStudycourses().then(studyCoursebo => {            
+        API.getAPI().getAllStudyCourses().then(studyCoursebo => {            
             this.setState({
                 studycourses: studyCoursebo,
                 loadingProgress: false,
@@ -62,7 +57,7 @@ class AllStudyCourses extends Component {
     }
 
     componentDidMount() {
-        this.getAllStudycourses();
+        this.getAllStudyCourses();
     }
 
     render() {

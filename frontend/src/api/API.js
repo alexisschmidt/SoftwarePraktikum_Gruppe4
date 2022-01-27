@@ -58,7 +58,7 @@ Map([<Rule '/sopra/studycourses' (OPTIONS, POST, HEAD, GET, PUT) -> sopra_studyc
   #getSpoByHashUrl = (hash) => {return this.#serverBaseURL + "/spo/" + hash};
   #getSemesterByHashUrl = (hash) => {return this.#serverBaseURL + "/semester" + hash};
   #getInfos =(hash) => {return this.#serverBaseURL + "/Infos" + hash};
-
+  #getAllSpoRelatedURL = (id) => `${this.#serverBaseURL}/spos/studycourse/${id}`;
 
 
 
@@ -215,6 +215,11 @@ Map([<Rule '/sopra/studycourses' (OPTIONS, POST, HEAD, GET, PUT) -> sopra_studyc
       return this.#getAll(this.#getInfos(), Spobo);
       
     }
+
+    async getAllSpoRelated(studyCourseId) {
+			return this.#fetchAdvanced(this.#getAllSpoRelatedURL(studyCourseId));
+		}
+
        
 
 
