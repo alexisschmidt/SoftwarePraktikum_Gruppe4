@@ -28,6 +28,9 @@ import './App.css'
 import AdminStudiengangAuswahl from "./components/pages/AdminStudiengangAuswahl";
 import SpoForm from "./components/pages/SpoForm";
 import Administration from "./components/pages/SpoManagement";
+import SpoAuswahlStudent from "./components/pages/SpoAuswahlStudent";
+import AuswahlStudentAdmin from "./components/pages/AuswahlStudentAdmin";
+import SpoUeberblick from "./components/pages/SpoUeberblick";
 
 
 class App extends React.Component {
@@ -136,9 +139,26 @@ Globales CSS-Reset und Browser-Normalisierung. CssBaseline startet eine elegante
 									{/*<Route path="/spoansicht" exact component={AdminSpoAnsicht}/>*/}
 									<Route path="/Spoauswahl2" exact comonent={SpoAuswählenOMM}/>
 									<Route path="/Spoauswahl" exact comonent={Spowi}/>
+                  <Route path="/SpoForm" exact component={SpoForm} />
 									{/*<Route path="/Altespo" exact component ={}/>*/}
 									<Route path="/Spoerstellen" exact component={Admin}/>
 									{/* <Route path="/Spo" exact component={SpoStudent}/> */}
+                  <Route path="/Administration"
+                    exact
+                    component={Administration}
+                  />
+                  <Route
+                    path="/Spoauswahl2"
+                    exact
+                    component={SpoAuswählenOMM}
+                  />
+                   <Route path="/Spoauswahl" exact component={Spowi} />
+                   <Route
+                    path="/AdminStudiengangAuswahl"
+                    exact
+                    component={AdminStudiengangAuswahl}
+                  />
+                  <Route path="/Spoauswahl" exact component={Spowi} />
 								</>
 								:
 								// else show the sign in page
