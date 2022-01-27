@@ -64,7 +64,7 @@ BusinessObject und NamedBo dienen als Basisklassen, auf der die weiteren Struktu
 bo = api.model('BusinessObject', {
     'id': fields.Integer(attribute='_id', description='Einzigartige Identität eines Objects'),
     'creationdate': fields.DateTime(attribute='_creationdate', description='Tag der erstellung'),
-    'createdby': fields.String(attribute=lambda x: x.get_id(), description='bearbeitender User')
+    'createdby': fields.String(attribute = '_createdby', description='bearbeitender User')
 })
 
 """Alle BusinessObjects"""
@@ -597,7 +597,7 @@ class ModulePartOperations(Resource):
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
 class StudycourseListOperations(Resource):
     @sposystem.marshal_list_with(studycourse)
-    @secured
+    #@secured
     def get(self):
         """
         Auslesen aller SPO-Objekte.

@@ -84,7 +84,7 @@ class AllStudyCourses extends Component {
                             key={studycourse.id}
                             onClick={this.buttonNavigateToCourseClicked.bind(this, studycourse.id)}
                             show ={this.props.show}>
-                                {studycourse.title}
+                                {studycourse.name}
                         </Button>
                         ))
                     }

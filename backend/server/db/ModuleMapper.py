@@ -183,7 +183,7 @@ class ModuleMapper(Mapper):
                   "ects, edvnr, workload, " \
                   "module_hash, instructor_hash)" \
                   "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-        data = (module.get_id(), module.get_creationdate(), module.get_creator(), module.get_name(), module.get_title(),
+        data = (module.get_id(), module.get_creationdate(), module.get_creator().get_id(), module.get_name(), module.get_title(),
                 module.get_requirement(), module.get_examtype(), module.get_outcome(), module.get_type(),
                 module.get_ects(), module.get_edvnr(), module.get_workload(),
                 hash(module), module.get_instructor())

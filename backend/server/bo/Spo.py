@@ -66,7 +66,7 @@ class Spo (Nbo.NamedBo):
             'title': self.get_title(),
             'start_semester': self.get_start_semester(),
             'end_semester': self.get_end_semester(),
-            'studycourse_id': self.get_studycourse(),
+            'studycourse_id': self.get_studycourse_id(),
             'modules': self.get_modules()
             })
 
@@ -79,7 +79,7 @@ class Spo (Nbo.NamedBo):
         obj.set_title(dictionary["title"])                  # Teil von NamedBo!
         obj.set_start_semester(dictionary["start_semester"])
         obj.set_end_semester(dictionary["end_semester"])
-        obj.set_studycourse(dictionary["studycourse"])
+        obj.set_studycourse_id(dictionary["studycourse"])
         obj.set_modules(dictionary["modules"])
         return obj
 
