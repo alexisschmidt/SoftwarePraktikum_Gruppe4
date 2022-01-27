@@ -38,7 +38,7 @@ class Header extends Component {
             onChange={this.handleTabChange}
           >
             <Tab label="About" component={RouterLink} to={`/about`} />
-            <Tab label="Spo Überblick" component={RouterLink} to={`/Admin`} />
+            <Tab label="Spo Überblick" component={RouterLink} to={`/SpoUeberblick`} />
             <Tab
               label="Spo erstellen"
               component={RouterLink}

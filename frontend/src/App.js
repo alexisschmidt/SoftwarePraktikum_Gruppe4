@@ -17,11 +17,21 @@ import Admin from "./components/pages/AdminSpoAnsicht";
 //import Spoliste from './components/pages/Spoliste';
 // import DateAndTime from './components/content/DateAndTime';
 // import StudyCourses from './components/pages/StudyCourses';
+import AllStudyCourses from './components/AllStudycourses';
+import SpoAuswählenOMM from './components/pages/SpOAuswählenOMM';
+import Spowi from './components/pages/Spowi';
+import SpoStudyCoursesList from './components/SpoStudyCoursesList';
+import AdminSpoAnsicht from './components/AdminSpoAnsicht';
+import AdminSpoEdit from './components/AdminSpoEdit';
+import AdminTable from './components/content/AdminTable';
+import './App.css'
 import AdminStudiengangAuswahl from "./components/pages/AdminStudiengangAuswahl";
-import SpoAuswählenOMM from "./components/pages/SpoAuswählenOMM";
-import Spowi from "./components/pages/Spowi";
 import SpoForm from "./components/pages/SpoForm";
 import Administration from "./components/pages/SpoManagement";
+import SpoAuswahlStudent from "./components/pages/SpoAuswahlStudent";
+import AuswahlStudentAdmin from "./components/pages/AuswahlStudentAdmin";
+import SpoUeberblick from "./components/pages/SpoUeberblick";
+
 
 class App extends React.Component {
   /** Konstrukteur der App, Firebase initialisiert */
@@ -110,64 +120,67 @@ class App extends React.Component {
       <ThemeProvider theme={Theme}>
         {/* 
 Globales CSS-Reset und Browser-Normalisierung. CssBaseline startet eine elegante, konsistente und einfache Baseline, auf der aufgebaut werden kann. */}
-        <CssBaseline />
-        <Router basename={process.env.PUBLIC_URL}>
-          <Container maxWidth="md">
-            <Header user={currentUser} />
-            {
-              // Is a user signed in?
-              currentUser ? (
-                <>
-                  <Route path="/" exact component={About} />
+      <CssBaseline />
+      <Router basename={process.env.PUBLIC_URL}>
+        <Container maxWidth='md'>
+          <Header user={currentUser} />
+		  {
+							// Is a user signed in?
+							currentUser ?
+								<>
+									<Route path="/" exact component={About} />
+									{/* <Route path="/Studiengangauswahl" exact component={StudyCourses}/> */}
+									<Route path="/admin" exact component={AllStudyCourses}/>
+									<Route path="/admintable" exact component={AdminTable}/>
+									<Route path="/admin/:studyCourseID" exact component={SpoStudyCoursesList}/>
+									<Route path="/admin/:studyCourseID/:spoID" exact component={AdminSpoAnsicht}/>
+									<Route path="/adminspoedit" exact component={AdminSpoEdit}/>
+									{/* <Route path="/admin/:spoID/spoansicht" exact component={AdminSpoAnsicht}/> */}
+									{/*<Route path="/spoansicht" exact component={AdminSpoAnsicht}/>*/}
+									<Route path="/Spoauswahl2" exact comonent={SpoAuswählenOMM}/>
+									<Route path="/Spoauswahl" exact comonent={Spowi}/>
                   <Route path="/SpoForm" exact component={SpoForm} />
-                  {/* <Route path="/Studiengangauswahl" exact component={StudyCourses}/> */}
-                  <Route
-                    path="/AdminStudiengangAuswahl"
+									{/*<Route path="/Altespo" exact component ={}/>*/}
+									<Route path="/Spoerstellen" exact component={Admin}/>
+									{/* <Route path="/Spo" exact component={SpoStudent}/> */}
+                  <Route path="/Administration"
                     exact
-                    component={AdminStudiengangAuswahl}
+                    component={Administration}
                   />
                   <Route
                     path="/Spoauswahl2"
                     exact
                     component={SpoAuswählenOMM}
                   />
-                  <Route path="/Spoauswahl" exact component={Spowi} />
-                  {/*<Route path="/Altespo" exact component ={}/>*/}
-                  <Route
-                    path="/Administration"
+                   <Route path="/Spoauswahl" exact component={Spowi} />
+                   <Route
+                    path="/AdminStudiengangAuswahl"
                     exact
-                    component={Administration}
+                    component={AdminStudiengangAuswahl}
                   />
-                  {/* <Route path="/Spo" exact component={SpoStudent}/> */}
-                </>
-              ) : (
-                // else show the sign in page
-                <>
-                  <Route path="/student">
-                    <SpoStudent />
-                  </Route>
+                  <Route path="/Spoauswahl" exact component={Spowi} />
+								</>
+								:
+								// else show the sign in page
+								<>
+								
+								<Route path="/student">
+									<SpoStudent />
+									</Route>
 
-                  <SignIn onSignIn={this.handleSignIn} />
-                </>
-              )
-            }
-            <LoadingProgress show={authLoading} />
-            <ContextErrorMessage
-              error={authError}
-              contextErrorMsg={`Something went wrong during sighn in process.`}
-              onReload={this.handleSignIn}
-            />
-            <ContextErrorMessage
-              error={appError}
-              contextErrorMsg={`Something went wrong inside the app. Please reload the page.`}
-            />
-            {/* <List/> */}
-            {/* <DateAndTime/> */}
-          </Container>
-        </Router>
-      </ThemeProvider>
-    );
-  }
+									<SignIn onSignIn={this.handleSignIn} />
+								</>
+						}
+						<LoadingProgress show={authLoading} />
+						<ContextErrorMessage error={authError} contextErrorMsg={`Something went wrong during sighn in process.`} onReload={this.handleSignIn} />
+						<ContextErrorMessage error={appError} contextErrorMsg={`Something went wrong inside the app. Please reload the page.`} />
+						{/* <List/> */}
+						{/* <DateAndTime/> */}
+	    </Container>
+      </Router>
+    </ThemeProvider>
+  );
+}
 }
 
 export default App;

@@ -5,16 +5,16 @@ export default class Modulebo extends SpoElementbo{
    * Constructs a new Modulebo object with a given owner.
    * 
    * @param {*} aType - the owner of this Modulebo.
-   * @param {*} aRequirements 
+   * @param {*} aRequirement 
    * @param {*} aOutcome
    * @param {*} aExamtype
    * @param {*} aInstructor
    * @param {*} aModuleparts
    */
-   constructor(aType, aRequirements, aOutcome, aExamtype, aInstructor, aModuleparts) {
+   constructor(aType, aRequirement, aOutcome, aExamtype, aInstructor, aModuleparts) {
     super();
     this.type = aType;
-	  this.requirements = aRequirements;
+	  this.requirement = aRequirement;
 	  this.outcome = aOutcome;
 	  this.examtype = aExamtype;
 	  this.instructor = aInstructor;
@@ -42,15 +42,15 @@ export default class Modulebo extends SpoElementbo{
    * 
    * @param {*} aRequirements - the new owner of this Modulebo.
    */
-   setRequirements(aRequirements) {
-    this.requirements = aRequirements;
+   setRequirement(aRequirement) {
+    this.requirement = aRequirement;
   }
 
   /**
    * Gets the owner of this Modulebo.
    */
-  getRequirements() {
-    return this.requirements;
+  getRequirement() {
+    return this.requirement;
   }
 
   /**
@@ -74,7 +74,7 @@ export default class Modulebo extends SpoElementbo{
    * 
    * @param {*} aExamtype - the new owner of this Modulebo.
    */
-   setExamype(aExamtype) {
+   setExamtype(aExamtype) {
     this.examtype = aExamtype;
   }
 

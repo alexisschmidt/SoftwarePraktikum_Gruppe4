@@ -419,7 +419,6 @@ class Administration (object):
             return mapper.find_by_hash(userhash)
 
     def get_all_users(self):
-
         with UserMapper() as mapper:
             return mapper.find_all()
 

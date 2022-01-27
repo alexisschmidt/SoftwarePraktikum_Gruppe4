@@ -103,14 +103,14 @@ class SpoMapper(Mapper):
         for (id, creationdate, createdby, name, title, spo_hash, studycourse_hash) \
                 in tuples:
             cursor.execute(f"SELECT module_hash FROM spocomposition WHERE spo_hash={spo_hash}")
-            modules = list(cursor.fetchall)
+            modules = list(cursor.fetchall())
             spo = Spo()
             spo.set_id(id)
             spo.set_creationdate(creationdate)
             spo.set_creator(createdby)
             spo.set_name(name)
             spo.set_title(title)
-            spo.set_studycourse(studycourse_hash)
+            spo.set_studycourse_id(studycourse_hash)
             spo.set_modules(modules)
             result.append(spo)
 
@@ -202,8 +202,8 @@ class SpoMapper(Mapper):
         # anlegen des SPO-Objekts in der Datenbank.
         command = "INSERT INTO spo (id, creationdate, createdby, name, title, spo_hash, studycourse_hash) " \
                   "VALUES (%s,%s,%s,%s,%s,%s,%s)"
-        data = (spo.get_id(), spo.get_creationdate(), spo.get_creator(), spo.get_name(), spo.get_title(),
-                hash(spo), spo.get_studycourse())
+        data = (spo.get_id(), spo.get_creationdate(), spo.get_creator().get_id(), spo.get_name(), spo.get_title(),
+                hash(spo), spo.get_studycourse_id())
 
         cursor.execute(command, data)
         self._cnx.commit()

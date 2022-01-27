@@ -17,7 +17,7 @@ class SignIn extends Component {
 				<Typography className={classes.root} align='center' variant='h6'>Herzlich willkommen bei den SpO-Funktionen der HdM Stuttgart für Studierende, Lehrende und Mitarbeiter</Typography>
 				<Typography className={classes.root} align='center'>Es scheint, dass Sie nicht angemeldet sind.</Typography>
 				<Typography className={classes.root} align='center'>Um die SpO-Funktion nutzen zu können melden Sie sich bitte an!</Typography>
-				<Grid container justify='center'>
+				<Grid container justifyContent='center'>
 					<Grid item>
 						<Button variant='contained' color='primary' onClick={this.handleSignInButtonClicked}>
 							Sign in with Google

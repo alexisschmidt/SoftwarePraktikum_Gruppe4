@@ -11,7 +11,6 @@ class StudyCourse (Nbo.NamedBo):
 
     def json(self):
         return json.dumps({
-            'id': self.get_id(),
             'name': self.get_name(),
             'title': self.get_title()
             })
