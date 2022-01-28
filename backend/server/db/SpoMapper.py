@@ -21,6 +21,34 @@ class SpoMapper(Mapper):
         cursor.close()
 
         return result
+    
+    def find_by_key(self, key):
+	
+        result = None
+
+        cursor = self._cnx.cursor()
+        command = "SELECT id, creationdate, createdby, name, title, spo_hash, studycourse_hash from spo WHERE id={}".format(key)
+        cursor.execute(command)
+        tuples = cursor.fetchall()
+
+        try:
+            (id, creationdate, createdby, name, title, spo_hash, studycourse_hash) = tuples[0]
+            spo = Spo()
+            spo.set_id(id)
+            spo.set_creationdate(creationdate)
+            spo.set_creator(createdby)
+            spo.set_name(name)
+            spo.set_title(title)
+            spo.set_studycourse_id(studycourse_hash)
+            result = spo
+        except IndexError:
+
+            result = None
+
+        self._cnx.commit()
+        cursor.close()
+
+        return result
 
     def find_by_name(self, name: str):
         result = []
@@ -61,7 +89,7 @@ class SpoMapper(Mapper):
             spo.set_creator(createdby)
             spo.set_name(name)
             spo.set_title(title)
-            spo.set_studycourse(studycourse_hash)
+            spo.set_studycourse_id(studycourse_hash)
             spo.set_modules(modules)
             result = spo
         except IndexError:
@@ -202,7 +230,7 @@ class SpoMapper(Mapper):
         # anlegen des SPO-Objekts in der Datenbank.
         command = "INSERT INTO spo (id, creationdate, createdby, name, title, spo_hash, studycourse_hash) " \
                   "VALUES (%s,%s,%s,%s,%s,%s,%s)"
-        data = (spo.get_id(), spo.get_creationdate(), spo.get_creator().get_id(), spo.get_name(), spo.get_title(),
+        data = (spo.get_id(), spo.get_creationdate(), spo.get_creator(), spo.get_name(), spo.get_title(),
                 hash(spo), spo.get_studycourse_id())
 
         cursor.execute(command, data)

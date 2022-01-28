@@ -1,6 +1,7 @@
 # -- coding:utf-8 --
 
 # Unser Service basiert auf Flask 2.0.2
+from distutils.command.sdist import sdist
 from flask import Flask
 # Auf Flask aufbauend nutzen wir RestX 3.0.10
 from flask_restx import Api, Resource, fields
@@ -87,7 +88,7 @@ spo = api.inherit('Spo', namedbo, {
     'start_semester': fields.Integer(attribute='_start_semester', description='Anfangssemester der SPO-gültigkeit'),
     'end_semester': fields.Integer(attribute='_end_semester', description='Endsemester der SPO-gültigkeit'),
     'studycourse': fields.Integer(attribute='_studycourse_id', description='Studycourse der SPO'),
-    'modules':  fields.List(fields.Integer(attribute='_modules', description='Module einer SPO'))
+    'modules':  fields.List(fields.Integer(attribute='_modules', description='Module einer SPO')),
 })
 
 spoelement = api.inherit('Spoelement', namedbo, {
@@ -260,6 +261,20 @@ class SpoListOperations(Resource):
             return newspo, 200
         else:
             return '', 500
+    
+''' @sposystem.route('/spos/all/<int:id>')
+@sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
+class SpoListOperations(Resource):
+    @sposystem.marshal_list_with(spo)
+    @secured
+    def get(self, id):
+        """
+        Auslesen aller SPO-Objekte.
+        Sollten keine SPO-Objekte verfügbar sein, so wird eine leere Sequenz zurückgegeben.
+        """
+        adm = Administration()
+        spo = adm.get_spo_by_id(id)
+        return spo '''
 
 
 @sposystem.route('/spos/<int:id>')
@@ -274,7 +289,6 @@ class SpoOperations(Resource):
         Auslesen eines bestimmten SPO-Objekts.
         Das auszulesende Objekt wird durch die ```id``` in dem URI bestimmt.
         """
-
         adm = Administration()
         spo = adm.get_spo_by_id(id)
         return spo
@@ -318,6 +332,7 @@ class SpoOperations(Resource):
         """
         adm = Administration()
         spo = adm.get_spo_by_hash(spo_hash)
+        print(spo)
         return spo
 
     @secured
