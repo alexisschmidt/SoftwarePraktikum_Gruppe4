@@ -18,7 +18,7 @@ import Admin from "./components/pages/AdminSpoAnsicht";
 // import DateAndTime from './components/content/DateAndTime';
 // import StudyCourses from './components/pages/StudyCourses';
 import AllStudyCourses from './components/AllStudycourses';
-import SpoAuswählenOMM from './components/pages/SpOAuswählenOMM';
+// import SpoAuswählenOMM from './components/pages/SpOAuswählenOMM';
 import Spowi from './components/pages/Spowi';
 import SpoStudyCoursesList from './components/SpoStudyCoursesList';
 import AdminSpoAnsicht from './components/AdminSpoAnsicht';
@@ -137,7 +137,7 @@ Globales CSS-Reset und Browser-Normalisierung. CssBaseline startet eine elegante
 									<Route path="/adminspoedit" exact component={AdminSpoEdit}/>
 									{/* <Route path="/admin/:spoID/spoansicht" exact component={AdminSpoAnsicht}/> */}
 									{/*<Route path="/spoansicht" exact component={AdminSpoAnsicht}/>*/}
-									<Route path="/Spoauswahl2" exact comonent={SpoAuswählenOMM}/>
+									{/* <Route path="/Spoauswahl2" exact comonent={SpoAuswählenOMM}/> */}
 									<Route path="/Spoauswahl" exact comonent={Spowi}/>
                   <Route path="/SpoForm" exact component={SpoForm} />
 									{/*<Route path="/Altespo" exact component ={}/>*/}
@@ -146,11 +146,6 @@ Globales CSS-Reset und Browser-Normalisierung. CssBaseline startet eine elegante
                   <Route path="/Administration"
                     exact
                     component={Administration}
-                  />
-                  <Route
-                    path="/Spoauswahl2"
-                    exact
-                    component={SpoAuswählenOMM}
                   />
                    <Route path="/Spoauswahl" exact component={Spowi} />
                    <Route

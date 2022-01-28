@@ -246,7 +246,7 @@ class SpoListOperations(Resource):
         return spo_list
 
     @sposystem.marshal_with(spo, code=200)
-    @sposystem.expect(spo, validate=True)
+    # @sposystem.expect(spo, validate=True)
     @secured
     def post(self,**kwargs):
         """
