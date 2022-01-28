@@ -10,9 +10,7 @@ import {
   DialogTitle,
   DialogActions,
   TextField,
-  Box,
-  MenuItem,
-} from "@mui/material";
+  } from "@mui/material";
 
 import CloseIcon from "@material-ui/icons/Close";
 import ContextErrorMessage from "../dialogs/ContextErrorMessage";
@@ -91,14 +89,16 @@ export class ModulepartForm extends Component {
     newModulepart.setedvnr(this.state.edvnr);
     newModulepart.setects(this.state.ects);
     newModulepart.setworkload(this.state.workload);
-    newModulepart.set_sws(this.state.sws);
-    newModulepart.set_language(this.state.language);
-    newModulepart.set_description(this.state.description);
-    newModulepart.set_connection(this.state.connection);
-    newModulepart.set_literature(this.state.literature);
-    newModulepart.set_sources(this.state.sources);
-    newModulepart.set_semester(this.state.semester);
-    newModulepart.set_professor(this.state.professor);
+    newModulepart.setsws(this.state.sws);
+    newModulepart.setlanguage(this.state.language);
+    newModulepart.setdescription(this.state.description);
+    newModulepart.setconnection(this.state.connection);
+    newModulepart.setliterature(this.state.literature);
+    newModulepart.setsources(this.state.sources);
+    newModulepart.setsemester(this.state.semester);
+    newModulepart.setprofessor(this.state.professor);
+
+    
 
     API.getAPI()
       .addModuleParts(newModulepart)
@@ -251,7 +251,7 @@ export class ModulepartForm extends Component {
     }
 
     return show ? (
-      <Dialog open={show} onClose={this.handleClose} maxWidth="xs" fullWidth>
+      <Dialog open={show} onClose={this.handleClose} maxWidth="lg" fullWidth>
         <DialogTitle>
           {title}
           <IconButton onClick={this.handleClose}>
@@ -280,9 +280,9 @@ export class ModulepartForm extends Component {
               required
               fullWidth
               id="description"
-              label="description"
+              label="Bezeichnung"
               variant="outlined"
-              value={ects}
+              value={description}
               onChange={this.textFieldValueChange}
               error={descriptionValidationFailed}
             />
