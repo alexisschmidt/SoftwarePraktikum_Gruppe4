@@ -90,7 +90,7 @@ class StudyCourseMapper(Mapper):
 
         command = "INSERT INTO studycourse (id, creationdate, createdby, name, title, studycourse_hash) " \
                   "VALUES (%s,%s,%s,%s,%s,%s)"
-        data = (studycourse.get_id(), studycourse.get_creationdate(), studycourse.get_creator().get_id(),
+        data = (studycourse.get_id(), studycourse.get_creationdate(), studycourse.get_creator(),
                 studycourse.get_name(), studycourse.get_title(), hash(studycourse))
         cursor.execute(command, data)
 

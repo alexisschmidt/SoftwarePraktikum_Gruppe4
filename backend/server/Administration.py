@@ -34,7 +34,7 @@ class Administration (object):
         :param creator: Ein User-Hash, creator des Objekts
         """
         proposal.set_creationdate(datetime.date.today())
-        proposal.set_creator(creator)
+        proposal.set_creator(hash(creator))
         with ModuleMapper() as mapper:
             return mapper.insert(proposal)
 
@@ -77,7 +77,7 @@ class Administration (object):
         :param creator: Ein User-Hash, creator des Objekts
         """
         proposal.set_creationdate(datetime.date.today())
-        proposal.set_creator(creator)
+        proposal.set_creator(hash(creator))
         with ModulePartMapper() as mapper:
             return mapper.insert(proposal)
 
@@ -125,7 +125,7 @@ class Administration (object):
         :param creator: Ein User-Hash, creator des Objekts
         """
         proposal.set_creationdate(datetime.date.today())
-        proposal.set_creator(creator)
+        proposal.set_creator(hash(creator))
         with PersonMapper() as mapper:
             return mapper.insert(proposal)
 
@@ -164,7 +164,7 @@ class Administration (object):
         :param creator: Ein User-Hash, creator des Objekts
         """
         proposal.set_creationdate(datetime.date.today())
-        proposal.set_creator(creator)
+        proposal.set_creator(hash(creator))
         with SemesterMapper() as mapper:
             return mapper.insert(proposal)
 
@@ -214,13 +214,13 @@ class Administration (object):
         :param creator: Ein User-Hash, creator des Objekts
         """
         proposal.set_creationdate(datetime.date.today())
-        proposal.set_creator(creator)
+        proposal.set_creator(hash(creator))
 
         # Ist schon ein Ende der Gültigkeit angegeben?
         if proposal.get_end_semester() != 0:
-            valtype = 1
+            valtype = True
         else:
-            valtype = 0
+            valtype = False
         # Gibt es diese SPO schon?
         with SpoMapper() as mapper:
             spo = mapper.find_by_hash(hash(proposal))
@@ -233,15 +233,17 @@ class Administration (object):
             with SpoCompositionMapper() as mapper:
                 mapper.insert_compositions(proposal)
             return newobj
-        else:
-            with SpoMapper() as mapper:
-                newobj = mapper.update()
         # Einträge in spo, spovalidity und spocomposition
 
     def get_spo_by_name(self, name):
         """Alle SPOs mit Namen name auslesen."""
         with SpoMapper() as mapper:
             return mapper.find_by_name(name)
+    '''         
+    def get_spo_by_id(self, number):
+        """Die SPO mit dem gegebenem Hash auslesen."""
+        with SpoMapper() as mapper:
+            return mapper.find_by_key(number) '''
 
     def get_spo_by_hash(self, hashcode):
         """Die SPO mit dem gegebenem Hash auslesen."""
@@ -355,6 +357,18 @@ class Administration (object):
         """Die gegebene Spo aus unserem System löschen."""
         with SpoMapper() as mapper:
             mapper.delete(spo)
+    
+    def get_module_hash_by_spo_hash(self, hashcode):
+        """Die SPO mit dem gegebenem Hash auslesen."""
+        with SpoCompositionMapper() as mapper:
+            modules = mapper.find_module_by_spo_hash(hashcode)
+        with ModuleMapper() as mapper:
+            modulelist = []
+            for module in modules:
+                mo = mapper.find_by_hash(module)
+                modulelist.append(mo)
+        
+            return modulelist
 
     """Studycourse-spezifische Methoden"""
 
@@ -366,7 +380,7 @@ class Administration (object):
         :param creator: Ein User-Hash, creator des Objekts
         """
         proposal.set_creationdate(datetime.date.today())
-        proposal.set_creator(creator)
+        proposal.set_creator(hash(creator))
         with StudyCourseMapper() as mapper:
             return mapper.insert(proposal)
 
