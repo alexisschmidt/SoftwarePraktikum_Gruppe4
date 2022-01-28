@@ -3,12 +3,12 @@ import json
 
 
 class Module(Spe.SpoElement):
-    _type: str
-    _requirement: str
-    _outcome: str
-    _examtype: str
-    _instructor: int
-    _parts: list[int]
+    _type: str          # Typ des Moduls
+    _requirement: str   # Anforderungen des Moduls
+    _outcome: str       # Lernergebnisse des Moduls
+    _examtype: str      # Prüfungsart des Moduls
+    _instructor: int    # Modulverantwortliche Person
+    _parts: list[int]   # zugehörige Modulteile
 
     def __init__(self):
         super().__init__()
@@ -17,6 +17,7 @@ class Module(Spe.SpoElement):
         self._outcome = ""
         self._examtype = ""
         self._instructor = 0
+        self._parts = []
 
     # Auslesen
     def get_type(self):
