@@ -89,7 +89,7 @@ class PersonMapper(Mapper):
                 person.set_id(1)
 
         command = "INSERT INTO person (id, creationdate, createdby, firstname, lastname, email, person_hash) VALUES (%s,%s,%s,%s,%s,%s,%s)"
-        data = (person.get_id(), person.get_creationdate(), person.get_creator().get_id(), person.get_firstname(), person.get_lastname(), person.get_email(), hash(person))
+        data = (person.get_id(), person.get_creationdate(), person.get_creator(), person.get_firstname(), person.get_lastname(), person.get_email(), hash(person))
         cursor.execute(command, data)
 
         self._cnx.commit()

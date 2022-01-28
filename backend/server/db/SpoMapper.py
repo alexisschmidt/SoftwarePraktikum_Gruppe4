@@ -230,7 +230,7 @@ class SpoMapper(Mapper):
         # anlegen des SPO-Objekts in der Datenbank.
         command = "INSERT INTO spo (id, creationdate, createdby, name, title, spo_hash, studycourse_hash) " \
                   "VALUES (%s,%s,%s,%s,%s,%s,%s)"
-        data = (spo.get_id(), spo.get_creationdate(), spo.get_creator().get_id(), spo.get_name(), spo.get_title(),
+        data = (spo.get_id(), spo.get_creationdate(), spo.get_creator(), spo.get_name(), spo.get_title(),
                 hash(spo), spo.get_studycourse_id())
 
         cursor.execute(command, data)

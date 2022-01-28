@@ -125,7 +125,7 @@ class Administration (object):
         :param creator: Ein User-Hash, creator des Objekts
         """
         proposal.set_creationdate(datetime.date.today())
-        proposal.set_creator(creator)
+        proposal.set_creator(hash(creator))
         with PersonMapper() as mapper:
             return mapper.insert(proposal)
 
@@ -164,7 +164,7 @@ class Administration (object):
         :param creator: Ein User-Hash, creator des Objekts
         """
         proposal.set_creationdate(datetime.date.today())
-        proposal.set_creator(creator)
+        proposal.set_creator(hash(creator))
         with SemesterMapper() as mapper:
             return mapper.insert(proposal)
 
@@ -214,13 +214,13 @@ class Administration (object):
         :param creator: Ein User-Hash, creator des Objekts
         """
         proposal.set_creationdate(datetime.date.today())
-        proposal.set_creator(creator)
+        proposal.set_creator(hash(creator))
 
         # Ist schon ein Ende der Gültigkeit angegeben?
         if proposal.get_end_semester() != 0:
-            valtype = 1
+            valtype = True
         else:
-            valtype = 0
+            valtype = False
         # Gibt es diese SPO schon?
         with SpoMapper() as mapper:
             spo = mapper.find_by_hash(hash(proposal))
@@ -233,9 +233,6 @@ class Administration (object):
             with SpoCompositionMapper() as mapper:
                 mapper.insert_compositions(proposal)
             return newobj
-        else:
-            with SpoMapper() as mapper:
-                newobj = mapper.update()
         # Einträge in spo, spovalidity und spocomposition
 
     def get_spo_by_name(self, name):
@@ -383,7 +380,7 @@ class Administration (object):
         :param creator: Ein User-Hash, creator des Objekts
         """
         proposal.set_creationdate(datetime.date.today())
-        proposal.set_creator(creator)
+        proposal.set_creator(hash(creator))
         with StudyCourseMapper() as mapper:
             return mapper.insert(proposal)
 
