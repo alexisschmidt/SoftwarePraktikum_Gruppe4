@@ -133,7 +133,7 @@ Globales CSS-Reset und Browser-Normalisierung. CssBaseline startet eine elegante
 									<Route path="/admin" exact component={AllStudyCourses}/>
 									<Route path="/admintable" exact component={AdminTable}/>
 									<Route path="/admin/:studyCourseID" exact component={SpoStudyCoursesList}/>
-									<Route path="/admin/:studyCourseID/:spoID" exact component={AdminSpoAnsicht}/>
+									<Route path="/adminansicht" exact component={AdminSpoAnsicht}/>
 									<Route path="/adminspoedit" exact component={AdminSpoEdit}/>
 									{/* <Route path="/admin/:spoID/spoansicht" exact component={AdminSpoAnsicht}/> */}
 									{/*<Route path="/spoansicht" exact component={AdminSpoAnsicht}/>*/}

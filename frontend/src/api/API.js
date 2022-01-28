@@ -207,7 +207,9 @@ Map([<Rule '/sopra/studycourses' (OPTIONS, POST, HEAD, GET, PUT) -> sopra_studyc
     getAllSemesters = () => {
       return this.#getAll(this.#getAllSemesterUrl(), Semesterbo);
     }
+
     getAllStudyCourses = () => {
+      console.log(this.#getAllStudyCoursesUrl())
       return this.#getAll(this.#getAllStudyCoursesUrl(), StudyCoursebo);
     }
     getAllModulesParts = () => {
@@ -231,7 +233,9 @@ Map([<Rule '/sopra/studycourses' (OPTIONS, POST, HEAD, GET, PUT) -> sopra_studyc
   }
   #getAll = (url, BO) => {
       return this.#fetchAdvanced(url).then((responseJSON) => {
+        console.log(responseJSON)
           let responseBOs = BO.fromJSON(responseJSON);
+          console.log(responseBOs)
           return new Promise(function (resolve) {
               resolve(responseBOs);
           })

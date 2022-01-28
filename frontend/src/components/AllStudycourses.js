@@ -27,7 +27,9 @@ class AllStudyCourses extends Component {
     }
 
     getAllStudyCourses = () => {
-        API.getAPI().getAllStudyCourses().then(studyCoursebo => {            
+
+        console.log("studyCoursebo")   
+        API.getAPI().getAllStudyCourses().then(studyCoursebo => {         
             this.setState({
                 studycourses: studyCoursebo,
                 loadingProgress: false,
