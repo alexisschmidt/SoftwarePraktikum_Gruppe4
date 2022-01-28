@@ -360,7 +360,6 @@ class SpoForm extends Component {
               fullWidth
               select
               value={start_semester ? start_semester : ""}
-              error={start_semesterValidationFailed}
               onChange={(e) =>
                 this.setState({ start_semester_id: e.target.value })
               }
@@ -372,9 +371,7 @@ class SpoForm extends Component {
                   </MenuItem>
                 ))
               ) : (
-                <MenuItem value="">
-                  Keine Daten für Start Semester vorhanden
-                </MenuItem>
+                <MenuItem value="">Kein Start Semester vorhanden</MenuItem>
               )}
             </TextField>
           </Grid>
@@ -391,19 +388,19 @@ class SpoForm extends Component {
               onChange={this.numberValueChange}
               error={end_semesterValidationFailed}
             /> */}
+
           <Grid item xs={12} sm={8} md={8}>
             <TextField
               label="End Semester"
               fullWidth
               select
               value={end_semester ? end_semester : ""}
-              error={end_semesterValidationFailed}
               onChange={(e) =>
                 this.setState({ end_semester_id: e.target.value })
               }
             >
-              {name ? (
-                name.map((s) => (
+              {end_semester ? (
+                end_semester.map((s) => (
                   <MenuItem key={s.id} value={s.id}>
                     {s.end_semester}
                   </MenuItem>
@@ -434,7 +431,6 @@ class SpoForm extends Component {
               fullWidth
               select
               value={studyCourse ? studyCourse : ""}
-              error={studyCourseValidationFailed}
               onChange={(e) =>
                 this.setState({ studycourse_id: e.target.value })
               }
