@@ -83,8 +83,8 @@ class SpoForm extends Component {
     newSpo.setEnd_semester(this.state.end_semester);
     newSpo.setStudycourse(this.state.studyCourse);
     let modules =[]
-    for(let modul of this.state.moduleInSPO){
-      modules.push(modul.id)
+    for(let module of this.state.moduleInSPO){
+      modules.push(module.id)
     }
     newSpo.setModules(modules)
 

@@ -82,9 +82,9 @@ class ModuleForm extends Component {
     };
     this.baseState = this.state;
   }
-  componentDidMount = () =>{
-    this.getInfos()
-  }
+  componentDidMount = () => {
+    this.getInfos();
+  };
 
   addModule = () => {
     let newModule = new Modulebo();
@@ -99,9 +99,11 @@ class ModuleForm extends Component {
     newModule.setExamtype(this.state.examtype);
     newModule.setInstructor(this.state.instructor);
 
-    //die Modulepart müssen zur module hinzugefügt werden, entweder durch eine update methode fürs modulpart im backend oder indem die modulepart direkt im spobo hinzugefügt werden
-    //let modulIDs=this.state.moduleInSPO.map(module => module.getID());
-    //newSPO.setModules(modulIDs);
+    let moduleparts = [];
+    for (let modulepart of this.state.modulepartInSPO) {
+      moduleparts.push(modulepart.id);
+    }
+    newModule.setModules(moduleparts);
 
     API.getAPI()
       .addModule(newModule)
@@ -183,7 +185,7 @@ class ModuleForm extends Component {
         if (module) {
           //TODO: anpassen auf die passende Methode in API
           API.getAPI()
-            .getAllModulePartsForMODULE(module.id)
+            .getAllModulePartsForMODULE(module.hash)
             .then((modulepart) => {
               //alle moduleparts die in der spo sind aus der response entfernen
               let modulepartOhneModule = response.filter((m) => {
@@ -278,10 +280,10 @@ class ModuleForm extends Component {
 
     this.setState({
       checked: [],
-      modulepartInModule: newModulepart,
-      modulepart: this.state.modulepart.filter(
+      modulepartInMODULE: this.state.modulepartInMODULE.filter(
         (m) => !this.state.checked.includes(m.id)
       ),
+      modulepart: newModulepart,
     });
   };
   handleCheckedRight = () => {
@@ -294,17 +296,17 @@ class ModuleForm extends Component {
     });
     this.setState({
       checked: [],
-      modulepart: newModulepart,
-      modulepartInModule: this.state.modulepartInModule.filter(
+      modulepart: this.state.modulepart.filter(
         (m) => !this.state.checked.includes(m.id)
       ),
+      modulepartInMODULE: newModulepart,
     });
   };
 
   intersection = (checkedarray, modulepart) => {
     //überprüft ob ein modulpart in dem checkedarray vorhanden ist
     const modulpartIDs = modulepart.map((m) => m.id);
-    return checkedarray.filter((c) => modulpartIDs.tabIndexOf(c) !== -1);
+    return checkedarray.filter((c) => modulpartIDs.IndexOf(c) !== -1);
   };
 
   renderTextfields() {
@@ -456,7 +458,7 @@ class ModuleForm extends Component {
     const rightChecked = this.intersection(checked, modulepartInModule);
 
     const customList = (items) => (
-      <Paper sx={{ width: 200, height: 230, overflow: "auto" }}>
+      <Paper sx={{ overflow: "auto" }}>
         <List dense component="div" role="list">
           {items.map((m) => {
             const labelId = `transfer-list-item-${m.id}-label`;
@@ -489,8 +491,10 @@ class ModuleForm extends Component {
     return (
       <>
         <Grid container spacing={2} justifyContent="center" alignItems="center">
-          <Grid item>{customList(module)}</Grid>
-          <Grid item>
+          <Grid lg={5} item>
+            {customList(modulepart)}
+          </Grid>
+          <Grid lg={2} item>
             <Grid container direction="column" alignItems="center">
               <Button
                 sx={{ my: 0.5 }}
@@ -534,7 +538,9 @@ class ModuleForm extends Component {
               </Button>
             </Grid>
           </Grid>
-          <Grid item>{customList(modulepartInModule)}</Grid>
+          <Grid lg={5} item>
+            {customList(modulepartInModule)}
+          </Grid>
         </Grid>
       </>
     );
@@ -591,12 +597,7 @@ class ModuleForm extends Component {
     }
 
     return show ? (
-      <Dialog
-        open={show}
-        onClose={this.handleClose}
-        maxWidth="xs"
-        fullWidth
-      >
+      <Dialog open={show} onClose={this.handleClose} maxWidth="lg" fullWidth>
         <DialogTitle>
           {title}
           <IconButton onClick={this.handleClose}>
