@@ -18,7 +18,8 @@ class SpoCompositionMapper(Mapper):
             for (maxid) in tuples:
                 if maxid[0] is not None:
                     newid = maxid[0] + 1
-                else: newid = 1
+                else:
+                    newid = 1
 
             # Erstellen der Zeile
             cursor.execute("INSERT INTO spocomposition (id, module_hash, spo_hash) "
@@ -63,10 +64,8 @@ class SpoCompositionMapper(Mapper):
 
     def update_composition(self, spo: Spo, modules: list[int]):
         cursor = self._cnx.cursor()
-        modulenumber = -1
-        for id in modules:
-            modulenumber += 1
-            cursor.execute(f"UPDATE spocomposition SET id={id}, module_hash={spo.get_modules()[modulenumber]} "
+        for hashcode in modules:
+            cursor.execute(f"UPDATE spocomposition SET id={id}, module_hash={spo.get_modules()[hashcode]} "
                            f"WHERE spo_hash={hash(spo)}")
 
     def find_all(self):
@@ -74,7 +73,7 @@ class SpoCompositionMapper(Mapper):
         pass
 
     def find_module_by_spo_hash(self, hashcode: int):
-	
+
         modules = None
         cursor = self._cnx.cursor()
 

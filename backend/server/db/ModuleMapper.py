@@ -85,6 +85,20 @@ class ModuleMapper(Mapper):
         cursor.close()
         return result
 
+    def find_hash_by_id(self, mid: int):
+        result = None
+        cursor = self._cnx.cursor()
+
+        # finden des Moduls in der DB:
+        command = f"SELECT module_hash FROM module WHERE id={mid}"
+        cursor.execute(command)
+        tuples = cursor.fetchall()
+        try:
+            result = tuples[0][0]
+        except IndexError:
+            result = None
+        return result
+
     def find_by_hash(self, hashcode: int):
 	
         result = None

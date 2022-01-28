@@ -50,6 +50,24 @@ class StudyCourseMapper(Mapper):
 
         return result
 
+    def find_hash_by_id(self, id: int):
+        result = None
+        cursor = self._cnx.cursor()
+
+        # finden der SPO in der DB:
+        command = f"SELECT studycourse_hash " \
+                  f"FROM studycourse WHERE id={id}"
+        cursor.execute(command)
+        tuples = cursor.fetchall()
+        try:
+            result = tuples[0][0]
+        except IndexError:
+             result = None
+
+        self._cnx.commit()
+        cursor.close()
+        return result
+
     def find_by_hash(self, hashcode):
 
         result = None
