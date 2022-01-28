@@ -81,11 +81,12 @@ class SpoForm extends Component {
     newSpo.setTitle(this.state.title);
     newSpo.setStart_semester(this.state.start_semester);
     newSpo.setEnd_semester(this.state.end_semester);
-    newSpo.setStudycourse(this.state.studycourse);
-
-    //die Module müssen zur spo hinzugefügt werden, entweder durch eine update methode fürs modul im backend oder indem die module direkt im spobo hinzugefügt werden
-    //let modulIDs=this.state.moduleInSPO.map(module => module.getID());
-    //newSPO.setModules(modulIDs);
+    newSpo.setStudycourse(this.state.studyCourse);
+    let modules =[]
+    for(let modul of this.state.moduleInSPO){
+      modules.push(modul.id)
+    }
+    newSpo.setModules(modules)
 
     API.getAPI()
       .addSpo(newSpo)
@@ -159,10 +160,10 @@ class SpoForm extends Component {
   getModule = () => {
     const { spo } = this.props;
     //TODO: Überprüfen, ob diese Methode wirklich alle Module aus der DB holt
-    API.getAPI().getAllModule().then((response) => {
+    API.getAPI().getAllModules().then((response) => {
       if (spo) {
         //TODO: anpassen auf die passende Methode in API
-        API.getAPI().getAllModuleForSPO(spo.id).then((module) => {
+        API.getAPI().getAllModulesForSPO(spo.hash).then((module) => {
           //alle module die in der spo sind aus der response entfernen
           let moduleOhneSpo = response.filter((m) => {
             //Array.some überprüft, ob ein Element in dem Array vorkommt, wenn das Element schon in der Spo vorhanden ist, wird es dann aus der response rausgefiltert
@@ -257,8 +258,8 @@ class SpoForm extends Component {
     });
     this.setState({
       checked: [],
-      moduleInSPO: newModule,
-      module: this.state.module.filter((m) => !this.state.checked.includes(m.id)),
+      moduleInSPO: this.state.moduleInSPO.filter((m) => !this.state.checked.includes(m.id)),
+      module: newModule,
     });
   }
   handleCheckedRight = () => {
@@ -271,15 +272,15 @@ class SpoForm extends Component {
     });
     this.setState({
       checked: [],
-      module: newModule,
-      moduleInSPO: this.state.moduleInSPO.filter((m) => !this.state.checked.includes(m.id)),
+      module: this.state.module.filter((m) => !this.state.checked.includes(m.id)),
+      moduleInSPO: newModule,
     });
   }
 
   intersection = (checkedarray, module) => {
     //überprüft ob ein modul in dem checkedarray vorhanden ist
     const modulIDs = module.map((m) => m.id);
-    return checkedarray.filter((c) => modulIDs.tabIndexOf(c) !== -1);
+    return checkedarray.filter((c) => modulIDs.indexOf(c) !== -1);
   }
 
 
@@ -367,7 +368,7 @@ class SpoForm extends Component {
   const rightChecked = this.intersection(checked, moduleInSPO);
 
     const customList = (items) => (
-      <Paper sx={{ width: 200, height: 230, overflow: 'auto' }}>
+      <Paper sx={{ overflow: 'auto' }}>
         <List dense component="div" role="list">
           {items.map((m) => {
             const labelId = `transfer-list-item-${m.id}-label`;
@@ -400,8 +401,8 @@ class SpoForm extends Component {
     return (
       <>
           <Grid container spacing={2} justifyContent="center" alignItems="center">
-      <Grid item>{customList(module)}</Grid>
-      <Grid item>
+      <Grid lg={5} item>{customList(module)}</Grid>
+      <Grid lg={2} item>
         <Grid container direction="column" alignItems="center">
           <Button
             sx={{ my: 0.5 }}
@@ -445,7 +446,7 @@ class SpoForm extends Component {
           </Button>
         </Grid>
       </Grid>
-      <Grid item>{customList(moduleInSPO)}</Grid>
+      <Grid lg={5} item>{customList(moduleInSPO)}</Grid>
     </Grid>
       </>
     );
@@ -498,7 +499,7 @@ class SpoForm extends Component {
       <Dialog
         open={show}
         onClose={this.handleClose}
-        maxWidth="xs"
+        maxWidth="lg"
         fullWidth
       >
         <DialogTitle>
