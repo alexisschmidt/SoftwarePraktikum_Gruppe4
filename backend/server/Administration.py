@@ -34,7 +34,7 @@ class Administration (object):
         :param creator: Ein User-Hash, creator des Objekts
         """
         proposal.set_creationdate(datetime.date.today())
-        proposal.set_creator(creator)
+        proposal.set_creator(hash(creator))
         with ModuleMapper() as mapper:
             return mapper.insert(proposal)
 
@@ -77,7 +77,7 @@ class Administration (object):
         :param creator: Ein User-Hash, creator des Objekts
         """
         proposal.set_creationdate(datetime.date.today())
-        proposal.set_creator(creator)
+        proposal.set_creator(hash(creator))
         with ModulePartMapper() as mapper:
             return mapper.insert(proposal)
 
@@ -242,11 +242,11 @@ class Administration (object):
         """Alle SPOs mit Namen name auslesen."""
         with SpoMapper() as mapper:
             return mapper.find_by_name(name)
-        
+    '''         
     def get_spo_by_id(self, number):
         """Die SPO mit dem gegebenem Hash auslesen."""
         with SpoMapper() as mapper:
-            return mapper.find_by_key(number)
+            return mapper.find_by_key(number) '''
 
     def get_spo_by_hash(self, hashcode):
         """Die SPO mit dem gegebenem Hash auslesen."""

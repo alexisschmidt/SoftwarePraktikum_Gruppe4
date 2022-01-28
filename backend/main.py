@@ -262,7 +262,7 @@ class SpoListOperations(Resource):
         else:
             return '', 500
     
-@sposystem.route('/spos/all/<int:id>')
+''' @sposystem.route('/spos/all/<int:id>')
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
 class SpoListOperations(Resource):
     @sposystem.marshal_list_with(spo)
@@ -274,7 +274,7 @@ class SpoListOperations(Resource):
         """
         adm = Administration()
         spo = adm.get_spo_by_id(id)
-        return spo
+        return spo '''
 
 
 @sposystem.route('/spos/<int:id>')
@@ -289,10 +289,8 @@ class SpoOperations(Resource):
         Auslesen eines bestimmten SPO-Objekts.
         Das auszulesende Objekt wird durch die ```id``` in dem URI bestimmt.
         """
-
         adm = Administration()
         spo = adm.get_spo_by_id(id)
-        print(spo)
         return spo
 
     @sposystem.marshal_with(spo)

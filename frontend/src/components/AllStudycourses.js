@@ -20,12 +20,13 @@ class AllStudyCourses extends Component {
 
         this.state = {
             studycourses: [],
+            studycoursesFilter: [],
             loadingProgress: false,
             error: null,
         };
     }
 
-    getAllStudycourses = () => {
+    getAllStudyCourses = () => {
         API.getAPI().getAllStudyCourses().then(studyCoursebo => {            
             this.setState({
                 studycourses: studyCoursebo,

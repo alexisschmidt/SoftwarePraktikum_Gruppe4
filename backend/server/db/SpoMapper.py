@@ -22,12 +22,12 @@ class SpoMapper(Mapper):
 
         return result
     
-    def find_by_key(self, id):
+    def find_by_key(self, key):
 	
         result = None
 
         cursor = self._cnx.cursor()
-        command = "SELECT id, creationdate, createdby, name, title, spo_hash, studycourse_hash from spo WHERE id={}".format(id)
+        command = "SELECT id, creationdate, createdby, name, title, spo_hash, studycourse_hash from spo WHERE id={}".format(key)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
@@ -231,7 +231,7 @@ class SpoMapper(Mapper):
         command = "INSERT INTO spo (id, creationdate, createdby, name, title, spo_hash, studycourse_hash) " \
                   "VALUES (%s,%s,%s,%s,%s,%s,%s)"
         data = (spo.get_id(), spo.get_creationdate(), spo.get_creator().get_id(), spo.get_name(), spo.get_title(),
-                hash(spo), spo.get_studycourse())
+                hash(spo), spo.get_studycourse_id())
 
         cursor.execute(command, data)
         self._cnx.commit()
