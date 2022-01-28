@@ -39,6 +39,7 @@ Map([<Rule '/sopra/studycourses' (OPTIONS, POST, HEAD, GET, PUT) -> sopra_studyc
  <Rule '/sopra/user/<user_hash>' (OPTIONS, DELETE, HEAD, GET) -> sopra_module_hash_operations>]) */
 
   //definieren aller Urls für den Zugriff auf das Backend
+  #getAllStudyCoursesUrl = () => { return this.#serverBaseURL + "/studycourses" };
   #getAllModulePartsUrl = () => { return this.#serverBaseURL + "/moduleparts"; }
   #getAllSemesterUrl = () => { return this.#serverBaseURL + "/semesters"; }
   #getAllSpoCopyUrl = () => { return this.#serverBaseURL + "/spo-copy"; }
@@ -57,8 +58,7 @@ Map([<Rule '/sopra/studycourses' (OPTIONS, POST, HEAD, GET, PUT) -> sopra_studyc
   #getSpoByHashUrl = (hash) => {return this.#serverBaseURL + "/spo/" + hash};
   #getSemesterByHashUrl = (hash) => {return this.#serverBaseURL + "/semester" + hash};
   #getInfos =(hash) => {return this.#serverBaseURL + "/Infos" + hash};
-  #getAllSpoRelatedURL = (id) => `${this.#serverBaseURL}/spos/studycourse/${id}`;
-  #getAllStudyCoursesURL = () => { return this.#serverBaseURL + "/studycourses" };
+
 
 
 
@@ -96,6 +96,18 @@ Map([<Rule '/sopra/studycourses' (OPTIONS, POST, HEAD, GET, PUT) -> sopra_studyc
     }
     deleteModulePart = (modulepart) => {
       return this.#delete(this.#getAllModulePartsUrl(), modulepart, Modulepartbo);
+    }
+    getAllStudyCourses = () => {
+      return this.#getAll(this.#getAllStudyCoursesUrl(), StudyCoursebo);
+    }
+    addStudyCourse = (studycourse) => {
+      return this.#add(this.#getAllStudyCoursesUrl(), studycourse, StudyCoursebo);
+    }
+    updateStudyCourse = (studycourse) => {
+      return this.#update(this.#getAllStudyCoursesUrl(), studycourse, StudyCoursebo);
+    }
+    deleteStudyCourse = (studycourse) => {
+      return this.#delete(this.#getAllStudyCoursesUrl(), studycourse, StudyCoursebo);
     }
     getAllSemesters = () => {
       return this.#getAll(this.#getAllSemesterUrl(), Semesterbo);
@@ -193,6 +205,9 @@ Map([<Rule '/sopra/studycourses' (OPTIONS, POST, HEAD, GET, PUT) -> sopra_studyc
     getAllSemesters = () => {
       return this.#getAll(this.#getAllSemesterUrl(), Semesterbo);
     }
+    getAllStudyCourses = () => {
+      return this.#getAll(this.#getAllStudyCoursesUrl(), StudyCoursebo);
+    }
     getAllModulesParts = () => {
       return this.#getAll(this.#getAllModulePartsUrl(), Modulepartbo);
     }
@@ -200,18 +215,11 @@ Map([<Rule '/sopra/studycourses' (OPTIONS, POST, HEAD, GET, PUT) -> sopra_studyc
       return this.#getAll(this.#getInfos(), Spobo);
       
     }
-
-    async getAllSpoRelated(studyCourseId) {
-			return this.#fetchAdvanced(this.#getAllSpoRelatedURL(studyCourseId));
-		}
-
-    async getAllStudyCourses() {
-			return this.#fetchAdvanced(this.#getAllStudyCoursesURL());
-		}
-
        
 
 
+
+  
 
 
     #getSingle = (url,BO) => {
@@ -221,7 +229,7 @@ Map([<Rule '/sopra/studycourses' (OPTIONS, POST, HEAD, GET, PUT) -> sopra_studyc
               resolve(responseBO);
           })
       })
-  } 
+  }
   #getAll = (url, BO) => {
       return this.#fetchAdvanced(url).then((responseJSON) => {
           let responseBOs = BO.fromJSON(responseJSON);
