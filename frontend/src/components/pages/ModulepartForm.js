@@ -101,7 +101,7 @@ export class ModulepartForm extends Component {
     newModulepart.set_professor(this.state.professor);
 
     API.getAPI()
-      .addModulepart(newModulepart)
+      .addModuleParts(newModulepart)
       .then((modulepart) => {
         this.props.getmodulepart();
         this.setState(this.baseState);
