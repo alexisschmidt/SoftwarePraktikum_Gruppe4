@@ -7,7 +7,7 @@ class SpoCompositionMapper(Mapper):
     def __init__(self):
         super().__init__()
 
-    def insert_composition(self, spo: Spo):
+    def insert_compositions(self, spo: Spo):
 
         cursor = self._cnx.cursor()
         for module_hash in spo.get_modules():
