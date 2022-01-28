@@ -4,18 +4,15 @@ export default class Spobo extends NamedBo{
   /**
    * Constructs a new Spobo object with a given owner.
    * 
-   * @param {*} aStart_semester - the owner of this Spobo.
-   * @param {*} aEnd_semester
-   * @param {*} aModules
-   * @param {*} aStudycourse
+   * 
 
    */
-   constructor(aStart_semester, aEnd_semester, aModules, aStudycourse) {
+   constructor() {
     super();
-    this.start_semester = aStart_semester;
-	  this.end_semester = aEnd_semester;
-	  this.modules = aModules;
-	  this.studycourse = aStudycourse;
+    this.start_semester = null;
+	  this.end_semester = null;
+	  this.modules = [];
+	  this.studycourse = null;
   }
 
   /**

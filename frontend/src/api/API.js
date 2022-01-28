@@ -57,7 +57,6 @@ Map([<Rule '/sopra/studycourses' (OPTIONS, POST, HEAD, GET, PUT) -> sopra_studyc
   #getUserByHashUrl = (userHash) => { return this.#serverBaseURL + "/user/" + userHash; }
   #getSpoByHashUrl = (hash) => {return this.#serverBaseURL + "/spo/" + hash};
   #getSemesterByHashUrl = (hash) => {return this.#serverBaseURL + "/semester" + hash};
-  #getInfos =(hash) => {return this.#serverBaseURL + "/Infos" + hash};
 
 
 
@@ -172,6 +171,9 @@ Map([<Rule '/sopra/studycourses' (OPTIONS, POST, HEAD, GET, PUT) -> sopra_studyc
     getModule = (hash) => {
       return this.#getSingle(this.#getModuleByHashUrl(hash), Modulebo);
     }
+    getAllModulesForSPO(hash){
+      return this.#getAll(this.#getModulesForSpoUrl(hash), Modulebo)
+    }
     getModuleParts = (hash) => {
       return this.#getSingle(this.#getModulePartsByHashUrl(hash), Modulepartbo);
     }
@@ -211,10 +213,7 @@ Map([<Rule '/sopra/studycourses' (OPTIONS, POST, HEAD, GET, PUT) -> sopra_studyc
     getAllModulesParts = () => {
       return this.#getAll(this.#getAllModulePartsUrl(), Modulepartbo);
     }
-    getInfos = () => {
-      return this.#getAll(this.#getInfos(), Spobo);
-      
-    }
+    
        
 
 
