@@ -178,12 +178,12 @@ class ModuleForm extends Component {
     const { module } = this.props;
     //TODO: Überprüfen, ob diese Methode wirklich alle Moduleparts aus der DB holt
     API.getAPI()
-      .getAllModule()
+      .getAllModuleParts()
       .then((response) => {
         if (module) {
           //TODO: anpassen auf die passende Methode in API
           API.getAPI()
-            .getAllModulepartForMODULE(module.id)
+            .getAllModulePartsForMODULE(module.id)
             .then((modulepart) => {
               //alle moduleparts die in der spo sind aus der response entfernen
               let modulepartOhneModule = response.filter((m) => {
@@ -660,7 +660,7 @@ class ModuleForm extends Component {
                   instructorValidationFailed
                 }
                 variant="contained"
-                onClick={this.updateModule}
+                onClick={this.handleNext}
                 color="primary"
               >
                 {activeStep === 0 ? "Weiter" : "Speichern"}
@@ -688,7 +688,7 @@ class ModuleForm extends Component {
                   !instructorEdited
                 }
                 variant="contained"
-                onClick={this.addModule}
+                onClick={this.handleNext}
                 color="primary"
               >
                 {activeStep === 0 ? "Weiter" : "Hinzufügen"}
