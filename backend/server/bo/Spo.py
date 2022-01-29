@@ -31,13 +31,13 @@ class Spo (Nbo.NamedBo):
         """Setzen des Enddatums der SPO Gültigkeit """
         self._end_semester = end_semester
 
-    def get_studycourse_id(self):
+    def get_studycourse(self):
         """Auslesen des Studienganges"""
-        return self._studycourse_id
+        return self._studycourse
 
-    def set_studycourse_id(self, studycourse: int):
+    def set_studycourse(self, studycourse: int):
         """Setzen des Studiengangs"""
-        self._studycourse_id = studycourse
+        self._studycourse = studycourse
 
     def get_modules(self):
         return self._modules
@@ -56,7 +56,7 @@ class Spo (Nbo.NamedBo):
                    f'name: {self._name}, title: {self._title}, '
                    f'start Semester: {self.get_start_semester()}, '
                    f'end Semester: {self.get_end_semester()}, '
-                   f'studycourse: {self.get_studycourse_id()}'
+                   f'studycourse: {self.get_studycourse()}'
                    )
         return astring
 
@@ -66,7 +66,7 @@ class Spo (Nbo.NamedBo):
             'title': self.get_title(),
             'start_semester': self.get_start_semester(),
             'end_semester': self.get_end_semester(),
-            'studycourse_id': self.get_studycourse_id(),
+            'studycourse_id': self.get_studycourse(),
             'modules': self.get_modules()
             })
 
@@ -79,14 +79,14 @@ class Spo (Nbo.NamedBo):
         obj.set_title(dictionary["title"])                  # Teil von NamedBo!
         obj.set_start_semester(dictionary["start_semester"])
         obj.set_end_semester(dictionary["end_semester"])
-        obj.set_studycourse_id(dictionary["studycourse"])
+        obj.set_studycourse(dictionary["studycourse"])
         obj.set_modules(dictionary["modules"])
         return obj
 
     def __eq__(self, other):
         return super().__eq__(other) and self.get_start_semester() == other.get_start_semester() and \
                self.get_end_semester() == other.get_endsemester() and \
-               self.get_studycourse_id() == other.get_studycourse_id()
+               self.get_studycourse() == other.get_studycourse()
 
     __hash__ = Nbo.NamedBo.__hash__
 
