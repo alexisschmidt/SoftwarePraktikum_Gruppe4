@@ -459,12 +459,16 @@ export class ModulepartForm extends Component {
  */}
 
 <Grid item xs={12} sm={8} md={8}>
-                    <TextField label="Sprache" fullWidth select value={language?language:""} onChange={(e) => this.setState({language_id:e.target.value})}>
-                        {language?language.map(s => <MenuItem key={s.id} value={s.id}>{s.language}</MenuItem>):<MenuItem value="">Keine Sprache zur auswahl vorhanden</MenuItem>}
+<TextField label="Sprache" fullWidth select value={language?language:""} error={languageValidationFailed}>
+                        {languageList?languageList.map(s => <MenuItem key={s.id} value={s.id}
+                        onClick={() => this.languageDropdownValueClick(s)}
+                        >{s.name}</MenuItem>):<MenuItem value="">Kein Sprache vorhanden</MenuItem>}
                     </TextField>
                 </Grid>
 
-            {/* <TextField
+               
+
+            <TextField
               autoFocus
               type="text"
               required
@@ -475,15 +479,15 @@ export class ModulepartForm extends Component {
               value={connection}
               onChange={this.textFieldValueChange}
               error={connectionValidationFailed}
-            /> */}
+            /> 
 
-<Grid item xs={12} sm={8} md={8}>
+{/* <Grid item xs={12} sm={8} md={8}>
                     <TextField label="Verbindung zu anderen Modulteilen" fullWidth select value={connection?connection:""} onChange={(e) => this.setState({connection_id:e.target.value})}>
                         {connection?connection.map(s => <MenuItem key={s.id} value={s.id}>{s.connection}</MenuItem>):<MenuItem value="">Keine möfliche Verbindung vorhanden</MenuItem>}
                     </TextField>
-                </Grid>
+                </Grid> */}
 
-           {/*  <TextField
+            <TextField
               autoFocus
               type="text"
               required
@@ -496,15 +500,15 @@ export class ModulepartForm extends Component {
               error={literatureValidationFailed}
             />
 
- */}
+ 
 
-<Grid item xs={12} sm={8} md={8}>
+{/* <Grid item xs={12} sm={8} md={8}>
                     <TextField label="Literatur für das Modulteil" fullWidth select value={literature?literature:""} onChange={(e) => this.setState({literature_id:e.target.value})}>
                         {literature?literature.map(s => <MenuItem key={s.id} value={s.id}>{s.literature}</MenuItem>):<MenuItem value="">Keine literature vorhanden</MenuItem>}
                     </TextField>
-                </Grid>
+                </Grid> */}
 
-           {/*  <TextField
+             <TextField
               autoFocus
               type="text"
               required
@@ -516,13 +520,13 @@ export class ModulepartForm extends Component {
               onChange={this.textFieldValueChange}
               error={sourcesValidationFailed}
             />
- */}
+ 
 
-<Grid item xs={12} sm={8} md={8}>
+{/* <Grid item xs={12} sm={8} md={8}>
                     <TextField label="Quellen" fullWidth select value={sources?sources:""} onChange={(e) => this.setState({sources_id:e.target.value})}>
                         {sources?sources.map(s => <MenuItem key={s.id} value={s.id}>{s.sources}</MenuItem>):<MenuItem value="">Keine Quellen vorhanden</MenuItem>}
                     </TextField>
-                </Grid>
+                </Grid> */}
 
            {/*  <TextField
               autoFocus
@@ -538,8 +542,10 @@ export class ModulepartForm extends Component {
             /> */}
 
 <Grid item xs={12} sm={8} md={8}>
-                    <TextField label="Semester" fullWidth select value={semester?semester:""} onChange={(e) => this.setState({semester_id:e.target.value})}>
-                        {semester?semester.map(s => <MenuItem key={s.id} value={s.id}>{s.semester}</MenuItem>):<MenuItem value="">Keine Semester zur auswahl vorhanden</MenuItem>}
+<TextField label="Semester" fullWidth select value={semester?semester:""} error={semesterValidationFailed}>
+                        {semesterList?semesterList.map(s => <MenuItem key={s.id} value={s.id}
+                        onClick={() => this.semesterDropdownValueClick(s)}
+                        >{s.name}</MenuItem>):<MenuItem value="">Kein Semester vorhanden</MenuItem>}
                     </TextField>
                 </Grid>
 
@@ -559,8 +565,10 @@ export class ModulepartForm extends Component {
           
 
 <Grid item xs={12} sm={8} md={8}>
-                    <TextField label="Professor" fullWidth select value={professor?professor:""} onChange={(e) => this.setState({professor_id:e.target.value})}>
-                        {professor?professor.map(s => <MenuItem key={s.id} value={s.id}>{s.professor}</MenuItem>):<MenuItem value="">Keine Professor zur auswahl vorhanden</MenuItem>}
+<TextField label="Professor" fullWidth select value={professor?professor:""} error={professorValidationFailed}>
+                        {instructorList?instructorList.map(s => <MenuItem key={s.id} value={s.id}
+                        onClick={() => this.instructorDropdownValueClick(s)}
+                        >{s.name}</MenuItem>):<MenuItem value="">Kein Professor vorhanden</MenuItem>}
                     </TextField>
                 </Grid> 
                 
