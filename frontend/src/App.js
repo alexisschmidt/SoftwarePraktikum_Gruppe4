@@ -13,9 +13,7 @@ import ContextErrorMessage from "./components/dialogs/ContextErrorMessage";
 import SpoStudent from "./components/pages/SpoStudent";
 import About from "./components/pages/About";
 import Admin from "./components/pages/AdminSpoAnsicht";
-// import List from './components/pages/List';
 //import Spoliste from './components/pages/Spoliste';
-// import DateAndTime from './components/content/DateAndTime';
 // import StudyCourses from './components/pages/StudyCourses';
 import AllStudyCourses from './components/AllStudycourses';
 // import SpoAuswählenOMM from './components/pages/SpOAuswählenOMM';
@@ -24,12 +22,9 @@ import SpoStudyCoursesList from './components/SpoStudyCoursesList';
 import AdminSpoAnsicht from './components/AdminSpoAnsicht';
 import AdminSpoEdit from './components/AdminSpoEdit';
 import AdminTable from './components/content/AdminTable';
-import './App.css'
 import AdminStudiengangAuswahl from "./components/pages/AdminStudiengangAuswahl";
 import SpoForm from "./components/pages/SpoForm";
 import Administration from "./components/pages/SpoManagement";
-import SpoAuswahlStudent from "./components/pages/SpoAuswahlStudent";
-import AuswahlStudentAdmin from "./components/pages/AuswahlStudentAdmin";
 import SpoUeberblick from "./components/pages/SpoUeberblick";
 
 

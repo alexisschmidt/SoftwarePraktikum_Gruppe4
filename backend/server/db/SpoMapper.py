@@ -48,10 +48,6 @@ class SpoMapper(Mapper):
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        # finden der zugehörigen Module in der DB:
-        cursor.execute(f"SELECT module_hash FROM spocomposition WHERE spo_hash={hashcode}")
-        modules = list(cursor)
-
         # erstellen des Objekts
         try:
             (id, creationdate, createdby, name, title, studycourse_hash) = tuples[0]
@@ -62,7 +58,6 @@ class SpoMapper(Mapper):
             spo.set_name(name)
             spo.set_title(title)
             spo.set_studycourse(studycourse_hash)
-            spo.set_modules(modules)
             result = spo
         except IndexError:
             result = None
@@ -92,30 +87,16 @@ class SpoMapper(Mapper):
     def find_all_by_studycourse(self, studycoursehash: int):
         result = []
         cursor = self._cnx.cursor()
-
-        # finden der SPOs in der DB:
-        command = "SELECT * FROM spo " \
-                  f"WHERE studycourse_hash ={studycoursehash}"
-        cursor.execute(command)
+        cursor.execute(f"SELECT spo_hash FROM spo "
+                       f"WHERE studycourse_hash={studycoursehash}")
         tuples = cursor.fetchall()
 
-        # Erstellen einer Liste von Objekten
-        for (id, creationdate, createdby, name, title, spo_hash, studycourse_hash) \
-                in tuples:
-            cursor.execute(f"SELECT module_hash FROM spocomposition WHERE spo_hash={spo_hash}")
-            modules = list(cursor.fetchall())
-            spo = Spo()
-            spo.set_id(id)
-            spo.set_creationdate(creationdate)
-            spo.set_creator(createdby)
-            spo.set_name(name)
-            spo.set_title(title)
-            spo.set_studycourse(studycourse_hash)
-            spo.set_modules(modules)
-            result.append(spo)
+        for spo_hash in tuples:
+            result.append(spo_hash[0])
 
         self._cnx.commit()
         cursor.close()
+
         return result
 
     def find_latest_by_studycourse(self, studycoursehash: int):

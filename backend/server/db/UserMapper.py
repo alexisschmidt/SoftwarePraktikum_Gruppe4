@@ -57,11 +57,11 @@ class UserMapper(Mapper):
         return result
 
     def find_by_hash(self, hashcode):
-	
+
         result = None
 
         cursor = self._cnx.cursor()
-        command = f"SELECT * user WHERE user_hash={hashcode}"
+        command = f"SELECT * FROM user WHERE user_hash={hashcode}"
         cursor.execute(command)
         tuples = cursor.fetchall()
 
@@ -100,7 +100,7 @@ class UserMapper(Mapper):
                 user.set_id(1)
 
         command = "INSERT INTO user (id, creationdate, createdby, " \
-                  "firstname, lastname, email, google_user_id, isadmin, user_hash, spo_hash) "\
+                  "firstname, lastname, email, google_user_id, isadmin, user_hash, spo_hash) " \
                   "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
         data = (user.get_id(), user.get_creationdate(), user.get_creator(),
                 user.get_firstname(), user.get_lastname(), user.get_email(),
@@ -139,26 +139,27 @@ class UserMapper(Mapper):
         self._cnx.commit()
         cursor.close()
 
-    def find_by_google_user_id(self, google_user_id):
+    def find_by_google_user_id(self, gid):
         """Suchen eines Benutzers mit vorgegebener Google ID. Da diese eindeutig ist,
         wird genau ein Objekt zurückgegeben.
 
-        :param google_user_id die Google ID des gesuchten Users.
+        :param gid die Google ID des gesuchten Users.
         :return User-Objekt, das die übergebene Google ID besitzt,
             None bei nicht vorhandenem DB-Tupel.
         """
         result = None
 
         cursor = self._cnx.cursor()
-        command = "SELECT id, creationdate, createdby, firstname, lastname, email, google_user_id, user_hash, spo_hash " \
+        command = "SELECT id, creationdate, createdby, " \
+                  "firstname, lastname, email, google_user_id, user_hash, spo_hash " \
                   "FROM user " \
-                  f"WHERE google_user_id='{google_user_id}'"
+                  f"WHERE google_user_id='{gid}'"
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-
         try:
-            (id, creationdate, createdby, firstname, lastname, email, google_user_id, isadmin, user_hash, spo_hash) = tuples[0]
+            (id, creationdate, createdby, firstname, lastname, email, google_user_id, isadmin, user_hash, spo_hash) = \
+                tuples[0]
             user = User()
             user.set_id(id)
             user.set_creator(createdby)
@@ -173,38 +174,6 @@ class UserMapper(Mapper):
         except IndexError:
             # Der IndexError wird oben beim Zugriff auf tuples[0] auftreten, wenn der vorherige SELECT-Aufruf
             # keine Tupel liefert, sondern tuples = cursor.fetchall() eine leere Sequenz zurückgibt.
-            result = None
-
-        self._cnx.commit()
-        cursor.close()
-
-        return result
-
-    def find_by_google_user_id(self, google_user_id):
-        result = None
-
-        cursor = self._cnx.cursor()
-        command = "SELECT id, creationdate,createdby, firstname, lastname, email, google_user_id, isadmin, user_hash, spo_hash FROM user WHERE google_user_id LIKE '{}'".format(google_user_id)
-        cursor.execute(command)
-        tuples = cursor.fetchall()
-
-        try:
-            (id, creationdate,createdby, firstname, lastname, email, google_user_id, isadmin, user_hash, spo_hash) = tuples[0]
-            user = User()
-            user.set_id(id)
-            user.set_creator(createdby)
-            user.set_creationdate(creationdate)
-            user.set_firstname(firstname)
-            user.set_lastname(lastname)
-            user.set_email(email)
-            user.set_google_user_id(google_user_id)
-            user.set_isadmin(isadmin)
-            user.set_spo(spo_hash)
-            result = user
-
-        except IndexError:
-            """Der IndexError wird oben beim Zugriff auf tuples[0] auftreten, wenn der vorherige SELECT-Aufruf
-            keine Tupel liefert, sondern tuples = cursor.fetchall() eine leere Sequenz zurück gibt."""
             result = None
 
         self._cnx.commit()
