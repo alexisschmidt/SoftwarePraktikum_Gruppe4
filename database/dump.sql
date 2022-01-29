@@ -19,6 +19,24 @@ CREATE SCHEMA IF NOT EXISTS `spoverwaltung` DEFAULT CHARACTER SET utf8mb4 COLLAT
 USE `spoverwaltung` ;
 
 -- -----------------------------------------------------
+-- Table `spoverwaltung`.`examtype`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `spoverwaltung`.`examtype` ;
+
+CREATE TABLE IF NOT EXISTS `spoverwaltung`.`examtype` (
+  `id` INT NOT NULL,
+  `creationdate` DATETIME NOT NULL,
+  `createdby` BIGINT NOT NULL,
+  `name` VARCHAR(45) NOT NULL,
+  `title` VARCHAR(45) NOT NULL,
+  `examtype_hash` BIGINT NOT NULL,
+  PRIMARY KEY (`examtype_hash`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
 -- Table `spoverwaltung`.`module`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `spoverwaltung`.`module` ;
@@ -35,8 +53,8 @@ CREATE TABLE IF NOT EXISTS `spoverwaltung`.`module` (
   `edvnr` INT NOT NULL,
   `workload` VARCHAR(2000) NOT NULL,
   `module_hash` BIGINT NOT NULL,
-  `moduletype_hash` VARCHAR(45) NOT NULL,
-  `examtype_hash` VARCHAR(45) NOT NULL,
+  `moduletype_hash` BIGINT NOT NULL,
+  `examtype_hash` BIGINT NOT NULL,
   `instructor_hash` BIGINT NOT NULL,
   PRIMARY KEY (`module_hash`))
 ENGINE = InnoDB
@@ -69,6 +87,24 @@ CREATE TABLE IF NOT EXISTS `spoverwaltung`.`modulepart` (
   `professor_hash` BIGINT NOT NULL,
   `module_hash` BIGINT NOT NULL,
   PRIMARY KEY (`modulepart_hash`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `spoverwaltung`.`moduletype`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `spoverwaltung`.`moduletype` ;
+
+CREATE TABLE IF NOT EXISTS `spoverwaltung`.`moduletype` (
+  `id` INT NOT NULL,
+  `creationdate` DATETIME NOT NULL,
+  `createdby` BIGINT NOT NULL,
+  `name` VARCHAR(45) NOT NULL,
+  `title` VARCHAR(45) NOT NULL,
+  `moduletype_hash` BIGINT NOT NULL,
+  PRIMARY KEY (`moduletype_hash`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -173,8 +209,8 @@ CREATE TABLE IF NOT EXISTS `spoverwaltung`.`studycourse` (
   `createdby` BIGINT NOT NULL,
   `name` VARCHAR(45) NOT NULL,
   `title` VARCHAR(45) NOT NULL,
-  `studycourse_hash` BIGINT NOT NULL,
-  PRIMARY KEY (`studycourse_hash`))
+  `examtype_hash` BIGINT NOT NULL,
+  PRIMARY KEY (`examtype_hash`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -196,42 +232,6 @@ CREATE TABLE IF NOT EXISTS `spoverwaltung`.`user` (
   `user_hash` BIGINT NOT NULL,
   `spo_hash` BIGINT NULL DEFAULT NULL,
   PRIMARY KEY (`user_hash`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
-
-
--- -----------------------------------------------------
--- Table `spoverwaltung`.`moduletype`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `spoverwaltung`.`moduletype` ;
-
-CREATE TABLE IF NOT EXISTS `spoverwaltung`.`moduletype` (
-  `id` INT NOT NULL,
-  `creationdate` DATETIME NOT NULL,
-  `createdby` BIGINT NOT NULL,
-  `name` VARCHAR(45) NOT NULL,
-  `title` VARCHAR(45) NOT NULL,
-  `studycourse_hash` BIGINT NOT NULL,
-  PRIMARY KEY (`studycourse_hash`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
-
-
--- -----------------------------------------------------
--- Table `spoverwaltung`.`examtype`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `spoverwaltung`.`examtype` ;
-
-CREATE TABLE IF NOT EXISTS `spoverwaltung`.`examtype` (
-  `id` INT NOT NULL,
-  `creationdate` DATETIME NOT NULL,
-  `createdby` BIGINT NOT NULL,
-  `name` VARCHAR(45) NOT NULL,
-  `title` VARCHAR(45) NOT NULL,
-  `examtype_hash` BIGINT NOT NULL,
-  PRIMARY KEY (`examtype_hash`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
