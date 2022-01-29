@@ -39,6 +39,10 @@ class ModuleForm extends Component {
       edvnrValidationFailed: false,
       edvnrEdited: false,
 
+      type: null,
+      typeValidationFailed: false,
+      typeEdited: false,
+
       ects: null,
       ectsValidationFailed: false,
       ectsEdited: false,
@@ -77,9 +81,16 @@ class ModuleForm extends Component {
       activeStep: 0,
 
       //Variablen für die Modulauswahl
+      
       modulepart: [],
       modulepartInModule: [],
       checked: [],
+
+      //variablen für dropdowns
+      
+      examtypeList: null,
+      instructorList: null,
+      moduletypeList: null,
     };
     this.baseState = this.state;
   }
@@ -99,6 +110,8 @@ class ModuleForm extends Component {
     newModule.setOutcome(this.state.outcome);
     newModule.setExamtype(this.state.examtype);
     newModule.setInstructor(this.state.instructor);
+    newModule.setType(this.state.type);
+
 
     let moduleparts = [];
     for (let modulepart of this.state.modulepartInSPO) {
@@ -106,19 +119,13 @@ class ModuleForm extends Component {
     }
     newModule.setModules(moduleparts);
 
-    /* API.getAPI().getAllModules().then(response => {
-      this.setState({
-          Modules:response,
-          })  
-      }).catch(e => {
-          this.setState({
-              appError: e
-          }); */
+    
 
     API.getAPI()
       .addModule(newModule)
       .then((module) => {
         this.setState(this.baseState);
+        this.getInfos();
         this.props.onClose(module); //Aufrufen parent in backend
       })
       .catch((e) =>
@@ -167,6 +174,27 @@ class ModuleForm extends Component {
     });
   };
 
+  
+     
+
+  
+
+  examtypeDropdownValueClick = (examtype) => {
+    this.setState({
+      examtype: examtype.id,
+      examtypeValidationFailed: false,
+      examtypeEdited: true,
+    });
+  };
+
+  instructorDropdownValueClick = (instructor) => {
+    this.setState({
+      instructor: instructor.id,
+      instructorValidationFailed: false,
+      instructorEdited: true,
+    });
+  };
+
   getInfos = () => {
     if (this.props.module) {
       const { module } = this.props;
@@ -182,9 +210,48 @@ class ModuleForm extends Component {
         outcome: module.outcome,
         examtype: module.examtype,
         instructor: module.instructor,
-        //anpassen von id?
+        type: module.type,
+        
       });
     }
+    
+    
+
+      API.getAPI()
+      .getAllExamtype()
+      .then((response) => {
+        this.setState({
+          examtypeList: response,
+        });
+      })
+      .catch((e) => {
+        this.setState({
+          appError: e,
+        });
+      });
+
+      API.getAPI()
+      .getAllPersons()
+      .then((response) => {
+        this.setState({
+          instructorList: response,
+        });
+      })
+      .catch((e) => {
+        this.setState({
+          appError: e,
+        });
+      });
+      API.getAPI().getAllModuletype().then(response =>{
+        this.setState({
+          moduletypeList: response
+        })
+      }).catch((e) => {
+        this.setState({
+          appError: e,
+        });
+      });
+
   };
   getModulepart = () => {
     const { module } = this.props;
@@ -339,6 +406,13 @@ class ModuleForm extends Component {
       examtypeValidationFailed,
       instructor,
       instructorValidationFailed,
+      type,
+      typeValidationFailed,
+     
+      examtypeList,
+      instructorList,
+      moduletypeList,
+
     } = this.state;
     return (
       <>
@@ -369,7 +443,7 @@ class ModuleForm extends Component {
             error={titleValidationFailed}
           />
 
-         {/*  <TextField
+          <TextField
             type="text"
             required
             fullWidth
@@ -379,17 +453,12 @@ class ModuleForm extends Component {
             value={edvnr}
             onChange={this.numberValueChange}
             error={edvnrValidationFailed}
-          /> */}
+          />
 
-          <Grid item xs={12} sm={8} md={8}>
-                    <TextField label="EDV-Nr." fullWidth select value={edvnr?edvnr:""} onChange={(e) => this.setState({edvnr_id:e.target.value})} error={edvnrValidationFailed}>
-                        {edvnr?edvnr.map(s => <MenuItem key={s.id} value={s.id}>{s.edvnr}</MenuItem>):<MenuItem value="">Keine EDV-Nr. vorhanden</MenuItem>}
-                    </TextField>
 
-                    
-           </Grid>
+        
 
-          {/* <TextField
+<TextField
             type="text"
             required
             fullWidth
@@ -399,15 +468,11 @@ class ModuleForm extends Component {
             value={ects}
             onChange={this.numberValueChange}
             error={ectsValidationFailed}
-          /> */}
+          />
 
-<Grid item xs={12} sm={8} md={8}>
-                    <TextField label="ECTS" fullWidth select value={ects?ects:""} onChange={(e) => this.setState({ects_id:e.target.value})} error={ectsValidationFailed}>
-                        {ects?ects.map(s => <MenuItem key={s.id} value={s.id}>{s.ects}</MenuItem>):<MenuItem value="">Keine ECTS vorhanden</MenuItem>}
-                    </TextField>
-                </Grid>
+      
 
-         {/*  <TextField
+<TextField
             type="text"
             required
             fullWidth
@@ -417,34 +482,13 @@ class ModuleForm extends Component {
             value={workload}
             onChange={this.numberValueChange}
             error={workloadValidationFailed}
-          /> */}
+          />
 
-<Grid item xs={12} sm={8} md={8}>
-                    <TextField label="Arbeitsaufwand " fullWidth select value={workload?workload:""} onChange={(e) => this.setState({workload_id:e.target.value})}  error={workloadValidationFailed}>
-                        {workload?workload.map(s => <MenuItem key={s.id} value={s.id}>{s.workload}</MenuItem>):<MenuItem value="">Keine Daten für den Arbeitsaufwand vorhanden</MenuItem>}
-                    </TextField>
-                </Grid>
 
-          {/* <TextField
-            autoFocus
-            type="text"
-            required
-            fullWidth
-            id="requirement"
-            label="Voraussetzung für das Module"
-            variant="outlined"
-            value={requirement}
-            onChange={this.textFieldValueChange}
-            error={requirementValidationFailed}
-          /> */}
 
-<Grid item xs={12} sm={8} md={8}>
-                    <TextField label="Voraussetzung für das Modul" fullWidth select value={requirement?requirement:""} onChange={(e) => this.setState({requirement_id:e.target.value})} error={requirementValidationFailed}>
-                        {requirement?requirement.map(s => <MenuItem key={s.id} value={s.id}>{s.requirement}</MenuItem>):<MenuItem value="">Keine Daten vorhanden</MenuItem>}
-                    </TextField>
-                </Grid>
 
-          {/* <TextField
+
+          <TextField
             autoFocus
             type="text"
             required
@@ -456,52 +500,47 @@ class ModuleForm extends Component {
             onChange={this.textFieldValueChange}
             error={outcomeValidationFailed}
           />
- */}
+ 
 
-<Grid item xs={12} sm={8} md={8}>
-                    <TextField label="Outcome - Ziel des Modules " fullWidth select value={outcome?outcome:""} onChange={(e) => this.setState({outcome_id:e.target.value})} error={outcomeValidationFailed}>
-                        {outcome?outcome.map(s => <MenuItem key={s.id} value={s.id}>{s.outcome}</MenuItem>):<MenuItem value="">Keine Daten vorhanden</MenuItem>}
-                    </TextField>
-                </Grid>
 
-          {/* <TextField
+          <TextField
             autoFocus
             type="text"
             required
             fullWidth
-            id="examtype"
-            label="examtype"
+            id="requirement"
+            label="Zulassungsvoraussetzung"
             variant="outlined"
-            value={examtype}
+            value={requirement}
             onChange={this.textFieldValueChange}
-            error={examtypeValidationFailed}
+            error={requirementValidationFailed}
           />
- */}
+ 
 
 <Grid item xs={12} sm={8} md={8}>
-                    <TextField label="Prüfungsart" fullWidth select value={examtype?examtype:""} onChange={(e) => this.setState({examtype_id:e.target.value})} error={examtypeValidationFailed}>
-                        {examtype?examtype.map(s => <MenuItem key={s.id} value={s.id}>{s.examtype}</MenuItem>):<MenuItem value="">Kein Prüfungsart vorhanden</MenuItem>}
+                    <TextField label="Prüfungsart" fullWidth select value={examtype?examtype:""} error={examtypeValidationFailed}>
+                        {examtypeList?examtypeList.map(s => <MenuItem key={s.id} value={s.id}
+                        onClick={() => this.studyCourseDropdownValueClick(s)}
+                        >{s.name}</MenuItem>):<MenuItem value="">Kein Prüfungsart vorhanden</MenuItem>}
                     </TextField>
                 </Grid>
-         {/*  <TextField
-            autoFocus
-            type="text"
-            required
-            fullWidth
-            id="instructor"
-            label="instructur"
-            variant="outlined"
-            value={instructor}
-            onChange={this.numberValueChange}
-            error={instructorValidationFailed}
-          /> */}
+         
 
 <Grid item xs={12} sm={8} md={8}>
-                    <TextField label="Modulverantwortlicher" fullWidth select value={instructor?instructor:""} onChange={(e) => this.setState({instructor:e.target.value})} error={instructorValidationFailed}>
-                        {instructor?instructor.map(s => <MenuItem key={s.id} value={s.id}>{s.instructor}</MenuItem>):<MenuItem value="">Kein Dozent vorhanden</MenuItem>}
+                    <TextField label="Modulverantwortlicher" fullWidth select value={instructor?instructor:""} error={instructorValidationFailed}>
+                        {instructorList?instructorList.map(s => <MenuItem key={s.id} value={s.id}
+                        onClick={() => this.instructorDropdownValueClick(s)}
+                        >{s.firstname + " "+ s.lastname}</MenuItem>):<MenuItem value="">Kein Dozent vorhanden</MenuItem>}
                     </TextField>
                 </Grid>
           
+                <Grid item xs={12} sm={8} md={8}>
+                    <TextField label="Modulart" fullWidth select value={type?type:""} error={typeValidationFailed}>
+                        {moduletypeList?moduletypeList.map(s => <MenuItem key={s.id} value={s.id}
+                        onClick={() => this.typeDropdownValueClick(s)}
+                        >{s.name}</MenuItem>):<MenuItem value="">Kein Modulart vorhanden</MenuItem>}
+                    </TextField>
+                </Grid>
         </form>
       </>
     );

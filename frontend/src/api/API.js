@@ -5,6 +5,9 @@ import Semesterbo from "./BusinessObjects/Semesterbo";
 import Spobo from "./BusinessObjects/Spobo";
 import StudyCoursebo from "./BusinessObjects/StudyCoursebo";
 import Userbo from "./BusinessObjects/Userbo";
+import Examtypebo from "./BusinessObjects/Examtypebo";
+import Moduletypebo from "./BusinessObjects/Moduletypebo"
+
 
 
 
@@ -57,6 +60,11 @@ Map([<Rule '/sopra/studycourses' (OPTIONS, POST, HEAD, GET, PUT) -> sopra_studyc
   #getUserByHashUrl = (userHash) => { return this.#serverBaseURL + "/user/" + userHash; }
   #getSpoByHashUrl = (hash) => {return this.#serverBaseURL + "/spo/" + hash};
   #getSemesterByHashUrl = (hash) => {return this.#serverBaseURL + "/semester" + hash};
+  #getExamtypeByHashUrl = (hash) => {return this.#serverBaseURL + "/examtype" + hash};
+  #getModuletypeByHashUrl = (hash) => {return this.#serverBaseURL + "/moduleype" + hash};
+  #getAllExamTypeUrl = () => {return this.#serverBaseURL + "/examtype"};
+  #getAllModuleTypeUrl = () => {return this.#serverBaseURL + "/moduletype"};
+
 
 
 
@@ -212,6 +220,12 @@ Map([<Rule '/sopra/studycourses' (OPTIONS, POST, HEAD, GET, PUT) -> sopra_studyc
     }
     getAllModulesParts = () => {
       return this.#getAll(this.#getAllModulePartsUrl(), Modulepartbo);
+    }
+    getAllExamtype = () => {
+      return this.#getAll(this.#getAllExamTypeUrl(), Examtypebo);
+    }
+    getAllModuletype = () =>{
+      return this.#getAll(this.#getAllModuleTypeUrl(), Moduletypebo);
     }
     
        
