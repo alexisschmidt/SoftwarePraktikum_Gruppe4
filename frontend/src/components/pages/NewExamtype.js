@@ -2,27 +2,20 @@ import React, { Component } from 'react'
 import {Button, TextField,} from '@mui/material';
 import API from '../../api/API';
 import { ExamTypebo } from '../../api/BusinessObjects' 
-import ErrorHandler from '../atomic/ErrorHandler';
+import ContextErrorMessage from "../dialogs/ContextErrorMessage";
 
 
 export class NewExamtype extends Component {
     constructor(props) {
         super(props)
     
-        //generate some random id 
-        var randomID = 9999+Math.floor(Math.random() * 10000);
-        /* var date= new Date().toISOString().slice(0, -5); */
+       
 
         this.state = {
-            ExamType:[],
-            id:randomID,
-            hash:"",
-            name:"",
-            title:"",
-            /* aenderungs_datum: date,
-            letzte_aenderung_person: "", */
-           /*  deprecates: null,
-            deprecated: false, */
+            id:null,
+            name:null,
+            title:null,
+           
             appError: null,
         
         }
@@ -33,7 +26,6 @@ export class NewExamtype extends Component {
         const {setLoading} = this.props
         var ExamType = new ExamTypebo();
         ExamType.setID(this.state.id);
-        ExamType.setHash(this.state.hash);
         ExamType.setName(this.state.name);
         ExamType.setTitle(this.state.title);
       
@@ -50,19 +42,10 @@ export class NewExamtype extends Component {
         
         
     }
-    /* handleClick = (pa) => {
-        this.setState({
-            id:pa.id,
-            hash:pa.hash,
-            name:pa.name,
-            titel_englisch:pa.titel_englisch,
-            aenderungs_datum: pa.aenderungs_datum,
-            letzte_aenderung_person: pa.letzte_aenderung_person,
-        })
-    } */
+   
 
     render() {
-        const {name, title, appError, examtype} = this.state;
+        const {name, title, appError,} = this.state;
         return (
             <>
                
@@ -87,19 +70,10 @@ export class NewExamtype extends Component {
                   value={title}
                 />
 
-<TextField onChange={(event)=>this.setState({examtype:event.target.value})}
-                  autoFocus
-                  margin="dense"
-                  id="examtype"
-                  label="Prüfungsart"
-                  type="text"
-                  fullWidth
-                  variant="standard"
-                  value={examtype}
-                />
+
                
                 <Button variant="contained" color="primary" onClick={this.handleSave}> Speichern </Button>
-                {appError?<ErrorHandler appError={appError} />:null}
+                {appError?<ContextErrorMessage appError={appError} />:null}
           </>
         )
     }

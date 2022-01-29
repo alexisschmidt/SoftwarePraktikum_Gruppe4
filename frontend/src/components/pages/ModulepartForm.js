@@ -12,7 +12,6 @@ import {
   TextField,
   MenuItem,
   Grid,
-  ListItem,
   } from "@mui/material";
 
 import CloseIcon from "@material-ui/icons/Close";
@@ -116,6 +115,7 @@ export class ModulepartForm extends Component {
       .then((modulepart) => {
         this.props.getmodulepart();
         this.setState(this.baseState);
+        this.getInfos()
         this.props.onClose(modulepart); //Aufrufen parent in backend
       })
       .catch((e) =>
@@ -182,9 +182,9 @@ export class ModulepartForm extends Component {
 
   instructorDropdownValueClick = (instructor) => {
     this.setState({
-      instructor: instructor.id,
-      instructorValidationFailed: false,
-      instructorEdited: true,
+      professor: instructor.id,
+      professorValidationFailed: false,
+      professorEdited: true,
     });
   };
 
@@ -215,8 +215,7 @@ export class ModulepartForm extends Component {
       this.setState({
         languageList: response,
       });
-    })
-    .catch((e) => {
+    }).catch((e) => {
       this.setState({
         appError: e,
       });
@@ -228,8 +227,7 @@ export class ModulepartForm extends Component {
       this.setState({
         semesterList: response,
       });
-    })
-    .catch((e) => {
+    }).catch((e) => {
       this.setState({
         appError: e,
       });
@@ -444,7 +442,7 @@ export class ModulepartForm extends Component {
                     </TextField>
                 </Grid> */}
 
-           {/*  <TextField
+           <TextField
               autoFocus
               type="text"
               required
@@ -456,15 +454,15 @@ export class ModulepartForm extends Component {
               onChange={this.textFieldValueChange}
               error={languageValidationFailed}
             />
- */}
 
-<Grid item xs={12} sm={8} md={8}>
+
+{/* <Grid item xs={12} sm={8} md={8}>
 <TextField label="Sprache" fullWidth select value={language?language:""} error={languageValidationFailed}>
                         {languageList?languageList.map(s => <MenuItem key={s.id} value={s.id}
                         onClick={() => this.languageDropdownValueClick(s)}
                         >{s.name}</MenuItem>):<MenuItem value="">Kein Sprache vorhanden</MenuItem>}
                     </TextField>
-                </Grid>
+                </Grid> */}
 
                
 
@@ -541,14 +539,11 @@ export class ModulepartForm extends Component {
               error={semesterValidationFailed}
             /> */}
 
-<Grid item xs={12} sm={8} md={8}>
 <TextField label="Semester" fullWidth select value={semester?semester:""} error={semesterValidationFailed}>
                         {semesterList?semesterList.map(s => <MenuItem key={s.id} value={s.id}
                         onClick={() => this.semesterDropdownValueClick(s)}
                         >{s.name}</MenuItem>):<MenuItem value="">Kein Semester vorhanden</MenuItem>}
                     </TextField>
-                </Grid>
-
             {/* <TextField
               autoFocus
               type="text"
@@ -564,13 +559,11 @@ export class ModulepartForm extends Component {
             */}
           
 
-<Grid item xs={12} sm={8} md={8}>
 <TextField label="Professor" fullWidth select value={professor?professor:""} error={professorValidationFailed}>
                         {instructorList?instructorList.map(s => <MenuItem key={s.id} value={s.id}
                         onClick={() => this.instructorDropdownValueClick(s)}
-                        >{s.name}</MenuItem>):<MenuItem value="">Kein Professor vorhanden</MenuItem>}
+                        >{s.firstname+" "+s.lastname}</MenuItem>):<MenuItem value="">Kein Professor vorhanden</MenuItem>}
                     </TextField>
-                </Grid> 
                 
                 </form>
           <LoadingProgress show={addingInProgress || updatingInProgress} />
