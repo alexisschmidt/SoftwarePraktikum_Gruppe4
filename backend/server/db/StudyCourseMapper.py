@@ -10,22 +10,18 @@ class StudyCourseMapper(Mapper):
     def find_all(self):
         result = []
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT id, creationdate, createdby, name, title, studycourse_hash FROM studycourse")
+
+        # finden der SPO in der DB:
+        command = f"SELECT studycourse_hash " \
+                  f"FROM studycourse"
+        cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for (id, creationdate, createdby, name, title, studycourse_hash) in tuples:
-            studycourse = StudyCourse()
-            studycourse.set_id(id)
-            studycourse.set_creationdate(creationdate)
-            studycourse.set_creator(createdby)
-            studycourse.set_name(name)
-            studycourse.set_title(title)
-
-            result.append(studycourse)
+        for schash in tuples:
+            result.append(schash[0])
 
         self._cnx.commit()
         cursor.close()
-
         return result
 
     def find_by_name(self, name):
@@ -73,14 +69,16 @@ class StudyCourseMapper(Mapper):
         result = None
 
         cursor = self._cnx.cursor()
-        command = "SELECT * studycourse WHERE studycourse_hash={}".format(hashcode)
+        command = f"SELECT id, creationdate, createdby, name, title FROM studycourse WHERE studycourse_hash={hashcode}"
         cursor.execute(command)
         tuples = cursor.fetchall()
 
         try:
-            (id, creationdate, name, title) = tuples[0]
+            (id, creationdate, createdby, name, title) = tuples[0]
             studycourse = StudyCourse()
             studycourse.set_id(id)
+            studycourse.set_creationdate(creationdate)
+            studycourse.set_creator(createdby)
             studycourse.set_name(name)
             studycourse.set_title(title)
 
