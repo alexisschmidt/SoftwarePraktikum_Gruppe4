@@ -38,7 +38,7 @@ export class NewModuletype extends Component {
         Semester.setTitle(this.state.title);
       
         setLoading(`saveNewSemester`, true)
-        API.getAPI().addModuletype(Semester).then(response => {
+        API.getAPI().addSemester(Semester).then(response => {
             setLoading(`saveNewSemester`, false)
             this.props.handleClose()
         }).catch(e => {

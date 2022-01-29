@@ -78,6 +78,14 @@ export class ModulepartForm extends Component {
 
       updatingError: null,
       updatingInProgress: false,
+  
+
+    //variablen für dropdowns
+    languageList: null,
+    semesterList: null,
+    instructorList: null,
+
+      
     };
     this.baseState = this.state;
   }
@@ -156,6 +164,30 @@ export class ModulepartForm extends Component {
     });
   };
 
+
+  languageDropdownValueClick = (language) => {
+    this.setState({
+      language: language.id,
+      laguageValidationFailed: false,
+      languageEdited: true,
+    });
+  };
+  semesterDropdownValueClick = (semester) => {
+    this.setState({
+      semester: semester.id,
+      semesterValidationFailed: false,
+      semesterEdited: true,
+    });
+  };
+
+  instructorDropdownValueClick = (instructor) => {
+    this.setState({
+      instructor: instructor.id,
+      instructorValidationFailed: false,
+      instructorEdited: true,
+    });
+  };
+
   getInfos = () => {
     if (this.props.modulepart) {
       const { modulepart } = this.props;
@@ -174,10 +206,49 @@ export class ModulepartForm extends Component {
         sources: modulepart.sources,
         semester: modulepart.semester,
         professor: modulepart.professor,
-        //anpassen von id?
+        
       });
     }
+    API.getAPI()
+    .getAllLanguage()
+    .then((response) => {
+      this.setState({
+        languageList: response,
+      });
+    })
+    .catch((e) => {
+      this.setState({
+        appError: e,
+      });
+    });
+
+    API.getAPI()
+    .getAllSemester()
+    .then((response) => {
+      this.setState({
+        semesterList: response,
+      });
+    })
+    .catch((e) => {
+      this.setState({
+        appError: e,
+      });
+    });
+    API.getAPI().getAllProfessor().then(response =>{
+      this.setState({
+        instructorList: response
+      })
+    }).catch((e) => {
+      this.setState({
+        appError: e,
+      });
+    });
+
+
   };
+
+
+
 
   handleClose = () => {
     this.setState(this.baseState);
@@ -235,6 +306,10 @@ export class ModulepartForm extends Component {
       professorValidationFailed,
       professorEdited,
 
+      languageList,
+      semesterList,
+      instructorList,
+
       addingInProgress,
       addingError,
       updatingInProgress,
@@ -278,7 +353,7 @@ export class ModulepartForm extends Component {
               error={nameValidationFailed}
             />
 
-            {/* <TextField
+            <TextField
               type="text"
               required
               fullWidth
@@ -288,15 +363,15 @@ export class ModulepartForm extends Component {
               value={description}
               onChange={this.textFieldValueChange}
               error={descriptionValidationFailed}
-            /> */}
+            /> 
 
-<Grid item xs={12} sm={8} md={8}>
+{/* <Grid item xs={12} sm={8} md={8}>
                     <TextField label="Bezeichnung des Modulteils" fullWidth select value={description?description:""} onChange={(e) => this.setState({description_id:e.target.value})}>
                         {description?description.map(s => <MenuItem key={s.id} value={s.id}>{s.description}</MenuItem>):<MenuItem value="">Keine Bezeichnung vorhanden</MenuItem>}
                     </TextField>
-                </Grid>
+                </Grid> */}
 
-            {/* <TextField
+            <TextField
               type="text"
               required
               fullWidth
@@ -306,15 +381,15 @@ export class ModulepartForm extends Component {
               value={edvnr}
               onChange={this.numberValueChange}
               error={edvnrValidationFailed}
-            /> */}
+            />
 
-<Grid item xs={12} sm={8} md={8}>
+{/* <Grid item xs={12} sm={8} md={8}>
                     <TextField label="EDV-Nr" fullWidth select value={edvnr?edvnr:""} onChange={(e) => this.setState({edvnr_id:e.target.value})}>
                         {edvnr?edvnr.map(s => <MenuItem key={s.id} value={s.id}>{s.edvnr}</MenuItem>):<MenuItem value="">Keine EDV-NR. vorhanden</MenuItem>}
                     </TextField>
-                </Grid>
+                </Grid> */}
 
-            {/* <TextField
+            <TextField
               type="text"
               required
               fullWidth
@@ -324,15 +399,15 @@ export class ModulepartForm extends Component {
               value={ects}
               onChange={this.numberValueChange}
               error={ectsValidationFailed}
-            /> */}
+            />
 
-<Grid item xs={12} sm={8} md={8}>
+{/* <Grid item xs={12} sm={8} md={8}>
                     <TextField label="ECTS Punkte" fullWidth select value={ects?ects:""} onChange={(e) => this.setState({ects_id:e.target.value})}>
                         {ects?ects.map(s => <MenuItem key={s.id} value={s.id}>{s.ects}</MenuItem>):<MenuItem value="">Keine ECTS Punkte vorhanden</MenuItem>}
                     </TextField>
-                </Grid>
+                </Grid> */}
 
-           {/*  <TextField
+             <TextField
               type="text"
               required
               fullWidth
@@ -342,15 +417,15 @@ export class ModulepartForm extends Component {
               value={workload}
               onChange={this.textFieldValueChange}
               error={workloadValidationFailed}
-            /> */}
+            /> 
 
-<Grid item xs={12} sm={8} md={8}>
+{/* <Grid item xs={12} sm={8} md={8}>
                     <TextField label="Arbeitsaufwand" fullWidth select value={workload?workload:""} onChange={(e) => this.setState({workload_id:e.target.value})}>
                         {workload?workload.map(s => <MenuItem key={s.id} value={s.id}>{s.workload}</MenuItem>):<MenuItem value="">Keine Daten für Arbeitsaufwand vorhanden</MenuItem>}
                     </TextField>
-                </Grid>
+                </Grid> */}
 
-           {/*  <TextField
+             <TextField
               autoFocus
               type="text"
               required
@@ -361,13 +436,13 @@ export class ModulepartForm extends Component {
               value={sws}
               onChange={this.numberValueChange}
               error={swsValidationFailed}
-            /> */}
+            /> 
 
-<Grid item xs={12} sm={8} md={8}>
+{/* <Grid item xs={12} sm={8} md={8}>
                     <TextField label="Semesterwochenstunden(SWS)zeitliche Umfang" fullWidth select value={sws?sws:""} onChange={(e) => this.setState({sws_id:e.target.value})}>
                         {sws?sws.map(s => <MenuItem key={s.id} value={s.id}>{s.sws}</MenuItem>):<MenuItem value="">Keine Semesterwochenstunden(SWS) vorhanden</MenuItem>}
                     </TextField>
-                </Grid>
+                </Grid> */}
 
            {/*  <TextField
               autoFocus

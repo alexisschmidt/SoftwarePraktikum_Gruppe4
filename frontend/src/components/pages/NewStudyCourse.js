@@ -37,15 +37,15 @@ export class NewStudyCourse extends Component {
         StudyCourse.setName(this.state.name);
         StudyCourse.setTitle(this.state.title);
       
-        setLoading(`saveNewExamtype`, true)
+        setLoading(`saveNewStudyCourse`, true)
         API.getAPI().addStudyCourse(StudyCourse).then(response => {
-            setLoading(`saveNewExamtype`, false)
+            setLoading(`saveNewStudyCourse`, false)
             this.props.handleClose()
         }).catch(e => {
             this.setState({
                 appError: e
             });
-            setLoading(`saveNewExamtype`, false)
+            setLoading(`saveNewStudyCourse`, false)
         });
         
         
