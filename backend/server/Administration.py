@@ -179,8 +179,10 @@ class Administration (object):
         proposal.set_creationdate(datetime.date.today())
         proposal.set_creator(hash(creator))
         with ModuleMapper() as mapper:
-            return mapper.insert(proposal)
-
+            existing = mapper.find_by_hash(hash(proposal))
+            if existing is None:
+                newobj = mapper.insert(proposal)
+                return newobj
     @staticmethod
     def get_module_by_name(name: str):
         """Alle Module mit Namen name auslesen."""
@@ -275,7 +277,7 @@ class Administration (object):
     """Semester-spezifische Methoden"""
 
     @staticmethod
-    def create_semester(proposal: Semester, creator: int):
+    def create_semester(proposal: Semester, creator):
         """
         Legt das Objekt in der Datenbank an und setzt creationate und creator,
         wenn das Zielobjekt noch nicht in der DB existiert.
