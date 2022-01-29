@@ -76,20 +76,21 @@ class Administration extends Component {
       <div className={classes.root}>
         <Paper>
           <LoadingProgress show={loadingInProgress} />
-          <Button variant="contained" onClick={this.spoFormHandler}>
-            SPO ERSTELLEN
+          
+          <Button variant="contained" onClick={this.modulepartFormHandler}>
+            Modulteile ERSTELLEN
           </Button>
           <Button variant="contained" onClick={this.moduleFormHandler}>
             Module ERSTELLEN
           </Button>
-          <Button variant="contained" onClick={this.modulepartFormHandler}>
-            Modulteile ERSTELLEN
+          <Button variant="contained" onClick={this.spoFormHandler}>
+            SPO ERSTELLEN
           </Button>
 
-          <SpoForm show={spoFormIsOpen} onClose={this.spoFormClosed} />
-          <ModuleForm show={moduleFormOpen} onClose={this.moduleFormClosed} />
+          
           <ModulepartForm show={modulepartFormOpen} onClose={this.modulepartFormClosed} />
-
+          <ModuleForm show={moduleFormOpen} onClose={this.moduleFormClosed} />
+          <SpoForm show={spoFormIsOpen} onClose={this.spoFormClosed} />
 
           <ContextErrorMessage
             error={error}
