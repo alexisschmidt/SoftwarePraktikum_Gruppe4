@@ -361,8 +361,8 @@ class SpoForm extends Component {
               select
               value={start_semester ? start_semester : ""}
               onChange={(e) =>
-                this.setState({ start_semester_id: e.target.value })
-              }
+                this.setState({ start_semester_id: e.target.value })}
+                error={start_semesterValidationFailed}
             >
               {start_semester ? (
                 start_semester.map((s) => (
@@ -396,8 +396,8 @@ class SpoForm extends Component {
               select
               value={end_semester ? end_semester : ""}
               onChange={(e) =>
-                this.setState({ end_semester_id: e.target.value })
-              }
+                this.setState({ end_semester_id: e.target.value })}
+              error={end_semesterValidationFailed}
             >
               {end_semester ? (
                 end_semester.map((s) => (
@@ -432,8 +432,8 @@ class SpoForm extends Component {
               select
               value={studyCourse ? studyCourse : ""}
               onChange={(e) =>
-                this.setState({ studycourse_id: e.target.value })
-              }
+                this.setState({ studycourse_id: e.target.value })}
+              error={studyCourseValidationFailed}
             >
               {studyCourse ? (
                 studyCourse.map((s) => (

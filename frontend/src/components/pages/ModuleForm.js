@@ -373,7 +373,7 @@ class ModuleForm extends Component {
           /> */}
 
           <Grid item xs={12} sm={8} md={8}>
-                    <TextField label="EDV-Nr." fullWidth select value={edvnr?edvnr:""} onChange={(e) => this.setState({edvnr_id:e.target.value})}>
+                    <TextField label="EDV-Nr." fullWidth select value={edvnr?edvnr:""} onChange={(e) => this.setState({edvnr_id:e.target.value})} error={edvnrValidationFailed}>
                         {edvnr?edvnr.map(s => <MenuItem key={s.id} value={s.id}>{s.edvnr}</MenuItem>):<MenuItem value="">Keine EDV-Nr. vorhanden</MenuItem>}
                     </TextField>
 
@@ -393,7 +393,7 @@ class ModuleForm extends Component {
           /> */}
 
 <Grid item xs={12} sm={8} md={8}>
-                    <TextField label="ECTS" fullWidth select value={ects?ects:""} onChange={(e) => this.setState({ects_id:e.target.value})}>
+                    <TextField label="ECTS" fullWidth select value={ects?ects:""} onChange={(e) => this.setState({ects_id:e.target.value})} error={ectsValidationFailed}>
                         {ects?ects.map(s => <MenuItem key={s.id} value={s.id}>{s.ects}</MenuItem>):<MenuItem value="">Keine ECTS vorhanden</MenuItem>}
                     </TextField>
                 </Grid>
@@ -411,7 +411,7 @@ class ModuleForm extends Component {
           /> */}
 
 <Grid item xs={12} sm={8} md={8}>
-                    <TextField label="Arbeitsaufwand " fullWidth select value={workload?workload:""} onChange={(e) => this.setState({workload_id:e.target.value})}>
+                    <TextField label="Arbeitsaufwand " fullWidth select value={workload?workload:""} onChange={(e) => this.setState({workload_id:e.target.value})}  error={workloadValidationFailed}>
                         {workload?workload.map(s => <MenuItem key={s.id} value={s.id}>{s.workload}</MenuItem>):<MenuItem value="">Keine Daten für den Arbeitsaufwand vorhanden</MenuItem>}
                     </TextField>
                 </Grid>
@@ -430,7 +430,7 @@ class ModuleForm extends Component {
           /> */}
 
 <Grid item xs={12} sm={8} md={8}>
-                    <TextField label="Voraussetzung für das Modul" fullWidth select value={requirement?requirement:""} onChange={(e) => this.setState({requirement_id:e.target.value})}>
+                    <TextField label="Voraussetzung für das Modul" fullWidth select value={requirement?requirement:""} onChange={(e) => this.setState({requirement_id:e.target.value})} error={requirementValidationFailed}>
                         {requirement?requirement.map(s => <MenuItem key={s.id} value={s.id}>{s.requirement}</MenuItem>):<MenuItem value="">Keine Daten vorhanden</MenuItem>}
                     </TextField>
                 </Grid>
@@ -450,7 +450,7 @@ class ModuleForm extends Component {
  */}
 
 <Grid item xs={12} sm={8} md={8}>
-                    <TextField label="Outcome - Ziel des Modules " fullWidth select value={outcome?outcome:""} onChange={(e) => this.setState({outcome_id:e.target.value})}>
+                    <TextField label="Outcome - Ziel des Modules " fullWidth select value={outcome?outcome:""} onChange={(e) => this.setState({outcome_id:e.target.value})} error={outcomeValidationFailed}>
                         {outcome?outcome.map(s => <MenuItem key={s.id} value={s.id}>{s.outcome}</MenuItem>):<MenuItem value="">Keine Daten vorhanden</MenuItem>}
                     </TextField>
                 </Grid>
@@ -470,7 +470,7 @@ class ModuleForm extends Component {
  */}
 
 <Grid item xs={12} sm={8} md={8}>
-                    <TextField label="Prüfungsart" fullWidth select value={examtype?examtype:""} onChange={(e) => this.setState({examtype_id:e.target.value})}>
+                    <TextField label="Prüfungsart" fullWidth select value={examtype?examtype:""} onChange={(e) => this.setState({examtype_id:e.target.value})} error={examtypeValidationFailed}>
                         {examtype?examtype.map(s => <MenuItem key={s.id} value={s.id}>{s.examtype}</MenuItem>):<MenuItem value="">Kein Prüfungsart vorhanden</MenuItem>}
                     </TextField>
                 </Grid>
@@ -488,7 +488,7 @@ class ModuleForm extends Component {
           /> */}
 
 <Grid item xs={12} sm={8} md={8}>
-                    <TextField label="Dozent / Professor" fullWidth select value={instructor?instructor:""} onChange={(e) => this.setState({instructor:e.target.value})}>
+                    <TextField label="Modulverantwortlicher" fullWidth select value={instructor?instructor:""} onChange={(e) => this.setState({instructor:e.target.value})} error={instructorValidationFailed}>
                         {instructor?instructor.map(s => <MenuItem key={s.id} value={s.id}>{s.instructor}</MenuItem>):<MenuItem value="">Kein Dozent vorhanden</MenuItem>}
                     </TextField>
                 </Grid>
