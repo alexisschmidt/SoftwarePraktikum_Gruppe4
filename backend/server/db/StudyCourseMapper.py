@@ -50,6 +50,24 @@ class StudyCourseMapper(Mapper):
 
         return result
 
+    def find_hash_by_id(self, id: int):
+        result = None
+        cursor = self._cnx.cursor()
+
+        # finden der SPO in der DB:
+        command = f"SELECT studycourse_hash " \
+                  f"FROM studycourse WHERE id={id}"
+        cursor.execute(command)
+        tuples = cursor.fetchall()
+        try:
+            result = tuples[0][0]
+        except IndexError:
+             result = None
+
+        self._cnx.commit()
+        cursor.close()
+        return result
+
     def find_by_hash(self, hashcode):
 
         result = None
@@ -90,7 +108,7 @@ class StudyCourseMapper(Mapper):
 
         command = "INSERT INTO studycourse (id, creationdate, createdby, name, title, studycourse_hash) " \
                   "VALUES (%s,%s,%s,%s,%s,%s)"
-        data = (studycourse.get_id(), studycourse.get_creationdate(), studycourse.get_creator().get_id(),
+        data = (studycourse.get_id(), studycourse.get_creationdate(), studycourse.get_creator(),
                 studycourse.get_name(), studycourse.get_title(), hash(studycourse))
         cursor.execute(command, data)
 

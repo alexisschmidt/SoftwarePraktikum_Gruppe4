@@ -32,7 +32,8 @@ class PersonMapper(Mapper):
 
         result = []
         cursor = self._cnx.cursor()
-        command = "SELECT * FROM person WHERE name LIKE '{}' ORDER BY name".format(name)
+        command = f"SELECT * FROM person " \
+                  f"WHERE lastname LIKE '{name}' ORDER BY lastname"
         cursor.execute(command)
         tuples = cursor.fetchall()
 
@@ -48,6 +49,24 @@ class PersonMapper(Mapper):
         self._cnx.commit()
         cursor.close()
 
+        return result
+
+    def find_hash_by_id(self, id: int):
+        result = None
+        cursor = self._cnx.cursor()
+
+        # finden der SPO in der DB:
+        command = f"SELECT person_hash " \
+                  f"FROM person WHERE id={id}"
+        cursor.execute(command)
+        tuples = cursor.fetchall()
+        try:
+            result = tuples[0][0]
+        except IndexError:
+            result = None
+
+        self._cnx.commit()
+        cursor.close()
         return result
 
     def find_by_hash(self, hashcode):
@@ -88,8 +107,10 @@ class PersonMapper(Mapper):
             else:
                 person.set_id(1)
 
-        command = "INSERT INTO person (id, creationdate, createdby, firstname, lastname, email, person_hash) VALUES (%s,%s,%s,%s,%s,%s,%s)"
-        data = (person.get_id(), person.get_creationdate(), person.get_creator().get_id(), person.get_firstname(), person.get_lastname(), person.get_email(), hash(person))
+        command = "INSERT INTO person (id, creationdate, createdby, firstname, lastname, email, person_hash) " \
+                  "VALUES (%s,%s,%s,%s,%s,%s,%s)"
+        data = (person.get_id(), person.get_creationdate(), person.get_creator(),
+                person.get_firstname(), person.get_lastname(), person.get_email(), hash(person))
         cursor.execute(command, data)
 
         self._cnx.commit()

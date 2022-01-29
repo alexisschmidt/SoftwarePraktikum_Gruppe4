@@ -1,33 +1,24 @@
-import SpoElementbo from './SpoElementbo';
+import SpoElementbo from "./SpoElementbo";
 
-export default class Modulepartbo extends SpoElementbo{
+export default class Modulepartbo extends SpoElementbo {
   /**
    * Constructs a new Modulepartbo object with a given owner.
-   * 
-   * @param {*} aSws - the owner of this Modulepartbo.
-   * @param {*} aLanguage 
-   * @param {*} aDescription
-   * @param {*} aConnection
-   * @param {*} aLiterature
-   * @param {*} aSources
-   * @param {*} aSemester
-   * @param {*} aProfessor
    */
-   constructor(aSws, aLanguage, aDescription, aConnection, aLiterature, aSources, aSemester, aProfessor) {
+  constructor() {
     super();
-    this.sws = aSws;
-	  this.language = aLanguage;
-	  this.description = aDescription;
-	  this.connection = aConnection;
-	  this.literature = aLiterature;
-	  this.sources = aSources;
-	  this.semester = aSemester;
-	  this.professor = aProfessor;
+    this.sws = null;
+    this.language = null;
+    this.description = null;
+    this.connection = null;
+    this.literature = null;
+    this.sources = null;
+    this.semester = null;
+    this.professor = null;
   }
 
   /**
    * Sets the owner of this Modulepartbo.
-   * 
+   *
    * @param {*} aSws - the new owner of this Modulepartbo.
    */
   setSws(aSws) {
@@ -43,10 +34,10 @@ export default class Modulepartbo extends SpoElementbo{
 
   /**
    * Sets the owner of this Modulepartbo.
-   * 
+   *
    * @param {*} aLanguage - the new owner of this Modulepartbo.
    */
-   setLanguage(aLanguage) {
+  setLanguage(aLanguage) {
     this.language = aLanguage;
   }
 
@@ -59,10 +50,10 @@ export default class Modulepartbo extends SpoElementbo{
 
   /**
    * Sets the owner of this Modulepartbo.
-   * 
+   *
    * @param {*} aDescription - the new owner of this Modulepartbo.
    */
-   setDescription(aDescription) {
+  setDescription(aDescription) {
     this.description = aDescription;
   }
 
@@ -75,10 +66,10 @@ export default class Modulepartbo extends SpoElementbo{
 
   /**
    * Sets the owner of this Modulepartbo.
-   * 
+   *
    * @param {*} aConnection - the new owner of this Modulepartbo.
    */
-   setConnection(aConnection) {
+  setConnection(aConnection) {
     this.connection = aConnection;
   }
 
@@ -91,10 +82,10 @@ export default class Modulepartbo extends SpoElementbo{
 
   /**
    * Sets the owner of this Modulepartbo.
-   * 
+   *
    * @param {*} aLiterature - the new owner of this Modulepartbo.
    */
-   setLiterature(aLiterature) {
+  setLiterature(aLiterature) {
     this.literature = aLiterature;
   }
 
@@ -107,10 +98,10 @@ export default class Modulepartbo extends SpoElementbo{
 
   /**
    * Sets the owner of this Modulepartbo.
-   * 
+   *
    * @param {*} aSources - the new owner of this Modulepartbo.
    */
-   setSources(aSources) {
+  setSources(aSources) {
     this.sources = aSources;
   }
 
@@ -118,15 +109,15 @@ export default class Modulepartbo extends SpoElementbo{
    * Gets the owner of this Modulepartbo.
    */
   getSources() {
-    return this.sources
+    return this.sources;
   }
 
   /**
    * Sets the owner of this Modulepartbo.
-   * 
+   *
    * @param {*} aSemester - the new owner of this Modulepartbo.
    */
-   setSemester(aSemester) {
+  setSemester(aSemester) {
     this.semester = aSemester;
   }
 
@@ -134,15 +125,15 @@ export default class Modulepartbo extends SpoElementbo{
    * Gets the owner of this Modulepartbo.
    */
   getSemester() {
-    return this.semester
+    return this.semester;
   }
 
   /**
    * Sets the owner of this Modulepartbo.
-   * 
+   *
    * @param {*} aProfessor - the new owner of this Modulepartbo.
    */
-   setProfessor(aProfessor) {
+  setProfessor(aProfessor) {
     this.professor = aProfessor;
   }
 
@@ -150,9 +141,8 @@ export default class Modulepartbo extends SpoElementbo{
    * Gets the owner of this Modulepartbo.
    */
   getProfessor() {
-    return this.professor
-  }  
-
+    return this.professor;
+  }
 
   /**
    * Returns an Array of Modulepartbo from a given JSON structure
@@ -164,7 +154,7 @@ export default class Modulepartbo extends SpoElementbo{
       modulepart.forEach((a) => {
         Object.setPrototypeOf(a, Modulepartbo.prototype);
         result.push(a);
-      })
+      });
     } else {
       // Es handelt sich offenbar um ein singuläres Objekt
       let a = modulepart;

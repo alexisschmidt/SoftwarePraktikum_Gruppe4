@@ -13,37 +13,32 @@ class SpoValidityMapper(Mapper):
         # bestimmen der ID der SpoValidity-Zeile
         cursor.execute("SELECT MAX(id) AS maxidv1 FROM spovalidity")
         tuples1 = cursor.fetchall()
-        newidv1 = 1
-        for (maxidv1) in tuples1:
-            if maxidv1[0] is not None:
-                newidv1 = maxidv1[0] + 1
+        maxidv1 = tuples1[0][0]
+        if maxidv1 is not None:
+            newidv1 = maxidv1 + 1
+        else: newidv1 = 1
 
         # spovalidity Zeile anlegen. Ist Endsemester nicht bestimmt, so wird nur für das Startsemester angelegt,
         # anderen Falls werden beide Einträge erstellt.
-        startsemcommand = "INSERT INTO spovalidity (id, spo_hash, semester_hash, startsem, endsem) " \
+        startsemcommand = "INSERT INTO spovalidity (id, spo_hash, semester_hash, startsem) " \
                           "VALUES " \
-                          f"(id={newidv1}, spo_hash={hash(spo)}, " \
-                          f"semester_hash={spo.get_start_semester()}, " \
-                          f"startsem=1, endsem=0)"
+                          f"({newidv1}, {hash(spo)}, " \
+                          f"{spo.get_start_semester()}, " \
+                          f"1)"
 
-        cursor.execute("SELECT MAX(id) AS maxidv2 FROM spovalidity")
-        tuples2 = cursor.fetchall()
-        newidv2 = 1
-        for (maxidv2) in tuples2:
-            if maxidv2[0] is not None:
-                newidv2 = maxidv2[0] + 1
-
-        endsemcommand = "INSERT INTO spovalidity (id, spo_hash, semester_hash, startsem, endsem) " \
-                        "VALUES " \
-                        f"(id={newidv2}, spo_hash={hash(spo)}, " \
-                        f"semester_hash={spo.get_end_semester()}, " \
-                        f"startsem=0, endsem=1)"
-
-        if valtype == 0:
+        if valtype is False:
             cursor.execute(startsemcommand)
         else:
+            newidv2 = newidv1 + 1
+            endsemcommand = "INSERT INTO spovalidity (id, spo_hash, semester_hash, endsem) " \
+                        "VALUES " \
+                        f"({newidv2}, {hash(spo)}, " \
+                        f"{spo.get_end_semester()}, " \
+                        f"1)"
             cursor.execute(startsemcommand)
+            self._cnx.commit()
             cursor.execute(endsemcommand)
+            
 
         self._cnx.commit()
         cursor.close()
@@ -82,17 +77,17 @@ class SpoValidityMapper(Mapper):
         cursor.close()
         return copy
 
-    def get_validity_id(self, spo: Spo):
+    def find_validities_by_spo(self, spohash: int):
         cursor = self._cnx.cursor()
 
-        startsemcommand = f"SELECT id FROM spovalidity WHERE spo_hash={hash(spo)} AND startsem=1"
-        endsemcommand = f"SELECT id FROM spovalidity WHERE spo_hash={hash(spo)} AND endsem=1"
+        startsemcommand = f"SELECT semester_hash FROM spovalidity WHERE spo_hash={spohash} AND startsem=1"
+        endsemcommand = f"SELECT semester_hash FROM spovalidity WHERE spo_hash={spohash} AND endsem=1"
 
         cursor.execute(startsemcommand)
-        startid = int(cursor.fetchall())
+        startid = cursor.fetchone()
 
         cursor.execute(endsemcommand)
-        endid = int(cursor.fetchall())
+        endid = cursor.fetchone()
         return [startid, endid]
 
     def update_validity(self, spo: Spo, ids: list[int]):

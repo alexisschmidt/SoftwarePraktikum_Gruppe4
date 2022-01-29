@@ -13,23 +13,18 @@ import ContextErrorMessage from "./components/dialogs/ContextErrorMessage";
 import SpoStudent from "./components/pages/SpoStudent";
 import About from "./components/pages/About";
 import Admin from "./components/pages/AdminSpoAnsicht";
-// import List from './components/pages/List';
 //import Spoliste from './components/pages/Spoliste';
-// import DateAndTime from './components/content/DateAndTime';
 // import StudyCourses from './components/pages/StudyCourses';
 import AllStudyCourses from './components/AllStudycourses';
-import SpoAuswählenOMM from './components/pages/SpOAuswählenOMM';
+// import SpoAuswählenOMM from './components/pages/SpOAuswählenOMM';
 import Spowi from './components/pages/Spowi';
 import SpoStudyCoursesList from './components/SpoStudyCoursesList';
 import AdminSpoAnsicht from './components/AdminSpoAnsicht';
 import AdminSpoEdit from './components/AdminSpoEdit';
 import AdminTable from './components/content/AdminTable';
-import './App.css'
 import AdminStudiengangAuswahl from "./components/pages/AdminStudiengangAuswahl";
 import SpoForm from "./components/pages/SpoForm";
 import Administration from "./components/pages/SpoManagement";
-import SpoAuswahlStudent from "./components/pages/SpoAuswahlStudent";
-import AuswahlStudentAdmin from "./components/pages/AuswahlStudentAdmin";
 import SpoUeberblick from "./components/pages/SpoUeberblick";
 
 
@@ -137,7 +132,7 @@ Globales CSS-Reset und Browser-Normalisierung. CssBaseline startet eine elegante
 									<Route path="/adminspoedit" exact component={AdminSpoEdit}/>
 									{/* <Route path="/admin/:spoID/spoansicht" exact component={AdminSpoAnsicht}/> */}
 									{/*<Route path="/spoansicht" exact component={AdminSpoAnsicht}/>*/}
-									<Route path="/Spoauswahl2" exact comonent={SpoAuswählenOMM}/>
+									{/* <Route path="/Spoauswahl2" exact comonent={SpoAuswählenOMM}/> */}
 									<Route path="/Spoauswahl" exact comonent={Spowi}/>
                   <Route path="/SpoForm" exact component={SpoForm} />
 									{/*<Route path="/Altespo" exact component ={}/>*/}
@@ -146,11 +141,6 @@ Globales CSS-Reset und Browser-Normalisierung. CssBaseline startet eine elegante
                   <Route path="/Administration"
                     exact
                     component={Administration}
-                  />
-                  <Route
-                    path="/Spoauswahl2"
-                    exact
-                    component={SpoAuswählenOMM}
                   />
                    <Route path="/Spoauswahl" exact component={Spowi} />
                    <Route

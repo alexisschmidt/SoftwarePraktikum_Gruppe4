@@ -85,6 +85,20 @@ class ModuleMapper(Mapper):
         cursor.close()
         return result
 
+    def find_hash_by_id(self, mid: int):
+        result = None
+        cursor = self._cnx.cursor()
+
+        # finden des Moduls in der DB:
+        command = f"SELECT module_hash FROM module WHERE id={mid}"
+        cursor.execute(command)
+        tuples = cursor.fetchall()
+        try:
+            result = tuples[0][0]
+        except IndexError:
+            result = None
+        return result
+
     def find_by_hash(self, hashcode: int):
 	
         result = None
@@ -133,32 +147,15 @@ class ModuleMapper(Mapper):
 
         # finden der Module anhand der SPO:
         cursor = self._cnx.cursor()
-        command = "SELECT module.id, module.creationdate, module.createdby, module.name, module.title " \
+        command = "SELECT module_hash " \
                   "FROM module " \
                   "LEFT JOIN spocomposition ON module.module_hash = spocomposition.module_hash " \
                   f"WHERE spocomposition.spo_hash = {spohash}"
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for (id, creationdate, createdby, name, title,
-             requirement, examtype, outcome, type,
-             ects, edvnr, workload,
-             instructor_hash) in tuples:
-            module = Module()
-            module.set_id(id)
-            module.set_creationdate(creationdate)
-            module.set_creator(createdby)
-            module.set_name(name)
-            module.set_title(title)
-            module.set_requirement(requirement)
-            module.set_examtype(examtype)
-            module.set_outcome(outcome)
-            module.set_type(type)
-            module.set_ects(ects)
-            module.set_edvnr(edvnr)
-            module.set_workload(workload)
-            module.set_instructor(instructor_hash)
-            result.append(module)
+        for (module_hash) in tuples:
+            result.append(module_hash)
 
         self._cnx.commit()
         cursor.close()
@@ -183,7 +180,7 @@ class ModuleMapper(Mapper):
                   "ects, edvnr, workload, " \
                   "module_hash, instructor_hash)" \
                   "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-        data = (module.get_id(), module.get_creationdate(), module.get_creator().get_id(), module.get_name(), module.get_title(),
+        data = (module.get_id(), module.get_creationdate(), module.get_creator(), module.get_name(), module.get_title(),
                 module.get_requirement(), module.get_examtype(), module.get_outcome(), module.get_type(),
                 module.get_ects(), module.get_edvnr(), module.get_workload(),
                 hash(module), module.get_instructor())
