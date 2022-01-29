@@ -66,7 +66,7 @@ class Spo (Nbo.NamedBo):
             'title': self.get_title(),
             'start_semester': self.get_start_semester(),
             'end_semester': self.get_end_semester(),
-            'studycourse_id': self.get_studycourse(),
+            'studycourse': self.get_studycourse(),
             'modules': self.get_modules()
             })
 

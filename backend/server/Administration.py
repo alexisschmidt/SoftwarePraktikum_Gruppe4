@@ -349,7 +349,7 @@ class Administration (object):
         with UserMapper() as mapper:
             return mapper.find_all()
 
-    def save_user(self, user, creator: int):
+    def save_user(self, user):
         with UserMapper() as mapper:
             mapper.update(user)
 

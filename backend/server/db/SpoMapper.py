@@ -174,12 +174,12 @@ class SpoMapper(Mapper):
                 f"WHERE spo_hash ={spo_hash}")
             spos.append(cursor.fetchall())
         for i in spos:
-            for (id, creationdate, name, title, studycourse_id) in i:
+            for (id, creationdate, name, title, studycourse_hash) in i:
                 spo = Spo()
                 spo.set_id(id)
                 spo.set_name(name)
                 spo.set_title(title)
-                spo.set_studycourse(studycourse_id)
+                spo.set_studycourse(studycourse_hash)
                 result.append(spo)
 
         self._cnx.commit()
