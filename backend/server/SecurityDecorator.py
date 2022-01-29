@@ -4,12 +4,13 @@ import google.oauth2.id_token
 from server.bo.User import User
 
 from server.Administration import Administration as Admin
+
 """Decorator zur Google Firebase-basierten Authentifizierung von Benutzern"""
 
 
 def secured(function):
     firebase_request_adapter = requests.Request()
-    
+
     def wrapper(*args, **kwargs):
         # Verify Firebase auth
         id_token = request.cookies.get("token")
@@ -30,15 +31,17 @@ def secured(function):
                 if claims is not None:
                     google_user_id = claims.get("user_id")
                     email = claims.get("email")
-                    firstname = claims.get("name")
-                    
-                    if not firstname:
-                        firstname = "Failed to get name"
-                    
+                    fullname = claims.get("name").rsplit(maxsplit=1)  # last word of string is lastname
+                    if not fullname:
+                        fullname = ["N/A", "N/A"]
+                    firstname = fullname[0]
+                    lastname = fullname[1]
+
                     user = Admin.get_user_by_google_user_id(google_user_id)
                     if user is not None:
                         """Fall: Der Benutzer ist unserem System bereits bekannt."""
                         user.set_firstname(firstname)
+                        user.set_lastname(lastname)
                         user.set_email(email)
                         Admin.save_user(user)
                     else:

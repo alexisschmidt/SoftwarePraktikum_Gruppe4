@@ -407,7 +407,7 @@ class Administration (object):
     @staticmethod
     def save_user(user):
         with UserMapper() as mapper:
-            us = mapper.find_by_hash(hash(user))
+            us = mapper.find_by_google_user_id(user.get_google_user_id())
         if us is None:
             mapper.insert(user)
         else:
