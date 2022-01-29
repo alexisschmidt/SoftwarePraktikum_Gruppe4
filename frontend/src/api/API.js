@@ -5,8 +5,8 @@ import Semesterbo from "./BusinessObjects/Semesterbo";
 import Spobo from "./BusinessObjects/Spobo";
 import StudyCoursebo from "./BusinessObjects/StudyCoursebo";
 import Userbo from "./BusinessObjects/Userbo";
-import Examtypebo from "./BusinessObjects/Examtypebo";
-import Moduletypebo from "./BusinessObjects/Moduletypebo"
+import Examtypebo from "./BusinessObjects/ExamTypebo";
+import Moduletypebo from "./BusinessObjects/ModuleTypebo"
 
 
 

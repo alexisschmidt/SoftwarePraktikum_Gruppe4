@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import {Button, TextField,} from '@mui/material';
 import API from '../../api/API';
-import { ExamTypebo } from '../../api/BusinessObjects' 
+import { StudyCoursebo } from '../../api/BusinessObjects';
 import ErrorHandler from '../atomic/ErrorHandler';
 
 
-export class NewExamtype extends Component {
+export class NewStudyCourse extends Component {
     constructor(props) {
         super(props)
     
@@ -14,7 +14,7 @@ export class NewExamtype extends Component {
         /* var date= new Date().toISOString().slice(0, -5); */
 
         this.state = {
-            ExamType:[],
+            StudyCourse:[],
             id:randomID,
             hash:"",
             name:"",
@@ -31,14 +31,14 @@ export class NewExamtype extends Component {
 
     handleSave = () =>{
         const {setLoading} = this.props
-        var ExamType = new ExamTypebo();
-        ExamType.setID(this.state.id);
-        ExamType.setHash(this.state.hash);
-        ExamType.setName(this.state.name);
-        ExamType.setTitle(this.state.title);
+        var StudyCourse = new StudyCoursebo();
+        StudyCourse.setID(this.state.id);
+        StudyCourse.setHash(this.state.hash);
+        StudyCourse.setName(this.state.name);
+        StudyCourse.setTitle(this.state.title);
       
         setLoading(`saveNewExamtype`, true)
-        API.getAPI().addExamtype(ExamType).then(response => {
+        API.getAPI().addStudyCourse(StudyCourse).then(response => {
             setLoading(`saveNewExamtype`, false)
             this.props.handleClose()
         }).catch(e => {
@@ -62,7 +62,7 @@ export class NewExamtype extends Component {
     } */
 
     render() {
-        const {name, title, appError, examtype} = this.state;
+        const {name, title, appError, studycourse} = this.state;
         return (
             <>
                
@@ -87,15 +87,15 @@ export class NewExamtype extends Component {
                   value={title}
                 />
 
-<TextField onChange={(event)=>this.setState({examtype:event.target.value})}
+<TextField onChange={(event)=>this.setState({studycourse:event.target.value})}
                   autoFocus
                   margin="dense"
-                  id="examtype"
-                  label="Prüfungsart"
+                  id="studycourse"
+                  label="Studiengang"
                   type="text"
                   fullWidth
                   variant="standard"
-                  value={examtype}
+                  value={studycourse}
                 />
                
                 <Button variant="contained" color="primary" onClick={this.handleSave}> Speichern </Button>
@@ -105,4 +105,4 @@ export class NewExamtype extends Component {
     }
 }
 
-export default NewExamtype
+export default NewStudyCourse

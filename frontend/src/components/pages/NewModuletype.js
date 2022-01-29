@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import {Button, TextField,} from '@mui/material';
 import API from '../../api/API';
-import { ModuleTypeBO } from '../../api/BusinessObjects';
+import { ModuleTypebo } from '../../api/BusinessObjects';
 import ErrorHandler from '../atomic/ErrorHandler';
 
 
@@ -31,7 +31,7 @@ export class NewModuletype extends Component {
 
     handleSave = () =>{
         const {setLoading} = this.props
-        var ModuleType = new ModuleTypeBO();
+        var ModuleType = new ModuleTypebo();
         ModuleType.setID(this.state.id);
         ModuleType.setHash(this.state.hash);
         ModuleType.setName(this.state.name);
