@@ -133,15 +133,14 @@ class ModuleMapper(Mapper):
 
         # finden der Module anhand der SPO:
         cursor = self._cnx.cursor()
-        command = "SELECT module_hash " \
-                  "FROM module " \
-                  "LEFT JOIN spocomposition ON module.module_hash = spocomposition.module_hash " \
+        command = "SELECT m.module_hash " \
+                  "FROM module m " \
+                  "LEFT JOIN spocomposition ON m.module_hash = spocomposition.module_hash " \
                   f"WHERE spocomposition.spo_hash = {spohash}"
         cursor.execute(command)
         tuples = cursor.fetchall()
-
         for (module_hash) in tuples:
-            result.append(module_hash)
+            result.append(module_hash[0])
 
         self._cnx.commit()
         cursor.close()

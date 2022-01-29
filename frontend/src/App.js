@@ -31,6 +31,7 @@ import Administration from "./components/pages/SpoManagement";
 import SpoAuswahlStudent from "./components/pages/SpoAuswahlStudent";
 import AuswahlStudentAdmin from "./components/pages/AuswahlStudentAdmin";
 import SpoUeberblick from "./components/pages/SpoUeberblick";
+import StudentSpoAnsicht from "./components/StudentSpoAnsicht"
 
 
 class App extends React.Component {
@@ -133,7 +134,8 @@ Globales CSS-Reset und Browser-Normalisierung. CssBaseline startet eine elegante
 									<Route path="/admin" exact component={AllStudyCourses}/>
 									<Route path="/admintable" exact component={AdminTable}/>
 									<Route path="/admin/:studyCourseID" exact component={SpoStudyCoursesList}/>
-									<Route path="/adminansicht" exact component={AdminSpoAnsicht}/>
+                  <Route path="/admin/:studyCourseID/:spoID" exact component={AdminSpoAnsicht}/>
+									<Route path="/studentspoansicht" exact component={StudentSpoAnsicht}/>
 									<Route path="/adminspoedit" exact component={AdminSpoEdit}/>
 									{/* <Route path="/admin/:spoID/spoansicht" exact component={AdminSpoAnsicht}/> */}
 									{/*<Route path="/spoansicht" exact component={AdminSpoAnsicht}/>*/}

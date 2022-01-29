@@ -51,13 +51,13 @@ Map([<Rule '/sopra/studycourses' (OPTIONS, POST, HEAD, GET, PUT) -> sopra_studyc
   #getModulesForSpoUrl = (spoHash) => { return this.#serverBaseURL + "/module/spo/" + spoHash; }
   #getSpoByStartsemesterAndStudycourseUrl = (semesterHash, studycourseHash) => { return this.#serverBaseURL + "/spo-by-startsemester-and-studycourse/" + semesterHash + "/" + studycourseHash; }
   #getUsersByNameUrl = (lastname) => { return this.#serverBaseURL + "/users-by-name/" + lastname; }
-  #getModulePartsByHashUrl = (hash) => { return this.#serverBaseURL + "/moduleparts/" + hash; }
+  #getModulePartsByHashUrl = (hash) => { return this.#serverBaseURL + "/modulepart/" + hash; }
   #getStudyCourseByHashId = (hash) => { return this.#serverBaseURL + "/studycourse/" + hash; }
   #getPersonByHashUrl = (hash) => { return this.#serverBaseURL + "/person/" + hash; }
   #getUserByHashUrl = (userHash) => { return this.#serverBaseURL + "/user/" + userHash; }
   #getSpoByHashUrl = (hash) => {return this.#serverBaseURL + "/spo/" + hash};
   #getSemesterByHashUrl = (hash) => {return this.#serverBaseURL + "/semester" + hash};
-
+  #getAllSpoRelatedURL = (id) => `${this.#serverBaseURL}/spos/studycourse/${id}`;
 
 
 
@@ -175,7 +175,7 @@ Map([<Rule '/sopra/studycourses' (OPTIONS, POST, HEAD, GET, PUT) -> sopra_studyc
       return this.#getAll(this.#getModulesForSpoUrl(hash), Modulebo)
     }
     getModuleParts = (hash) => {
-      return this.#getSingle(this.#getModulePartsByHashUrl(hash), Modulepartbo);
+      return this.#getAll(this.#getModulePartsByHashUrl(hash), Modulepartbo);
     }
     getStudyCourse = (hash) => {
       return this.#getSingle(this.#getStudyCourseByHashId(hash), StudyCoursebo);
@@ -215,6 +215,11 @@ Map([<Rule '/sopra/studycourses' (OPTIONS, POST, HEAD, GET, PUT) -> sopra_studyc
     getAllModulesParts = () => {
       return this.#getAll(this.#getAllModulePartsUrl(), Modulepartbo);
     }
+
+    getAllSpoRelated(studyCourseId) {
+			return this.#getAll(this.#getAllSpoRelatedURL(studyCourseId), Spobo );
+		}
+
     
        
 

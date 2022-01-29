@@ -88,11 +88,11 @@ spo = api.inherit('Spo', namedbo, {
     'start_semester': fields.Integer(attribute='_start_semester', description='Anfangssemester der SPO-gültigkeit'),
     'end_semester': fields.Integer(attribute='_end_semester', description='Endsemester der SPO-gültigkeit'),
     'studycourse': fields.Integer(attribute='_studycourse_id', description='Studycourse der SPO'),
-    'modules':  fields.List(fields.Integer(attribute='_modules', description='Module einer SPO')),
+    'modules':  fields.List(attribute='_modules', cls_or_instance = fields.Integer, description='Module einer SPO'),
 })
 
 spoelement = api.inherit('Spoelement', namedbo, {
-    'edvnr': fields.Integer(attribute='_edvnr', description='EDV nr des Spoelements'),
+    'edvnr': fields.String(attribute='_edvnr', description='EDV nr des Spoelements'),
     'ects': fields.Integer(attribute='_ects', description='Die Anzahl der ECTS des Moduls'),
     'workload': fields.String(attribute='_workload',
                               description='Arbeitszeit für das Spoelement und ihre Zusammensetzung')
@@ -104,7 +104,7 @@ module = api.inherit('Module', spoelement, {
     'outcome': fields.String(attribute='_outcome', description='Outcome des Moduls'),
     'examtype': fields.String(attribute='_examtype', description='Prüfungstyp des Moduls'),
     'instructor': fields.Integer(attribute='_instructor', description='Modulverantwortlicher'),
-    'parts':  fields.List(fields.Integer(attribute='_parts', description='Teile eines Moduls'))
+    'parts':  fields.List(attribute='_parts', cls_or_instance = fields.Integer, description='Teile eines Moduls')
 })
 
 modulepart = api.inherit('Modulepart', spoelement, {
@@ -679,7 +679,7 @@ class StudycourseOperations(Resource):
         Das auszulesende Objekt wird durch die```id```in dem URI bestimmt."""
 
         adm = Administration()
-        sc = adm.get_studycourse_by_id(id)
+        sc = adm.get_all_by_studycourse(id)
         return sc
 
     @secured

@@ -29,7 +29,6 @@ class AdminSpoAnsicht extends Component {
 			semester: [],
             loadingProgress: false,
             error: null,
-            //showStudiengangAnlegenForm: false
 
         };
     }
@@ -57,30 +56,7 @@ class AdminSpoAnsicht extends Component {
             error: null
         });
     }
-
-	getAllModulesById = () => {
-        API.getAPI().getAllModulesById().then(modulebo => {            
-            this.setState({
-                modules: modulebo,
-                loadingProgress: false,
-                error: null
-            });
-        }).catch(e => {
-            this.setState({
-                modules: [],
-                loadingProgress: false,
-                error: e
-            });
-        });
-        
-        this.setState({
-            loadingProgress: true,
-            error: null
-        });
-    }
-
 	getAllModulesBySpoId = () => {
-
         /*
         API.getAPI().getAllModulesBySpohash().then(modules => {            
             this.setState({
@@ -142,91 +118,6 @@ class AdminSpoAnsicht extends Component {
         });
     }
 
-	getAllSemesterById = () => {
-        API.getAPI().getAllSemesterById().then(semesterbo => {            
-            this.setState({
-                semester: semesterbo,
-                loadingProgress: false,
-                error: null
-            });
-        }).catch(e => {
-            this.setState({
-                semester: [],
-                loadingProgress: false,
-                error: e
-            });
-        });
-        
-        this.setState({
-            loadingProgress: true,
-            error: null
-        });
-    }
-
-
-    getAllPersonsById = () => {
-        API.getAPI().getAllPersonsById().then(personbo => {            
-            this.setState({
-                person: personbo,
-                loadingProgress: false,
-                error: null
-            });
-        }).catch(e => {
-            this.setState({
-                person: [],
-                loadingProgress: false,
-                error: e
-            });
-        });
-        
-        this.setState({
-            loadingProgress: true,
-            error: null
-        });
-    }
-
-    getAllSposById = () => {
-        API.getAPI().getAllSposById().then(spobo => {            
-            this.setState({
-                spo: spobo,
-                loadingProgress: false,
-                error: null
-            });
-        }).catch(e => {
-            this.setState({
-                semester: [],
-                loadingProgress: false,
-                error: e
-            });
-        });
-        
-        this.setState({
-            loadingProgress: true,
-            error: null
-        });
-    }
-
-    getAllUsersById = () => {
-        API.getAPI().getAllUsersById().then(userbo => {            
-            this.setState({
-                user: userbo,
-                loadingProgress: false,
-                error: null
-            });
-        }).catch(e => {
-            this.setState({
-                user: [],
-                loadingProgress: false,
-                error: e
-            });
-        });
-        
-        this.setState({
-            loadingProgress: true,
-            error: null
-        });
-    }
-
     CreateStudycoursesFormClosed = event => {
         this.setState({
             showCreateStudycoursesForm: false,
@@ -240,10 +131,10 @@ class AdminSpoAnsicht extends Component {
     
 
     componentDidMount() {
-        const studyCourseId = this.props.match.params.studyCourseID;
+        // const studyCourseId = this.props.match.params.studyCourseID;
         const spoId = this.props.match.params.spoID;
         
-        this.getAllModulesBySpoId(spoId);
+        // this.getAllModulesBySpoId(spoId);
         
         /*
         this.getAllStudycoursesById();
@@ -301,7 +192,8 @@ class AdminSpoAnsicht extends Component {
 
                                         <div className="admin-spo-box-semster">
                                             {/* TODO ALexis. Wenn backend ready, erstze alle static daten mit den aus der dantenbank. module sollte das modul object sein"! */}
-                                            {moduleElement.id}
+                                            {/* {moduleElement.id} */}
+                                            1
                                         </div>
 
                                         <div className="admin-spo-box-edv">
@@ -365,8 +257,12 @@ class AdminSpoAnsicht extends Component {
                                                     </AccordionSummary>
                                                     <AccordionDetails>
                                                         <Typography>
-                                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-                                                            malesuada lacus ex, sit amet blandit leo lobortis eget.
+                                                            Language
+                                                            Literature
+                                                            Sources
+                                                            Connection
+                                                            Description
+                                                            Workload
                                                         </Typography>
                                                     </AccordionDetails>
                                                 </Accordion>

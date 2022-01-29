@@ -64,146 +64,16 @@ class StudentSpoAnsicht extends Component {
         };
     }
 
- 
-
-    getAllStudycoursesById = () => {
-        const id = this.props.match.params.id;
-        API.getAPI().getAllStudycoursesById(id).then(studyCoursebo => {            
+    getModulePartsByHash= (modules) => {
+        API.getAPI().getModulePartsByHash(modules).then(modulesbo => {            
             this.setState({
-                studycourses: studyCoursebo,
-                loadingProgress: false,
-                error: null
-            });
-        }).catch(e => {
-            this.setState({
-                studycourses: [],
-                loadingProgress: false,
-                error: e
-            });
-        });
-        
-        this.setState({
-            loadingProgress: true,
-            error: null
-        });
-    }
-
-	getAllModulesById = () => {
-        API.getAPI().getAllModulesById().then(modulebo => {            
-            this.setState({
-                modules: modulebo,
-                loadingProgress: false,
-                error: null
-            });
-        }).catch(e => {
-            this.setState({
-                modules: [],
-                loadingProgress: false,
-                error: e
-            });
-        });
-        
-        this.setState({
-            loadingProgress: true,
-            error: null
-        });
-    }
-
-	getAllModulePartsById = () => {
-        API.getAPI().getAllModulePartsById().then(modulepartbo => {            
-            this.setState({
-                moduleparts: modulepartbo,
+                moduleparts: modulesbo,
                 loadingProgress: false,
                 error: null
             });
         }).catch(e => {
             this.setState({
                 moduleparts: [],
-                loadingProgress: false,
-                error: e
-            });
-        });
-        
-        this.setState({
-            loadingProgress: true,
-            error: null
-        });
-    }
-
-	getAllSemesterById = () => {
-        API.getAPI().getAllSemesterById().then(semesterbo => {            
-            this.setState({
-                semester: semesterbo,
-                loadingProgress: false,
-                error: null
-            });
-        }).catch(e => {
-            this.setState({
-                semester: [],
-                loadingProgress: false,
-                error: e
-            });
-        });
-        
-        this.setState({
-            loadingProgress: true,
-            error: null
-        });
-    }
-
-
-    getAllPersonsById = () => {
-        API.getAPI().getAllPersonsById().then(personbo => {            
-            this.setState({
-                person: personbo,
-                loadingProgress: false,
-                error: null
-            });
-        }).catch(e => {
-            this.setState({
-                person: [],
-                loadingProgress: false,
-                error: e
-            });
-        });
-        
-        this.setState({
-            loadingProgress: true,
-            error: null
-        });
-    }
-
-    getAllSposById = () => {
-        API.getAPI().getAllSposById().then(spobo => {            
-            this.setState({
-                spo: spobo,
-                loadingProgress: false,
-                error: null
-            });
-        }).catch(e => {
-            this.setState({
-                semester: [],
-                loadingProgress: false,
-                error: e
-            });
-        });
-        
-        this.setState({
-            loadingProgress: true,
-            error: null
-        });
-    }
-
-    getAllUsersById = () => {
-        API.getAPI().getAllUsersById().then(userbo => {            
-            this.setState({
-                user: userbo,
-                loadingProgress: false,
-                error: null
-            });
-        }).catch(e => {
-            this.setState({
-                user: [],
                 loadingProgress: false,
                 error: e
             });
@@ -349,8 +219,29 @@ class StudentSpoAnsicht extends Component {
                                                     </AccordionSummary>
                                                     <AccordionDetails>
                                                         <Typography>
-                                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-                                                            malesuada lacus ex, sit amet blandit leo lobortis eget.
+                                                            <div>
+                                                                Language
+                                                            </div>
+
+                                                            <div>
+                                                                Literature
+                                                            </div>
+
+                                                            <div>
+                                                                Sources
+                                                            </div>
+
+                                                            <div>
+                                                                Connection
+                                                            </div>
+
+                                                            <div>
+                                                                Description
+                                                            </div>
+
+                                                            <div>
+                                                                Workload
+                                                            </div>
                                                         </Typography>
                                                     </AccordionDetails>
                                                 </Accordion>

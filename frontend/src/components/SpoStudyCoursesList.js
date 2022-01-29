@@ -25,19 +25,11 @@ class SpoStudyCoursesList extends Component {
 	componentDidMount() {
 		const id = this.props.match.params.studyCourseID;
 		API.getAPI().getAllSpoRelated(id).then((spos) => {
-            if (spos && spos.length) {
                 this.setState({
                     spoStudyCoursesList: spos,
                     loadingProgress: false,
                     error: null
-                });
-            } else {
-                this.setState({
-                    spoStudyCoursesList: [],
-                    loadingProgress: false,
-                    error: null
-                });
-            }			
+                });			
 		}).catch((error) => {
 			this.setState({
 				loadingProgress: false,
@@ -72,7 +64,7 @@ class SpoStudyCoursesList extends Component {
                         <Button
                             variant="contained"
                             key={spo.id}
-                            onClick={this.onButtonSpoClocked.bind(this, spo.hash)}
+                            onClick={this.onButtonSpoClocked.bind(this, spo.id)}
                             show ={this.props.show}>
                                 {spo.name}
                         </Button>

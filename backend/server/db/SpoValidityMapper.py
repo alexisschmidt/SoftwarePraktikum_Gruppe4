@@ -84,11 +84,11 @@ class SpoValidityMapper(Mapper):
         endsemcommand = f"SELECT semester_hash FROM spovalidity WHERE spo_hash={spohash} AND endsem=1"
 
         cursor.execute(startsemcommand)
-        startid = cursor.fetchone()
+        starthash = cursor.fetchone()[0]
 
         cursor.execute(endsemcommand)
-        endid = cursor.fetchone()
-        return [startid, endid]
+        endhash = cursor.fetchone()[0]
+        return [starthash, endhash]
 
     def update_validity(self, spo: Spo, ids: list[int]):
         cursor = self._cnx.cursor()
