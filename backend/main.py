@@ -139,7 +139,7 @@ semester = api.inherit('Semester', namedbo)
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
 class SpoListOperations(Resource):
     @sposystem.marshal_list_with(spo)
-    # @secured
+    @secured
     def get(self):
         """
         Auslesen aller SPO-Objekte.
@@ -151,7 +151,7 @@ class SpoListOperations(Resource):
 
     @sposystem.marshal_with(spo, code=200)
     @sposystem.expect(spo, validate=True)
-    # @secured
+    @secured
     def post(self, **kwargs):
         """
         Erstellen eines Spo-Objekts in der Datenbank.
@@ -187,7 +187,7 @@ class SpoListOperations(Resource):
 class SpoOperations(Resource):
 
     @sposystem.marshal_with(spo)
-    # @secured
+    @secured
     def get(self, id):
         """
         Auslesen eines bestimmten SPO-Objekts.
@@ -204,7 +204,7 @@ class SpoOperations(Resource):
 class SpoOperations(Resource):
 
     @sposystem.marshal_with(spo)
-    # @secured
+    @secured
     def get(self, spo_hash):
         """
         Auslesen eines bestimmten SPO-Objekts.
@@ -215,7 +215,7 @@ class SpoOperations(Resource):
         print(s)
         return s
 
-    # @secured
+    @secured
     def delete(self, spo_hash):
         """
         Löschen eines bestimmten SPO-Objekts.
@@ -234,7 +234,7 @@ class SpoOperations(Resource):
 class SpoSemStudOperations(Resource):
 
     @sposystem.marshal_with(spo)
-    # @secured
+    @secured
     def get(self, semester_hash, studycourse_hash):
         """
         Auslesen eines bestimmten SPO-Objekts.
@@ -250,12 +250,12 @@ class SpoSemStudOperations(Resource):
 @sposystem.param('id', 'Die ID des SPO-Objekts')
 class SpoOperations(Resource):
     @sposystem.marshal_list_with(spo)
-    # @secured
+    @secured
     def get(self, id):
         s = Admin.get_all_by_studycourse(id)
         return s
 
-    # @secured
+    @secured
     def delete(self, spo_hash):
         s = Admin.get_spo_by_hash(spo_hash)
         Admin.delete_spo(s)
@@ -266,7 +266,7 @@ class SpoOperations(Resource):
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
 class ModuleListOperations(Resource):
     @sposystem.marshal_list_with(module, code=200)
-    # @secured
+    @secured
     def get(self):
 
         modules = Admin.get_all_modules()
@@ -274,7 +274,7 @@ class ModuleListOperations(Resource):
 
     @sposystem.marshal_with(module, code=200)
     @sposystem.expect(module)
-    # @secured
+    @secured
     def post(self, **kwargs):
         """
         Erstellen eines Module-Objekts in der Datenbank.
@@ -294,14 +294,14 @@ class ModuleListOperations(Resource):
 @sposystem.param("id", "Die id des Modules")
 class ModuleOperations(Resource):
     @sposystem.marshal_with(module)
-    # @secured
+    @secured
     def get(self, id):
         """Auslesen eines bestimmten Modul-Objekts"""
 
         mo = Admin.get_module_by_id(id)
         return mo
 
-    # @secured
+    @secured
     def delete(self, id):
         """Löschen eines bestimmten Module-Objekts.
         Das zu löschende Objekt wird durch die ```id``` in dem URI bestimmt."""
@@ -316,14 +316,14 @@ class ModuleOperations(Resource):
 @sposystem.param("module_hash", "Der Hash des Modules")
 class ModuleHashOperations(Resource):
     @sposystem.marshal_with(module)
-    # @secured
+    @secured
     def get(self, module_hash):
         """Auslesen eines durch hash bestimmten Modul-Objekts"""
 
         mo = Admin.get_module_by_hash(module_hash)
         return mo
 
-    # @secured
+    @secured
     def delete(self, module_hash):
         """Löschen eines bestimmten Module-Objekts.
         Das zu löschende Objekt wird durch den hash in dem URI bestimmt."""
@@ -338,7 +338,7 @@ class ModuleHashOperations(Resource):
 @sposystem.param('spo_hash', 'Der Hash der SPO')
 class ModuleSpoOperations(Resource):
     @sposystem.marshal_with(module)
-    # @secured
+    @secured
     def get(self, spo_hash):
         mo = Admin.get_all_by_spo(spo_hash)
         return mo
@@ -348,7 +348,7 @@ class ModuleSpoOperations(Resource):
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
 class ModulePartListOperations(Resource):
     @sposystem.marshal_list_with(modulepart, code=200)
-    # @secured
+    @secured
     def get(self):
 
         moduleparts = Admin.get_all_moduleparts()
@@ -356,7 +356,7 @@ class ModulePartListOperations(Resource):
 
     @sposystem.marshal_with(modulepart)
     @sposystem.expect(modulepart)
-    # @secured
+    @secured
     def post(self, **kwargs):
         """
         Erstellen eines Modulepart-Objekts in der Datenbank.
@@ -375,14 +375,14 @@ class ModulePartListOperations(Resource):
 @sposystem.param("id", "Die id des Moduleparts")
 class ModulePartOperations(Resource):
     @sposystem.marshal_with(modulepart)
-    # @secured
+    @secured
     def get(self, id):
         """Auslesen eines bestimmten Modulepart-Objekts"""
 
         mopart = Admin.get_modulepart_by_id(id)
         return mopart
 
-    # @secured
+    @secured
     def delete(self, id):
         """Löschen eines bestimmten Modulepart-Objekts.
         Das zu löschende Objekt wird durch die ```id``` in dem URI bestimmt."""
@@ -397,7 +397,7 @@ class ModulePartOperations(Resource):
 @sposystem.param("modulepart_hash", "Der Hash des Moduleparts")
 class ModulePartOperations(Resource):
     @sposystem.marshal_with(modulepart)
-    # @secured
+    @secured
     def get(self, modulepart_hash):
         """Auslesen eines durch den Hash bestimmten Modulepart-Objekts"""
 
@@ -411,7 +411,7 @@ class ModulePartOperations(Resource):
 class ModulePartModuleOperations(Resource):
 
     @sposystem.marshal_list_with(modulepart)
-    # @secured
+    @secured
     def get(self, module_hash):
         mopart = Admin.get_modulepart_by_module(module_hash)
         return mopart
@@ -421,7 +421,7 @@ class ModulePartModuleOperations(Resource):
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
 class UserListOperations(Resource):
     @sposystem.marshal_list_with(user)
-    # @secured
+    @secured
     def get(self):
         """
         Auslesen aller User Objekte.
@@ -433,7 +433,7 @@ class UserListOperations(Resource):
 
     @sposystem.marshal_list_with(user, code=200)
     @sposystem.expect(user)
-    # @secured
+    @secured
     def post(self):
         """
         Erstellen eines User-Objekts in der Datenbank.
@@ -449,7 +449,7 @@ class UserListOperations(Resource):
 
     @sposystem.marshal_with(user)
     @sposystem.expect(user, validate=True)
-    # @secured
+    @secured
     def put(self, id):
         """
         Update eines bestimmten User-Objekts.\n
@@ -476,7 +476,7 @@ class UserListOperations(Resource):
 @sposystem.param('lastname', 'Der Hash des User-Objekts')
 class ModuleHashOperations(Resource):
     @sposystem.marshal_with(user)
-    # @secured
+    @secured
     def get(self, user_hash):
         """
         Auslesen eines Customer-Objekts, das durch sein Hash bestimmt wird.\n
@@ -486,7 +486,7 @@ class ModuleHashOperations(Resource):
         us = Admin.get_user_by_hash(user_hash)
         return us
 
-    # @secured
+    @secured
     def delete(self, user_hash: int):
         """
         Löschen eines bestimmten User-Objekts.\n
@@ -503,7 +503,7 @@ class ModuleHashOperations(Resource):
 @sposystem.param('lastname', 'Der Nachname des Users')
 class UserByNameOperations(Resource):
     @sposystem.marshal_with(user)
-    # @secured
+    @secured
     def get(self, lastname):
         """
         Auslesen von Customer-Objekten, die durch den Nachnamen bestimmt werden.\n
@@ -517,7 +517,7 @@ class UserByNameOperations(Resource):
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
 class StudycourseListOperations(Resource):
     @sposystem.marshal_list_with(studycourse)
-    # @secured
+    @secured
     def get(self):
         """
         Auslesen aller SPO-Objekte.
@@ -529,7 +529,7 @@ class StudycourseListOperations(Resource):
 
     @sposystem.marshal_list_with(studycourse, code=200)
     @sposystem.expect(studycourse)
-    # @secured
+    @secured
     def post(self, **kwargs):
         """
         Erstellen eines StudyCourse-Objekts in der Datenbank.
@@ -549,7 +549,7 @@ class StudycourseListOperations(Resource):
 @sposystem.param('id', 'Die ID des Studycourse-Objekts')
 class StudycourseOperations(Resource):
     @sposystem.marshal_with(studycourse)
-    # @secured
+    @secured
     def get(self, id):
         """Auslesen eines bestimmten Studycourse-Objekts.
         Das auszulesende Objekt wird durch die```id```in dem URI bestimmt."""
@@ -557,7 +557,7 @@ class StudycourseOperations(Resource):
         sc = Admin.get_studycourse_by_id(id)
         return sc
 
-    # @secured
+    @secured
     def delete(self, id):
         """Löschen eines bestimmten Studycourse-Objekts.
         Das zu löschende Objekt wird durch die```id```in dem URI bestimmt."""
@@ -572,7 +572,7 @@ class StudycourseOperations(Resource):
 @sposystem.param("studycourse_hash", "Der Hash des Studiengangs")
 class ModulePartOperations(Resource):
     @sposystem.marshal_with(studycourse)
-    # @secured
+    @secured
     def get(self, studycourse_hash):
         sc = Admin.get_studycourse_by_hash(studycourse_hash)
         return sc
@@ -582,7 +582,7 @@ class ModulePartOperations(Resource):
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
 class PersonListOperations(Resource):
     @sposystem.marshal_list_with(person)
-    # @secured
+    @secured
     def get(self):
         """
         Auslesen aller Person-Objekte.
@@ -595,7 +595,7 @@ class PersonListOperations(Resource):
 
     @sposystem.marshal_list_with(person, code=200)
     @sposystem.expect(person)
-    # @secured
+    @secured
     def post(self, **kwargs):
         """
         Erstellen eines Person-Objekts in der Datenbank.
@@ -615,7 +615,7 @@ class PersonListOperations(Resource):
 @sposystem.param('id', 'Die ID des Person-Objekts')
 class PersonOperations(Resource):
     @sposystem.marshal_with(person)
-    # @secured
+    @secured
     def get(self, id):
         """Auslesen eines bestimmten Person-Objekts.
         Das auszulesende Objekt wird durch die```id```in dem URI bestimmt."""
@@ -623,7 +623,7 @@ class PersonOperations(Resource):
         pe = Admin.get_person_by_id(id)
         return pe
 
-    # @secured
+    @secured
     def delete(self, id):
         """Löschen eines bestimmten Person-Objekts.
         Das zu löschende Objekt wird durch die```id```in dem URI bestimmt."""
@@ -638,12 +638,12 @@ class PersonOperations(Resource):
 @sposystem.param("person_hash", "Der Hash der Person")
 class ModulePartOperations(Resource):
     @sposystem.marshal_with(studycourse)
-    # @secured
+    @secured
     def get(self, person_hash):
         pe = Admin.get_person_by_hash(person_hash)
         return pe
 
-    # @secured
+    @secured
     def delete(self, person_hash):
         """Löschen eines bestimmten Person-Objekts.
         Das zu löschende Objekt wird durch die```id```in dem URI bestimmt."""
@@ -657,7 +657,7 @@ class ModulePartOperations(Resource):
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
 class SemesterListOperations(Resource):
     @sposystem.marshal_list_with(semester, code=200)
-    # @secured
+    @secured
     def get(self):
 
         semesters = Admin.get_all_semesters()
@@ -665,7 +665,7 @@ class SemesterListOperations(Resource):
 
     @sposystem.marshal_with(semester, code=200)
     @sposystem.expect(semester)
-    # @secured
+    @secured
     def post(self, **kwargs):
         """
         Erstellen eines Semester-Objekts in der Datenbank.
@@ -684,12 +684,12 @@ class SemesterListOperations(Resource):
 @sposystem.param("studycourse_hash", "Der Hash des Studiengangs")
 class ModulePartOperations(Resource):
     @sposystem.marshal_with(studycourse)
-    # @secured
+    @secured
     def get(self, studycourse_hash):
         sc = Admin.get_studycourse_by_hash(studycourse_hash)
         return sc
 
-    # @secured
+    @secured
     def delete(self, id):
         """Löschen eines bestimmten Semester-Objekts.
         Das zu löschende Objekt wird durch die ```id``` in dem URI bestimmt."""
