@@ -11,7 +11,7 @@ import {
   DialogActions,
   TextField,
   MenuItem,
-  Grid,
+  
   } from "@mui/material";
 
 import CloseIcon from "@material-ui/icons/Close";
@@ -209,20 +209,10 @@ export class ModulepartForm extends Component {
         
       });
     }
-    API.getAPI()
-    .getAllLanguage()
-    .then((response) => {
-      this.setState({
-        languageList: response,
-      });
-    }).catch((e) => {
-      this.setState({
-        appError: e,
-      });
-    });
+    
 
     API.getAPI()
-    .getAllSemester()
+    .getAllSemesters()
     .then((response) => {
       this.setState({
         semesterList: response,
@@ -232,7 +222,7 @@ export class ModulepartForm extends Component {
         appError: e,
       });
     });
-    API.getAPI().getAllProfessor().then(response =>{
+    API.getAPI().getAllPersons().then(response =>{
       this.setState({
         instructorList: response
       })
@@ -304,7 +294,6 @@ export class ModulepartForm extends Component {
       professorValidationFailed,
       professorEdited,
 
-      languageList,
       semesterList,
       instructorList,
 

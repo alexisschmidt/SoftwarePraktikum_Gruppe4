@@ -8,6 +8,9 @@ import SpoForm from "./SpoForm";
 import Button from "@mui/material/Button";
 import ModuleForm from "./ModuleForm";
 import ModulepartForm from "./ModulepartForm";
+import { DialogTitle, Dialog, DialogActions } from "@mui/material";
+import NewModuletype from "./NewModuletype";
+import { DialogContent } from "@mui/material";
 
 class Administration extends Component {
   constructor(props) {
@@ -21,6 +24,9 @@ class Administration extends Component {
       spoFormIsOpen: false,
       moduleFormOpen: false,
       modulepartFormOpen: false,
+      newModuletypeOpen:false,
+      //andere rein
+      dialogtext:"",
     };
   }
 
@@ -50,6 +56,14 @@ class Administration extends Component {
     }
   };
 
+  moduletypeHandler = () =>{
+    this.setState({
+      newModuletypeOpen:true,
+      dialogtext:"neues modultype hinzufügen"
+    })
+  }
+  //andere handler
+
   spoFormClosed = (event) => {
     this.setState({
       spoFormIsOpen: false,
@@ -65,11 +79,20 @@ class Administration extends Component {
       modulepartFormOpen: false,
     });
   };
+  closeDialog = () =>{
+    this.setState({
+      newModuletypeOpen:false,
+      newExamtypeOpen:false,
+      newSemesterOpen:false,
+      newStudycourseOpen:false,
+      dialogtext:"",
+    })
+  }
 
   /** Renders the component */
   render() {
     const { classes } = this.props;
-    const { loadingInProgress, error, spoFormIsOpen, moduleFormOpen, modulepartFormOpen } =
+    const { loadingInProgress, error, spoFormIsOpen, moduleFormOpen, modulepartFormOpen, newModuletypeOpen, newStudycourseOpen, newSemesterOpen, newExamtypeOpen, dialogtext } =
       this.state;
 
     return (
@@ -86,11 +109,26 @@ class Administration extends Component {
           <Button variant="contained" onClick={this.spoFormHandler}>
             SPO ERSTELLEN
           </Button>
+          <Button variant="contained" onClick={this.moduletypeHandler}>
+            Moduletype erstellen
+          </Button>
+          {/**Buttons rein */}
 
           
           <ModulepartForm show={modulepartFormOpen} onClose={this.modulepartFormClosed} />
           <ModuleForm show={moduleFormOpen} onClose={this.moduleFormClosed} />
           <SpoForm show={spoFormIsOpen} onClose={this.spoFormClosed} />
+
+          <Dialog open={newModuletypeOpen||newStudycourseOpen||newSemesterOpen||newExamtypeOpen} onclose={this.closeDialog}>
+            <DialogTitle>{dialogtext}</DialogTitle>
+            <DialogContent>
+            {newModuletypeOpen?<NewModuletype handleClose={this.closeDialog}/>:null}
+            {/***andere sachen rein */}
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={this.closeDialog}>Schließen</Button>
+            </DialogActions>
+          </Dialog>
 
           <ContextErrorMessage
             error={error}

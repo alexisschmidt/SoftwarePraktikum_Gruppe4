@@ -227,7 +227,9 @@ Map([<Rule '/sopra/studycourses' (OPTIONS, POST, HEAD, GET, PUT) -> sopra_studyc
     getAllModuletype = () =>{
       return this.#getAll(this.#getAllModuleTypeUrl(), Moduletypebo);
     }
-    
+    addModuletype = (moduletype) => {
+      return this.#add(this.#getAllModuleTypeUrl(), moduletype, Moduletypebo);
+    }
        
 
 

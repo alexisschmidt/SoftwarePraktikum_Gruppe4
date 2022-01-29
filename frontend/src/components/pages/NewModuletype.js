@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import {Button, TextField,} from '@mui/material';
 import API from '../../api/API';
-import { ModuleTypebo } from '../../api/BusinessObjects';
+import ModuleTypebo  from '../../api/BusinessObjects/ModuleTypebo';
 import ContextErrorMessage from "../dialogs/ContextErrorMessage";
 
 
@@ -23,31 +23,24 @@ export class NewModuletype extends Component {
 
 
     handleSave = () =>{
-        const {setLoading} = this.props
-        var ModuleType = new ModuleTypebo();
-        ModuleType.setID(this.state.id);
-        ModuleType.setName(this.state.name);
-        ModuleType.setTitle(this.state.title);
+        var moduleType = new ModuleTypebo();
+        moduleType.setID(this.state.id);
+        moduleType.setName(this.state.name);
+        moduleType.setTitle(this.state.title);
       
-        setLoading(`saveNewModuletype`, true)
-        API.getAPI().addModuletype(ModuleType).then(response => {
-            setLoading(`saveNewModuletype`, false)
+        API.getAPI().addModuletype(moduleType).then(response => {
             this.props.handleClose()
         }).catch(e => {
             this.setState({
                 appError: e
             });
-            setLoading(`saveNewModuletype`, false)
         });
-        
-        
     }
    
     render() {
         const {name, title, appError,} = this.state;
         return (
             <>
-               
                 <TextField onChange={(event)=>this.setState({name:event.target.value})}
                     autoFocus
                     margin="dense"
@@ -72,7 +65,11 @@ export class NewModuletype extends Component {
 
                
                 <Button variant="contained" color="primary" onClick={this.handleSave}> Speichern </Button>
-                {appError?<ContextErrorMessage appError={appError} />:null}
+                <ContextErrorMessage
+                error={appError}
+                contextErrorMsg={`The Spo could not be added.`}
+                onReload={this.handleSave}
+              />
           </>
         )
     }
