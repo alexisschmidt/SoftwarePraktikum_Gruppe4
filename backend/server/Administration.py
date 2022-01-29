@@ -25,7 +25,8 @@ class Administration (object):
    
     """Spo-spezifische Methoden"""
 
-    def create_spo(self, proposal: Spo, creator):
+    @staticmethod
+    def create_spo(proposal: Spo, creator):
         """
         Legt das Objekt in der Datenbank an und setzt creationate und creator,
         wenn das Zielobjekt noch nicht in der DB existiert.
@@ -59,7 +60,8 @@ class Administration (object):
         else:
             return spo
 
-    def get_spo_by_hash(self, hashcode):
+    @staticmethod
+    def get_spo_by_hash(hashcode):
         """Die SPO mit dem gegebenem Hash auslesen."""
         with SpoMapper() as mapper:
             result = mapper.find_by_hash(hashcode)
@@ -72,7 +74,8 @@ class Administration (object):
             result.set_modules(modules)
         return result
 
-    def get_spo_by_id(self, id: int):
+    @staticmethod
+    def get_spo_by_id(id: int):
         """Die SPO mit der gegebenen ID auslesen."""
         with SpoMapper() as mapper:
             spo = mapper.find_hash_by_id(id)
@@ -86,7 +89,8 @@ class Administration (object):
             result.set_modules(modules)
         return result
 
-    def get_latest_by_studycourse(self, studycourse):
+    @staticmethod
+    def get_latest_by_studycourse(studycourse):
         """Die aktuelle SPO eines Studienganges auslesen"""
         with SpoMapper() as mapper:
             spo = mapper.find_by_latest_creationdate(studycourse)
@@ -100,7 +104,8 @@ class Administration (object):
             result.set_modules(modules)
         return result
 
-    def get_spo_by_startsem_studycourse(self, semesterhash: int, studycoursehash: int):
+    @staticmethod
+    def get_spo_by_startsem_studycourse(semesterhash: int, studycoursehash: int):
         """Die Spo mit den ausgewählten Startsemester und Studiengang auslesen."""
         with SpoMapper() as mapper:
             spo = mapper.find_by_startsemester_and_studycourse(semesterhash, studycoursehash)
@@ -114,7 +119,8 @@ class Administration (object):
             result.set_modules(modules)
         return result
 
-    def get_all_spos(self):
+    @staticmethod
+    def get_all_spos():
         """Alle SPOs auslesen."""
         result = []
         with SpoMapper() as mapper:
@@ -132,19 +138,37 @@ class Administration (object):
             result.append(obj)
         return result
 
-    def get_all_by_studycourse(self, studycourse):
+    @staticmethod
+    def get_all_by_studycourse(studycourseid: int):
         """Alle Spos eines Studienganges auslesen"""
-        with SpoMapper() as mapper:
-            return mapper.find_all_by_studycourse(studycourse)
+        with StudyCourseMapper() as mapper:
+            schash = mapper.find_hash_by_id(studycourseid)
+        result = []
+        with SpoMapper() as spomapper:
+            spos = spomapper.find_all_by_studycourse(schash)
+            for hashcode in spos:
+                obj = spomapper.find_by_hash(hashcode)
+                with SpoValidityMapper() as valmapper:
+                    for i in spos:
+                        vals = valmapper.find_validities_by_spo(i)
+                        obj.set_start_semester(vals[0])
+                        obj.set_end_semester(vals[1])
+                with ModuleMapper() as modmapper:
+                    modules = modmapper.find_by_spo(i)
+                    obj.set_modules(modules)
+                result.append(obj)
+            return result
 
-    def delete_spo(self, spo):
+    @staticmethod
+    def delete_spo(spo):
         """Die gegebene Spo aus unserem System löschen."""
         with SpoMapper() as mapper:
             mapper.delete(spo)
 
     """Modul-spezifische Methoden"""
 
-    def create_module(self, proposal: Module, creator):
+    @staticmethod
+    def create_module(proposal: Module, creator):
         """
         Legt das Objekt in der Datenbank an und setzt creationate und creator,
         wenn das Zielobjekt noch nicht in der DB existiert.
@@ -157,38 +181,45 @@ class Administration (object):
         with ModuleMapper() as mapper:
             return mapper.insert(proposal)
 
-    def get_module_by_name(self, name: str):
+    @staticmethod
+    def get_module_by_name(name: str):
         """Alle Module mit Namen name auslesen."""
         with ModuleMapper() as mapper:
             return mapper.find_by_name(name)
 
-    def get_module_by_id(self, id: int):
+    @staticmethod
+    def get_module_by_id(id: int):
         with ModuleMapper() as mapper:
             modhash = mapper.find_hash_by_id(id)
             return mapper.find_by_hash(modhash)
 
-    def get_module_by_hash(self, modulehash):
+    @staticmethod
+    def get_module_by_hash(modulehash):
         """Das Modul mit dem gegebenem Hash auslesen."""
         with ModuleMapper() as mapper:
             return mapper.find_by_hash(modulehash)
 
-    def get_all_modules(self):
+    @staticmethod
+    def get_all_modules():
         """Alle module auslesen."""
         with ModuleMapper() as mapper:
             return mapper.find_all()
 
-    def get_all_by_spo(self, spohash: int):
+    @staticmethod
+    def get_all_by_spo(spohash: int):
         """Gibt alle Module einer SPO aus"""
         with ModuleMapper() as mapper:
             return mapper.find_all_by_spo(spohash)
 
-    def delete_module(self, module):
+    @staticmethod
+    def delete_module(module):
         with ModuleMapper() as mapper:
             mapper.delete(module)
 
     """Modulteil-spezifische Methoden"""
 
-    def create_modulepart(self, proposal: Modulepart, creator):
+    @staticmethod
+    def create_modulepart(proposal: Modulepart, creator):
         """
         Legt das Objekt in der Datenbank an und setzt creationate und creator,
         wenn das Zielobjekt noch nicht in der DB existiert.
@@ -201,43 +232,50 @@ class Administration (object):
         with ModulePartMapper() as mapper:
             return mapper.insert(proposal)
 
-    def get_modulepart_by_name(self, name):
+    @staticmethod
+    def get_modulepart_by_name(name):
         """Alle Modulteile mit Namen name auslesen."""
         with ModulePartMapper() as mapper:
             return mapper.find_by_name(name)
 
-    def get_modulepart_by_id(self, id: int):
+    @staticmethod
+    def get_modulepart_by_id(id: int):
         with ModulePartMapper() as mapper:
             mphash = mapper.find_hash_by_id(id)
             return mapper.find_by_hash(mphash)
 
-    def get_modulepart_by_module(self, modulehash):
+    @staticmethod
+    def get_modulepart_by_module(modulehash):
         result = []
         with ModulePartMapper() as mapper:
-            mp = mapper.find_hash_by_module(modulehash)
-            for hash in mp:
-                obj = mapper.find_by_hash(hash)
+            mparts = mapper.find_hash_by_module(modulehash)
+            for mparthash in mparts:
+                obj = mapper.find_by_hash(mparthash)
                 result.append(obj)
         return result
 
-    def get_modulepart_by_hash(self, hashcode):
+    @staticmethod
+    def get_modulepart_by_hash(hashcode):
         """Das Modulteil mit dem gegebenem Hash auslesen."""
         with ModuleMapper() as mapper:
             return mapper.find_by_hash(hashcode)
 
-    def get_all_moduleparts(self):
+    @staticmethod
+    def get_all_moduleparts():
         """Alle Modulteile auslesen."""
         with ModulePartMapper() as mapper:
             return mapper.find_all()
 
-    def delete_modulepart(self, modulepart):
+    @staticmethod
+    def delete_modulepart(modulepart):
         """Den gegebenen Modulteil aus unserem System löschen."""
         with ModulePartMapper() as mapper:
             mapper.delete(modulepart)
 
     """Semester-spezifische Methoden"""
 
-    def create_semester(self, proposal: Semester, creator: int):
+    @staticmethod
+    def create_semester(proposal: Semester, creator: int):
         """
         Legt das Objekt in der Datenbank an und setzt creationate und creator,
         wenn das Zielobjekt noch nicht in der DB existiert.
@@ -250,34 +288,40 @@ class Administration (object):
         with SemesterMapper() as mapper:
             return mapper.insert(proposal)
 
-    def get_semester_by_name(self, name):
+    @staticmethod
+    def get_semester_by_name(name):
         """Alle Semester mit Namen 'name' auslesen."""
         with SemesterMapper() as mapper:
             return mapper.find_by_name(name)
 
-    def get_semester_by_id(self, id):
+    @staticmethod
+    def get_semester_by_id(id):
         with SemesterMapper() as mapper:
             semhash = mapper.find_hash_by_id(id)
             return mapper.find_by_hash(semhash)
 
-    def get_semester_by_hash(self, hashcode):
+    @staticmethod
+    def get_semester_by_hash(hashcode):
         """Das Semester mit dem gegebenem Hash auslesen."""
         with SemesterMapper() as mapper:
             return mapper.find_by_hash(hashcode)
 
-    def get_all_semesters(self):
+    @staticmethod
+    def get_all_semesters():
         """Alle Semester auslesen."""
         with SemesterMapper() as mapper:
             return mapper.find_all()
 
-    def delete_semester(self, semester):
+    @staticmethod
+    def delete_semester(semester):
         """Das gegebene Semester aus unserem System löschen."""
         with SemesterMapper() as mapper:
             mapper.delete(semester)
 
     """Studycourse-spezifische Methoden"""
 
-    def create_studycourse(self, proposal: StudyCourse, creator):
+    @staticmethod
+    def create_studycourse(proposal: StudyCourse, creator):
         """
         Legt das Objekt in der Datenbank an und setzt creationate und creator,
         wenn das Zielobjekt noch nicht in der DB existiert.
@@ -290,77 +334,95 @@ class Administration (object):
         with StudyCourseMapper() as mapper:
             return mapper.insert(proposal)
 
-    def get_all_studycourses(self):
-
+    @staticmethod
+    def get_all_studycourses():
+        result = []
         with StudyCourseMapper() as mapper:
-            return mapper.find_all()
+            sclist = mapper.find_all()
+            for sc in sclist:
+                result.append(mapper.find_by_hash(sc))
+        return result
 
-    def get_studycourse_by_name(self, name):
+    @staticmethod
+    def get_studycourse_by_name(name):
         """Den Studiengang mit dem gegebenen Namen auslesen."""
         with StudyCourseMapper() as mapper:
             return mapper.find_by_name(name)
 
-
-    def get_studycourse_by_id(self, id: int):
+    @staticmethod
+    def get_studycourse_by_id(id: int):
         with StudyCourseMapper() as mapper:
             schash = mapper.find_hash_by_id(id)
             return mapper.find_by_hash(schash)
 
-    def get_studycourse_by_hash(self, hashcode: int):
+    @staticmethod
+    def get_studycourse_by_hash(hashcode: int):
         with StudyCourseMapper() as mapper:
             return mapper.find_by_hash(hashcode)
 
-    def delete_studycourse(self, studycourse):
+    @staticmethod
+    def delete_studycourse(studycourse):
 
         with StudyCourseMapper() as mapper:
             mapper.delete(studycourse)
 
     """User-spezifische Methoden"""
-
-    def create_user(self, proposal: User, creator):
+    @staticmethod
+    def create_user(proposal: User):
         """
         Legt das Objekt in der Datenbank an und setzt creationate und creator,
         wenn das Zielobjekt noch nicht in der DB existiert.
 
         :param proposal: Ein User Objekt
-        :param creator: Ein User, creator des Objekts
         """
         proposal.set_creationdate(datetime.date.today())
-        proposal.set_creator(creator)
         with UserMapper() as mapper:
-            return mapper.insert(proposal)
+            us = mapper.find_by_hash(hash(proposal))
+            if us is None:
+                return mapper.insert(proposal)
 
-    def get_user_by_name(self, name):
+    @staticmethod
+    def get_user_by_name(name):
 
         with UserMapper() as mapper:
             return mapper.find_by_name(name)
 
-    def get_user_by_hash(self, userhash):
+    @staticmethod
+    def get_user_by_hash(userhash):
         """Einen User anhand seines Hashes ausgeben."""
         with UserMapper() as mapper:
             return mapper.find_by_hash(userhash)
 
-    def get_user_by_google_user_id(self, gid):
+    @staticmethod
+    def get_user_by_google_user_id(gid):
         """Den Benutzer mit der gegebenen Google ID auslesen."""
         with UserMapper() as mapper:
             return mapper.find_by_google_user_id(gid)
 
-    def get_all_users(self):
+    @staticmethod
+    def get_all_users():
         with UserMapper() as mapper:
             return mapper.find_all()
 
-    def save_user(self, user, creator: int):
+    @staticmethod
+    def save_user(user):
         with UserMapper() as mapper:
+            us = mapper.find_by_hash(hash(user))
+        if us is None:
+            mapper.insert(user)
+        else:
             mapper.update(user)
 
-    def delete_user(self, user):
+    @staticmethod
+    def delete_user(user):
 
         with UserMapper() as mapper:
             mapper.delete(user)
 
     """Person-spezifische Methoden"""
 
-    def create_person(self, proposal: Person, creator):
+    @staticmethod
+    def create_person(proposal: Person, creator):
         """
         Legt das Objekt in der Datenbank an und setzt creationate und creator,
         wenn das Zielobjekt noch nicht in der DB existiert.
@@ -373,34 +435,39 @@ class Administration (object):
         with PersonMapper() as mapper:
             return mapper.insert(proposal)
 
-    def get_person_by_name(self, name):
+    @staticmethod
+    def get_person_by_name(name):
         """Alle Personen mit Namen name auslesen."""
         with PersonMapper() as mapper:
             return mapper.find_by_name(name)
 
-    def get_person_by_id(self, id):
+    @staticmethod
+    def get_person_by_id(id):
         with PersonMapper() as mapper:
             phash = mapper.find_hash_by_id(id)
             return mapper.find_by_hash(phash)
 
-    def get_person_by_hash(self, number):
+    @staticmethod
+    def get_person_by_hash(number):
         """Die Person mit dem gegebenem Hash auslesen."""
         with PersonMapper() as mapper:
             return mapper.find_by_hash(number)
 
-    def get_all_persons(self):
+    @staticmethod
+    def get_all_persons():
         """Alle Personen auslesen."""
         with PersonMapper() as mapper:
             return mapper.find_all()
 
-    def save_person(self, person):
+    @staticmethod
+    def save_person(person):
         """Die gegebene Person speichern."""
         with PersonMapper() as mapper:
             mapper.update(person)
 
-    def delete_person(self, person):
+    @staticmethod
+    def delete_person(person):
         """Die gegebene Person aus unserem System löschen."""
         with PersonMapper() as mapper:
             mapper.delete(person)
-
 
