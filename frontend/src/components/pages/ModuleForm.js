@@ -106,6 +106,15 @@ class ModuleForm extends Component {
     }
     newModule.setModules(moduleparts);
 
+    /* API.getAPI().getAllModules().then(response => {
+      this.setState({
+          Modules:response,
+          })  
+      }).catch(e => {
+          this.setState({
+              appError: e
+          }); */
+
     API.getAPI()
       .addModule(newModule)
       .then((module) => {

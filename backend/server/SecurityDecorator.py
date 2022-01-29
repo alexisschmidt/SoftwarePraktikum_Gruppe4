@@ -41,7 +41,7 @@ def secured(function):
                         """Fall: Der Benutzer ist unserem System bereits bekannt."""
                         user.set_firstname(firstname)
                         user.set_email(email)
-                        adm.save_user(user)
+                        adm.save_user(user,1)
                     else:
                         """Fall: Der Benutzer war bislang noch nicht eingelogged. """
                         user = User()
