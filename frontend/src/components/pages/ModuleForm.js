@@ -20,6 +20,7 @@ import {
   Paper,
   List,
   ListItemIcon,
+  MenuItem,
 } from "@mui/material";
 import CloseIcon from "@material-ui/icons/Close";
 import ContextErrorMessage from "../dialogs/ContextErrorMessage";
@@ -82,9 +83,9 @@ class ModuleForm extends Component {
     };
     this.baseState = this.state;
   }
-  componentDidMount = () =>{
-    this.getInfos()
-  }
+  componentDidMount = () => {
+    this.getInfos();
+  };
 
   addModule = () => {
     let newModule = new Modulebo();
@@ -99,9 +100,11 @@ class ModuleForm extends Component {
     newModule.setExamtype(this.state.examtype);
     newModule.setInstructor(this.state.instructor);
 
-    //die Modulepart müssen zur module hinzugefügt werden, entweder durch eine update methode fürs modulpart im backend oder indem die modulepart direkt im spobo hinzugefügt werden
-    //let modulIDs=this.state.moduleInSPO.map(module => module.getID());
-    //newSPO.setModules(modulIDs);
+    let moduleparts = [];
+    for (let modulepart of this.state.modulepartInSPO) {
+      moduleparts.push(modulepart.id);
+    }
+    newModule.setModules(moduleparts);
 
     API.getAPI()
       .addModule(newModule)
@@ -183,7 +186,7 @@ class ModuleForm extends Component {
         if (module) {
           //TODO: anpassen auf die passende Methode in API
           API.getAPI()
-            .getAllModulePartsForMODULE(module.id)
+            .getAllModulePartsForMODULE(module.hash)
             .then((modulepart) => {
               //alle moduleparts die in der spo sind aus der response entfernen
               let modulepartOhneModule = response.filter((m) => {
@@ -278,10 +281,10 @@ class ModuleForm extends Component {
 
     this.setState({
       checked: [],
-      modulepartInModule: newModulepart,
-      modulepart: this.state.modulepart.filter(
+      modulepartInMODULE: this.state.modulepartInMODULE.filter(
         (m) => !this.state.checked.includes(m.id)
       ),
+      modulepart: newModulepart,
     });
   };
   handleCheckedRight = () => {
@@ -294,17 +297,17 @@ class ModuleForm extends Component {
     });
     this.setState({
       checked: [],
-      modulepart: newModulepart,
-      modulepartInModule: this.state.modulepartInModule.filter(
+      modulepart: this.state.modulepart.filter(
         (m) => !this.state.checked.includes(m.id)
       ),
+      modulepartInMODULE: newModulepart,
     });
   };
 
   intersection = (checkedarray, modulepart) => {
     //überprüft ob ein modulpart in dem checkedarray vorhanden ist
     const modulpartIDs = modulepart.map((m) => m.id);
-    return checkedarray.filter((c) => modulpartIDs.tabIndexOf(c) !== -1);
+    return checkedarray.filter((c) => modulpartIDs.IndexOf(c) !== -1);
   };
 
   renderTextfields() {
@@ -350,14 +353,14 @@ class ModuleForm extends Component {
             required
             fullWidth
             id="title"
-            label="Titel"
+            label="Titel 'English' "
             variant="outlined"
             value={title}
             onChange={this.textFieldValueChange}
             error={titleValidationFailed}
           />
 
-          <TextField
+         {/*  <TextField
             type="text"
             required
             fullWidth
@@ -367,9 +370,17 @@ class ModuleForm extends Component {
             value={edvnr}
             onChange={this.numberValueChange}
             error={edvnrValidationFailed}
-          />
+          /> */}
 
-          <TextField
+          <Grid item xs={12} sm={8} md={8}>
+                    <TextField label="EDV-Nr." fullWidth select value={edvnr?edvnr:""} onChange={(e) => this.setState({edvnr_id:e.target.value})} error={edvnrValidationFailed}>
+                        {edvnr?edvnr.map(s => <MenuItem key={s.id} value={s.id}>{s.edvnr}</MenuItem>):<MenuItem value="">Keine EDV-Nr. vorhanden</MenuItem>}
+                    </TextField>
+
+                    
+           </Grid>
+
+          {/* <TextField
             type="text"
             required
             fullWidth
@@ -379,9 +390,15 @@ class ModuleForm extends Component {
             value={ects}
             onChange={this.numberValueChange}
             error={ectsValidationFailed}
-          />
+          /> */}
 
-          <TextField
+<Grid item xs={12} sm={8} md={8}>
+                    <TextField label="ECTS" fullWidth select value={ects?ects:""} onChange={(e) => this.setState({ects_id:e.target.value})} error={ectsValidationFailed}>
+                        {ects?ects.map(s => <MenuItem key={s.id} value={s.id}>{s.ects}</MenuItem>):<MenuItem value="">Keine ECTS vorhanden</MenuItem>}
+                    </TextField>
+                </Grid>
+
+         {/*  <TextField
             type="text"
             required
             fullWidth
@@ -391,9 +408,15 @@ class ModuleForm extends Component {
             value={workload}
             onChange={this.numberValueChange}
             error={workloadValidationFailed}
-          />
+          /> */}
 
-          <TextField
+<Grid item xs={12} sm={8} md={8}>
+                    <TextField label="Arbeitsaufwand " fullWidth select value={workload?workload:""} onChange={(e) => this.setState({workload_id:e.target.value})}  error={workloadValidationFailed}>
+                        {workload?workload.map(s => <MenuItem key={s.id} value={s.id}>{s.workload}</MenuItem>):<MenuItem value="">Keine Daten für den Arbeitsaufwand vorhanden</MenuItem>}
+                    </TextField>
+                </Grid>
+
+          {/* <TextField
             autoFocus
             type="text"
             required
@@ -404,9 +427,15 @@ class ModuleForm extends Component {
             value={requirement}
             onChange={this.textFieldValueChange}
             error={requirementValidationFailed}
-          />
+          /> */}
 
-          <TextField
+<Grid item xs={12} sm={8} md={8}>
+                    <TextField label="Voraussetzung für das Modul" fullWidth select value={requirement?requirement:""} onChange={(e) => this.setState({requirement_id:e.target.value})} error={requirementValidationFailed}>
+                        {requirement?requirement.map(s => <MenuItem key={s.id} value={s.id}>{s.requirement}</MenuItem>):<MenuItem value="">Keine Daten vorhanden</MenuItem>}
+                    </TextField>
+                </Grid>
+
+          {/* <TextField
             autoFocus
             type="text"
             required
@@ -418,8 +447,15 @@ class ModuleForm extends Component {
             onChange={this.textFieldValueChange}
             error={outcomeValidationFailed}
           />
+ */}
 
-          <TextField
+<Grid item xs={12} sm={8} md={8}>
+                    <TextField label="Outcome - Ziel des Modules " fullWidth select value={outcome?outcome:""} onChange={(e) => this.setState({outcome_id:e.target.value})} error={outcomeValidationFailed}>
+                        {outcome?outcome.map(s => <MenuItem key={s.id} value={s.id}>{s.outcome}</MenuItem>):<MenuItem value="">Keine Daten vorhanden</MenuItem>}
+                    </TextField>
+                </Grid>
+
+          {/* <TextField
             autoFocus
             type="text"
             required
@@ -431,8 +467,14 @@ class ModuleForm extends Component {
             onChange={this.textFieldValueChange}
             error={examtypeValidationFailed}
           />
+ */}
 
-          <TextField
+<Grid item xs={12} sm={8} md={8}>
+                    <TextField label="Prüfungsart" fullWidth select value={examtype?examtype:""} onChange={(e) => this.setState({examtype_id:e.target.value})} error={examtypeValidationFailed}>
+                        {examtype?examtype.map(s => <MenuItem key={s.id} value={s.id}>{s.examtype}</MenuItem>):<MenuItem value="">Kein Prüfungsart vorhanden</MenuItem>}
+                    </TextField>
+                </Grid>
+         {/*  <TextField
             autoFocus
             type="text"
             required
@@ -443,7 +485,14 @@ class ModuleForm extends Component {
             value={instructor}
             onChange={this.numberValueChange}
             error={instructorValidationFailed}
-          />
+          /> */}
+
+<Grid item xs={12} sm={8} md={8}>
+                    <TextField label="Modulverantwortlicher" fullWidth select value={instructor?instructor:""} onChange={(e) => this.setState({instructor:e.target.value})} error={instructorValidationFailed}>
+                        {instructor?instructor.map(s => <MenuItem key={s.id} value={s.id}>{s.instructor}</MenuItem>):<MenuItem value="">Kein Dozent vorhanden</MenuItem>}
+                    </TextField>
+                </Grid>
+          
         </form>
       </>
     );
@@ -456,7 +505,7 @@ class ModuleForm extends Component {
     const rightChecked = this.intersection(checked, modulepartInModule);
 
     const customList = (items) => (
-      <Paper sx={{ width: 200, height: 230, overflow: "auto" }}>
+      <Paper sx={{ overflow: "auto" }}>
         <List dense component="div" role="list">
           {items.map((m) => {
             const labelId = `transfer-list-item-${m.id}-label`;
@@ -489,8 +538,10 @@ class ModuleForm extends Component {
     return (
       <>
         <Grid container spacing={2} justifyContent="center" alignItems="center">
-          <Grid item>{customList(module)}</Grid>
-          <Grid item>
+          <Grid lg={5} item>
+            {customList(modulepart)}
+          </Grid>
+          <Grid lg={2} item>
             <Grid container direction="column" alignItems="center">
               <Button
                 sx={{ my: 0.5 }}
@@ -534,7 +585,9 @@ class ModuleForm extends Component {
               </Button>
             </Grid>
           </Grid>
-          <Grid item>{customList(modulepartInModule)}</Grid>
+          <Grid lg={5} item>
+            {customList(modulepartInModule)}
+          </Grid>
         </Grid>
       </>
     );
@@ -591,12 +644,7 @@ class ModuleForm extends Component {
     }
 
     return show ? (
-      <Dialog
-        open={show}
-        onClose={this.handleClose}
-        maxWidth="xs"
-        fullWidth
-      >
+      <Dialog open={show} onClose={this.handleClose} maxWidth="lg" fullWidth>
         <DialogTitle>
           {title}
           <IconButton onClick={this.handleClose}>
