@@ -31,11 +31,15 @@ def secured(function):
                 if claims is not None:
                     google_user_id = claims.get("user_id")
                     email = claims.get("email")
-                    fullname = claims.get("name").rsplit(maxsplit=1)  # last word of string is lastname
-                    if not fullname:
-                        fullname = ["N/A", "N/A"]
-                    firstname = fullname[0]
-                    lastname = fullname[1]
+                    firstname = "N/A"
+                    lastname = "N/A"
+
+                    if claims.get("name") is not None:
+                        fullname = claims.get("name").rsplit(maxsplit=1)  # last word of string is lastname
+                        if not fullname:
+                            fullname = ["N/A", "N/A"]
+                        firstname = fullname[0]
+                        lastname = fullname[1]
 
                     user = Admin.get_user_by_google_user_id(google_user_id)
                     if user is not None:
@@ -48,6 +52,7 @@ def secured(function):
                         """Fall: Der Benutzer war bislang noch nicht eingelogged. """
                         user = User()
                         user.set_firstname(firstname)
+                        user.set_lastname(lastname)
                         user.set_email(email)
                         user.set_google_user_id(google_user_id)
                         user = Admin.create_user(user)
