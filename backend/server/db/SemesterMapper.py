@@ -145,10 +145,11 @@ class SemesterMapper(Mapper):
 
         cursor = self._cnx.cursor()
 
-        command = "UPDATE semester SET name=%s, title=%s " \
-                  "WHERE id=%s AND semester_hash=%s "
+        command = "UPDATE semester SET creationdate=%s, createdby=%s, name=%s, title=%s " \
+                  f"WHERE id={semester.get_id()} AND semester_hash={hash(semester)}"
         data = (
-            semester.get_id(), semester.get_name(), semester.get_title(), hash(semester))
+            semester.set_creationdate(), semester.get_creator(),
+            semester.get_name(), semester.get_title())
         cursor.execute(command, data)
 
         self._cnx.commit()
