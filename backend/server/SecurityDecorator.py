@@ -58,7 +58,7 @@ def secured(function):
                         user = Admin.create_user(user)
                     if request.method == 'POST' or request.method == 'PUT':
                         kwargs['user'] = user
-                    objects = function(*args, **kwargs)
+                    objects = function(*args)
                     return objects
                 else:
                     return '', 401  # Unauthorized

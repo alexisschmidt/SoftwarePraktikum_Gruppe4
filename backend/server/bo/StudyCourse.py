@@ -7,7 +7,7 @@ class StudyCourse (Nbo.NamedBo):
         super().__init__()
 
     def __str__(self):
-        return f"Semester: id: {self.get_id()}, name: {self._name}, title: {self._title}"
+        return f"Semester: id: {self.get_id()}, name: {self.get_name()}, title: {self.get_title()}"
 
     def json(self):
         return json.dumps({

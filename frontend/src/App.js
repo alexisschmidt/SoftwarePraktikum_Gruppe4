@@ -10,20 +10,20 @@ import firebaseConfig from "./firebaseconfig";
 import SignIn from "./components/pages/SignIn";
 import LoadingProgress from "./components/dialogs/LoadingProgress";
 import ContextErrorMessage from "./components/dialogs/ContextErrorMessage";
-import SpoStudent from "./components/pages/SpoStudent";
+//import SpoStudent from "./components/pages/SpoStudent";
 import About from "./components/pages/About";
-import Admin from "./components/pages/AdminSpoAnsicht";
+//import Admin from "./components/pages/AdminSpoAnsicht";
 //import Spoliste from './components/pages/Spoliste';
-// import StudyCourses from './components/pages/StudyCourses';
+//import StudyCourses from './components/pages/StudyCourses';
 import AllStudyCourses from './components/AllStudycourses';
 // import SpoAuswählenOMM from './components/pages/SpOAuswählenOMM';
-import Spowi from './components/pages/Spowi';
-import SpoStudyCoursesList from './components/SpoStudyCoursesList';
-import AdminSpoAnsicht from './components/AdminSpoAnsicht';
-import AdminSpoEdit from './components/AdminSpoEdit';
+//import Spowi from './components/pages/Spowi';
+//import SpoStudyCoursesList from './components/SpoStudyCoursesList';
+//import AdminSpoAnsicht from './components/AdminSpoAnsicht';
+//import AdminSpoEdit from './components/AdminSpoEdit';
 import AdminTable from './components/content/AdminTable';
-import AdminStudiengangAuswahl from "./components/pages/AdminStudiengangAuswahl";
-import SpoForm from "./components/pages/SpoForm";
+//import AdminStudiengangAuswahl from "./components/pages/AdminStudiengangAuswahl";
+//import SpoForm from "./components/pages/SpoForm";
 import Administration from "./components/pages/SpoManagement";
 import SpoUeberblick from "./components/pages/SpoUeberblick";
 
@@ -127,36 +127,36 @@ Globales CSS-Reset und Browser-Normalisierung. CssBaseline startet eine elegante
 									{/* <Route path="/Studiengangauswahl" exact component={StudyCourses}/> */}
 									<Route path="/admin" exact component={AllStudyCourses}/>
 									<Route path="/admintable" exact component={AdminTable}/>
-									<Route path="/admin/:studyCourseID" exact component={SpoStudyCoursesList}/>
+									{/* <Route path="/admin/:studyCourseID" exact component={SpoStudyCoursesList}/>
 									<Route path="/admin/:studyCourseID/:spoID" exact component={AdminSpoAnsicht}/>
-									<Route path="/adminspoedit" exact component={AdminSpoEdit}/>
+									<Route path="/adminspoedit" exact component={AdminSpoEdit}/> */}
 									{/* <Route path="/admin/:spoID/spoansicht" exact component={AdminSpoAnsicht}/> */}
 									{/*<Route path="/spoansicht" exact component={AdminSpoAnsicht}/>*/}
 									{/* <Route path="/Spoauswahl2" exact comonent={SpoAuswählenOMM}/> */}
-									<Route path="/Spoauswahl" exact comonent={Spowi}/>
-                  <Route path="/SpoForm" exact component={SpoForm} />
+								{/* 	<Route path="/Spoauswahl" exact comonent={Spowi}/>
+                  <Route path="/SpoForm" exact component={SpoForm} /> */}
 									{/*<Route path="/Altespo" exact component ={}/>*/}
-									<Route path="/Spoerstellen" exact component={Admin}/>
+									{/* <Route path="/Spoerstellen" exact component={Admin}/> */}
 									{/* <Route path="/Spo" exact component={SpoStudent}/> */}
                   <Route path="/Administration"
                     exact
                     component={Administration}
                   />
-                   <Route path="/Spoauswahl" exact component={Spowi} />
+                  {/*  <Route path="/Spoauswahl" exact component={Spowi} />
                    <Route
                     path="/AdminStudiengangAuswahl"
                     exact
                     component={AdminStudiengangAuswahl}
                   />
-                  <Route path="/Spoauswahl" exact component={Spowi} />
+                  <Route path="/Spoauswahl" exact component={Spowi} /> */}
 								</>
 								:
 								// else show the sign in page
 								<>
 								
-								<Route path="/student">
+							{/* 	<Route path="/student">
 									<SpoStudent />
-									</Route>
+									</Route> */}
 
 									<SignIn onSignIn={this.handleSignIn} />
 								</>

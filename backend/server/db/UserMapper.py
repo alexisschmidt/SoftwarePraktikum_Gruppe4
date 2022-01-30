@@ -35,7 +35,8 @@ class UserMapper(Mapper):
 
         result = []
         cursor = self._cnx.cursor()
-        command = f"SELECT * FROM user WHERE lastname LIKE '{name}' ORDER BY lastname"
+        command = f"SELECT id, creationdate, firstname, lastname, email, google_user_id, isadmin, spo_hash " \
+                  f"FROM user WHERE lastname LIKE '{name}' ORDER BY lastname"
         cursor.execute(command)
         tuples = cursor.fetchall()
 
@@ -61,7 +62,8 @@ class UserMapper(Mapper):
         result = None
 
         cursor = self._cnx.cursor()
-        command = f"SELECT * FROM user WHERE user_hash={hashcode}"
+        command = f"SELECT id, id, creationdate, firstname, lastname, email, google_user_id, isadmin, spo_hash " \
+                  f"FROM user WHERE user_hash={hashcode}"
         cursor.execute(command)
         tuples = cursor.fetchall()
 
@@ -99,9 +101,9 @@ class UserMapper(Mapper):
 
                 user.set_id(1)
 
-        command = "INSERT INTO user (id, creationdate, createdby, " \
+        command = "INSERT INTO user (id, creationdate," \
                   "firstname, lastname, email, google_user_id, isadmin, user_hash, spo_hash) " \
-                  "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+                  "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)"
         data = (user.get_id(), user.get_creationdate(), user.get_creator(),
                 user.get_firstname(), user.get_lastname(), user.get_email(),
                 user.get_google_user_id(), user.get_isadmin(), hash(user), user.get_spo())
@@ -150,7 +152,7 @@ class UserMapper(Mapper):
         result = None
 
         cursor = self._cnx.cursor()
-        command = "SELECT id, creationdate, createdby, " \
+        command = "SELECT id, creationdate, " \
                   "firstname, lastname, email, google_user_id, user_hash, spo_hash " \
                   "FROM user " \
                   f"WHERE google_user_id='{gid}'"
@@ -158,11 +160,10 @@ class UserMapper(Mapper):
         tuples = cursor.fetchall()
 
         try:
-            (id, creationdate, createdby, firstname, lastname, email, google_user_id, isadmin, user_hash, spo_hash) = \
+            (id, creationdate, firstname, lastname, email, google_user_id, isadmin, user_hash, spo_hash) = \
                 tuples[0]
             user = User()
             user.set_id(id)
-            user.set_creator(createdby)
             user.set_creationdate(creationdate)
             user.set_firstname(firstname)
             user.set_lastname(lastname)
