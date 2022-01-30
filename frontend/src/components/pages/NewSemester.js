@@ -1,20 +1,20 @@
 import React, { Component } from 'react'
 import {Button, TextField,} from '@mui/material';
 import API from '../../api/API';
-import { Semesterbo } from '../../api/BusinessObjects';
+import Semesterbo from '../../api/BusinessObjects/Semesterbo';
 import ContextErrorMessage from "../dialogs/ContextErrorMessage";
 
 
-export class NewModuletype extends Component {
+export class NewSemester extends Component {
     constructor(props) {
         super(props)
     
     
 
         this.state = {
-            id:"",
-            name:"",
-            title:"",
+            id:null,
+            name:null,
+            title:null,
             
             appError: null,
         
@@ -23,21 +23,18 @@ export class NewModuletype extends Component {
 
 
     handleSave = () =>{
-        const {setLoading} = this.props
-        var Semester = new Semesterbo();
-        Semester.setID(this.state.id);
-        Semester.setName(this.state.name);
-        Semester.setTitle(this.state.title);
+        var semester = new Semesterbo();
+        semester.setID(this.state.id);
+        semester.setName(this.state.name);
+        semester.setTitle(this.state.title);
       
-        setLoading(`saveNewSemester`, true)
-        API.getAPI().addSemester(Semester).then(response => {
-            setLoading(`saveNewSemester`, false)
+        
+        API.getAPI().addSemester(semester).then(response => {
             this.props.handleClose()
         }).catch(e => {
             this.setState({
                 appError: e
             });
-            setLoading(`saveNewSemester`, false)
         });
         
         
@@ -72,10 +69,14 @@ export class NewModuletype extends Component {
 
                
                 <Button variant="contained" color="primary" onClick={this.handleSave}> Speichern </Button>
-                {appError?<ContextErrorMessage appError={appError} />:null}
+                <ContextErrorMessage 
+                error={appError}
+                contextErrorMsg={'Das Semester kann nicht hinzugefügt werden'}
+                onReload={this.handleSave}
+                />
           </>
         )
     }
 }
 
-export default NewModuletype
+export default NewSemester

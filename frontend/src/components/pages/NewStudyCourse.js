@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import {Button, TextField,} from '@mui/material';
 import API from '../../api/API';
-import { StudyCoursebo } from '../../api/BusinessObjects';
+import StudyCoursebo from '../../api/BusinessObjects/StudyCoursebo';
 import ContextErrorMessage from "../dialogs/ContextErrorMessage";
 
 
@@ -22,21 +22,17 @@ export class NewStudyCourse extends Component {
 
 
     handleSave = () =>{
-        const {setLoading} = this.props
-        var StudyCourse = new StudyCoursebo();
-        StudyCourse.setID(this.state.id);
-        StudyCourse.setName(this.state.name);
-        StudyCourse.setTitle(this.state.title);
+        var studyCourse = new StudyCoursebo();
+        studyCourse.setID(this.state.id);
+        studyCourse.setName(this.state.name);
+        studyCourse.setTitle(this.state.title);
       
-        setLoading(`saveNewStudyCourse`, true)
-        API.getAPI().addStudyCourse(StudyCourse).then(response => {
-            setLoading(`saveNewStudyCourse`, false)
+        API.getAPI().addStudyCourse(studyCourse).then(response => {
             this.props.handleClose()
         }).catch(e => {
             this.setState({
                 appError: e
             });
-            setLoading(`saveNewStudyCourse`, false)
         });
         
         
@@ -71,7 +67,11 @@ export class NewStudyCourse extends Component {
 
                
                 <Button variant="contained" color="primary" onClick={this.handleSave}> Speichern </Button>
-                {appError?<ContextErrorMessage appError={appError} />:null}
+                <ContextErrorMessage 
+                error={appError}
+                contextErrorMsg={'Der Studiengang kann nicht hinzugefügt werden'}
+                onReload={this.handleSave}
+                />
           </>
         )
     }

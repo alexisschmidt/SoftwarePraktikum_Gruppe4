@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import {Button, TextField,} from '@mui/material';
 import API from '../../api/API';
-import { ExamTypebo } from '../../api/BusinessObjects' 
+import ExamTypebo from '../../api/BusinessObjects/ExamTypebo'; 
 import ContextErrorMessage from "../dialogs/ContextErrorMessage";
 
 
@@ -23,21 +23,17 @@ export class NewExamtype extends Component {
 
 
     handleSave = () =>{
-        const {setLoading} = this.props
-        var ExamType = new ExamTypebo();
-        ExamType.setID(this.state.id);
-        ExamType.setName(this.state.name);
-        ExamType.setTitle(this.state.title);
+        var examType = new ExamTypebo();
+        examType.setID(this.state.id);
+        examType.setName(this.state.name);
+        examType.setTitle(this.state.title);
       
-        setLoading(`saveNewExamtype`, true)
-        API.getAPI().addExamtype(ExamType).then(response => {
-            setLoading(`saveNewExamtype`, false)
+        API.getAPI().addExamtype(examType).then(response => {
             this.props.handleClose()
         }).catch(e => {
             this.setState({
                 appError: e
             });
-            setLoading(`saveNewExamtype`, false)
         });
         
         
@@ -73,7 +69,12 @@ export class NewExamtype extends Component {
 
                
                 <Button variant="contained" color="primary" onClick={this.handleSave}> Speichern </Button>
-                {appError?<ContextErrorMessage appError={appError} />:null}
+                <ContextErrorMessage 
+                error={appError}
+                contextErrorMsg={`Die Prüfungsart kann nicht hinzugefügt werden.`}
+                onReload={this.handleSave}
+                />
+                
           </>
         )
     }

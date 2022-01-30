@@ -67,7 +67,7 @@ export class NewModuletype extends Component {
                 <Button variant="contained" color="primary" onClick={this.handleSave}> Speichern </Button>
                 <ContextErrorMessage
                 error={appError}
-                contextErrorMsg={`The Spo could not be added.`}
+                contextErrorMsg={`Das Modul kann nicht hinzugefügt werden.`}
                 onReload={this.handleSave}
               />
           </>

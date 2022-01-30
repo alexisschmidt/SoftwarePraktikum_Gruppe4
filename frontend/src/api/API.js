@@ -230,6 +230,19 @@ Map([<Rule '/sopra/studycourses' (OPTIONS, POST, HEAD, GET, PUT) -> sopra_studyc
     addModuletype = (moduletype) => {
       return this.#add(this.#getAllModuleTypeUrl(), moduletype, Moduletypebo);
     }
+    addExamtype = (examtype) => {
+      return this.#add(this.#getAllExamTypeUrl(), examtype, Examtypebo);
+    }
+    addSemester = (semester) => {
+      return this.#add(this.#getAllSemesterUrl(), semester, Semesterbo);
+    }
+    addStudyCourse = (studycourse) => {
+      return this.#add(this.#getAllStudyCoursesUrl(), studycourse, StudyCoursebo);
+    }
+
+
+
+
        
 
 
