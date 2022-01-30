@@ -67,6 +67,10 @@ class SpoForm extends Component {
       module: [],
       moduleInSPO: [],
       checked: [],
+
+      //variablen für dropdowns
+      studyCourseList: null,
+      semesterList: null,
     };
     this.baseState = this.state;
   }
@@ -88,20 +92,11 @@ class SpoForm extends Component {
     }
     newSpo.setModules(modules);
 
-    /* API.getAPI().getAllStudycourses().then(response => {
-      this.setState({
-          studyCourse:response,
-          })  
-      }).catch(e => {
-          this.setState({
-              appError: e
-          }); */
-    //muss angepasst werde!
-
     API.getAPI()
       .addSpo(newSpo)
       .then((spo) => {
         this.setState(this.baseState);
+        this.getInfos();
         this.props.onClose(spo); //Aufrufen parent in backend
       })
       .catch((e) =>
@@ -151,6 +146,28 @@ class SpoForm extends Component {
     });
   };
 
+  start_semesterDropdownValueClick = (semester) => {
+    this.setState({
+      start_semester: semester.id,
+      start_semesterValidationFailed: false,
+      start_semesterEdited: true,
+    });
+  };
+  end_semesterDropdownValueClick = (semester) => {
+    this.setState({
+      end_semester: semester.id,
+      end_semesterValidationFailed: false,
+      end_semesterEdited: true,
+    });
+  };
+  studyCourseDropdownValueClick = (studycourse) => {
+    this.setState({
+      studyCourse: studycourse.id,
+      studyCourseValidationFailed: false,
+      studyCourseEdited: true,
+    });
+  };
+
   getInfos = () => {
     if (this.props.spo) {
       const { spo } = this.props;
@@ -166,6 +183,30 @@ class SpoForm extends Component {
         //anpassen von id?
       });
     }
+    API.getAPI()
+      .getAllSemesters()
+      .then((response) => {
+        this.setState({
+          semesterList: response,
+        });
+      })
+      .catch((e) => {
+        this.setState({
+          appError: e,
+        });
+      });
+    API.getAPI()
+      .getAllStudyCourses()
+      .then((response) => {
+        this.setState({
+          studyCourseList: response,
+        });
+      })
+      .catch((e) => {
+        this.setState({
+          appError: e,
+        });
+      });
   };
   getModule = () => {
     const { spo } = this.props;
@@ -310,6 +351,8 @@ class SpoForm extends Component {
       end_semesterValidationFailed,
       studyCourse,
       studyCourseValidationFailed,
+      studyCourseList,
+      semesterList,
     } = this.state;
     return (
       <>
@@ -360,14 +403,16 @@ class SpoForm extends Component {
               fullWidth
               select
               value={start_semester ? start_semester : ""}
-              onChange={(e) =>
-                this.setState({ start_semester_id: e.target.value })}
-                error={start_semesterValidationFailed}
+              error={start_semesterValidationFailed}
             >
-              {start_semester ? (
-                start_semester.map((s) => (
-                  <MenuItem key={s.id} value={s.id}>
-                    {s.start_semester}
+              {semesterList ? (
+                semesterList.map((s) => (
+                  <MenuItem
+                    key={s.id}
+                    value={s.id}
+                    onClick={() => this.start_semesterDropdownValueClick(s)}
+                  >
+                    {s.name}
                   </MenuItem>
                 ))
               ) : (
@@ -395,14 +440,16 @@ class SpoForm extends Component {
               fullWidth
               select
               value={end_semester ? end_semester : ""}
-              onChange={(e) =>
-                this.setState({ end_semester_id: e.target.value })}
               error={end_semesterValidationFailed}
             >
-              {end_semester ? (
-                end_semester.map((s) => (
-                  <MenuItem key={s.id} value={s.id}>
-                    {s.end_semester}
+              {semesterList ? (
+                semesterList.map((s) => (
+                  <MenuItem
+                    key={s.id}
+                    value={s.id}
+                    onClick={() => this.end_semesterDropdownValueClick(s)}
+                  >
+                    {s.name}
                   </MenuItem>
                 ))
               ) : (
@@ -431,14 +478,16 @@ class SpoForm extends Component {
               fullWidth
               select
               value={studyCourse ? studyCourse : ""}
-              onChange={(e) =>
-                this.setState({ studycourse_id: e.target.value })}
               error={studyCourseValidationFailed}
             >
-              {studyCourse ? (
-                studyCourse.map((s) => (
-                  <MenuItem key={s.id} value={s.id}>
-                    {s.studycourse}
+              {studyCourseList ? (
+                studyCourseList.map((s) => (
+                  <MenuItem
+                    key={s.id}
+                    value={s.id}
+                    onClick={() => this.studyCourseDropdownValueClick(s)}
+                  >
+                    {s.name}
                   </MenuItem>
                 ))
               ) : (
@@ -450,6 +499,7 @@ class SpoForm extends Component {
       </>
     );
   }
+
   renderAddModul() {
     const { module, moduleInSPO, checked } = this.state;
 
