@@ -1,5 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
+import { Redirect } from 'react-router'
 //import PrivateRoute from './Privateroute'
 import { Container, ThemeProvider, CssBaseline } from "@material-ui/core"; //um Material-UI-Komponente nutzen zu können
 import firebase from "firebase/app";
@@ -28,9 +29,9 @@ import './App.css'
 import AdminStudiengangAuswahl from "./components/pages/AdminStudiengangAuswahl";
 import SpoForm from "./components/pages/SpoForm";
 import Administration from "./components/pages/SpoManagement";
-import SpoAuswahlStudent from "./components/pages/SpoAuswahlStudent";
-import AuswahlStudentAdmin from "./components/pages/AuswahlStudentAdmin";
-import SpoUeberblick from "./components/pages/SpoUeberblick";
+//import SpoAuswahlStudent from "./components/pages/SpoAuswahlStudent";
+// import AuswahlStudentAdmin from "./components/pages/AuswahlStudentAdmin";
+// import SpoUeberblick from "./components/pages/SpoUeberblick";
 import StudentSpoAnsicht from "./components/StudentSpoAnsicht"
 import API from './api/API';
 
@@ -42,6 +43,7 @@ class App extends React.Component {
     // Init einen leeren Zustand
     this.state = {
       currentUser: null,
+      userBo: null,
       appError: null,
       authError: null,
       authLoading: false,
@@ -69,26 +71,20 @@ class App extends React.Component {
 
           document.cookie = `token=${token};path=/`;
           
-/*           getUserByGoogleUserId= (user) => {
-            API.getAPI().getUserByGoogleUserId(user).then(usersbo => {
-                this.setState({
-                    user: usersbo,
-                    loadingProgress: false,
-                    error: null
-                });
-            }).catch(e => {
-                this.setState({
-                    user: [],
-                    loadingProgress: false,
-                    error: e
-                });
-            });
-
-            this.setState({
-                loadingProgress: true,
-                error: null
-            });
-          } */
+          API.getAPI().getUserByGoogleUserId(user.uid).then(usersbo => {
+              this.setState({
+                  userBo: usersbo,
+                  loadingProgress: false,
+                  error: null
+              });
+          }).catch(e => {
+              this.setState({
+                  userBo: null,
+                  loadingProgress: false,
+                  error: e
+              });
+          });
+          
           // Setzen Sie den Benutzer nicht, bevor der Token angekommen ist
           this.setState({
             currentUser: user,
@@ -135,7 +131,7 @@ class App extends React.Component {
 
   /** Die gesamte App wird gerendert */
   render() {
-    const { currentUser, appError, authError, authLoading } = this.state;
+    const { currentUser, appError, authError, authLoading, userBo } = this.state;
 
     return (
       <ThemeProvider theme={Theme}>
@@ -144,43 +140,44 @@ Globales CSS-Reset und Browser-Normalisierung. CssBaseline startet eine elegante
       <CssBaseline />
       <Router basename={process.env.PUBLIC_URL}>
         <Container maxWidth='md'>
-          
-          <Header user={currentUser} />
-		  {
+        
+        <Header user={currentUser} userBo={userBo} />
+		      {
 							// Is a user signed in?
-							currentUser ?
+							currentUser && userBo?
 
 								<>
-									<Route path="/" exact component={About} />
-									{/* <Route path="/Studiengangauswahl" exact component={StudyCourses}/> */}
-{/* 									{apiuser?apiuser.isadmin?
-                  <>
-                  </>:null:null} */}
-                  <Route path="/admin" exact component={AllStudyCourses}/>
-									<Route path="/admintable" exact component={AdminTable}/>
-									<Route path="/admin/:studyCourseID" exact component={SpoStudyCoursesList}/>
-                  <Route path="/admin/:studyCourseID/:spoID" exact component={AdminSpoAnsicht}/>
-									<Route path="/studentspoansicht" exact component={StudentSpoAnsicht}/>
-									<Route path="/adminspoedit" exact component={AdminSpoEdit}/>
+                  {
+                    userBo.isadmin ?
+                    <>
+                      <Redirect to="/admin"/>
+                      <Route path="/admin" exact component={AllStudyCourses}/>
+                      <Route path="/admintable" exact component={AdminTable}/>
+                      <Route path="/admin/:studyCourseID" exact component={SpoStudyCoursesList}/>
+                      <Route path="/admin/:studyCourseID/:spoID" exact component={AdminSpoAnsicht}/>
+                      <Route path="/admin/:studyCourseID/:spoID/edit" exact render={(props) => <AdminSpoAnsicht bearbeitenBoolean={true} {...props} /> } />
+                      <Route path="/Spoauswahl" exact comonent={Spowi}/>
+                      <Route path="/Spoerstellen" exact component={Admin}/>
+                      <Route path="/SpoForm" exact component={SpoForm} />
+                      <Route path="/adminspoedit" exact component={AdminSpoEdit}/>
+                      <Route path="/Administration" exact component={Administration}/>
+                      <Route path="/Spoauswahl" exact component={Spowi} />
+                      <Route path="/AdminStudiengangAuswahl" exact component={AdminStudiengangAuswahl}/>
+                      <Route path="/Spoauswahl" exact component={Spowi} />
+                    </>
+                    :
+                    <>
+                      <Redirect to="/studentspoansicht"/>
+                      <Route path="/studentspoansicht" exact render={(props) => <StudentSpoAnsicht user={userBo} {...props} /> } />
+                    </>
+                  
+                  }
+                  {/* <Route path="/Studiengangauswahl" exact component={StudyCourses}/> */}          									
 									{/* <Route path="/admin/:spoID/spoansicht" exact component={AdminSpoAnsicht}/> */}
 									{/*<Route path="/spoansicht" exact component={AdminSpoAnsicht}/>*/}
 									{/* <Route path="/Spoauswahl2" exact comonent={SpoAuswählenOMM}/> */}
-									<Route path="/Spoauswahl" exact comonent={Spowi}/>
-                  <Route path="/SpoForm" exact component={SpoForm} />
 									{/*<Route path="/Altespo" exact component ={}/>*/}
-									<Route path="/Spoerstellen" exact component={Admin}/>
 									{/* <Route path="/Spo" exact component={SpoStudent}/> */}
-                  <Route path="/Administration"
-                    exact
-                    component={Administration}
-                  />
-                   <Route path="/Spoauswahl" exact component={Spowi} />
-                   <Route
-                    path="/AdminStudiengangAuswahl"
-                    exact
-                    component={AdminStudiengangAuswahl}
-                  />
-                  <Route path="/Spoauswahl" exact component={Spowi} />
 								</>
 								:
 								// else show the sign in page
@@ -189,10 +186,10 @@ Globales CSS-Reset und Browser-Normalisierung. CssBaseline startet eine elegante
 								<Route path="/student">
 									<SpoStudent />
 									</Route>
-
 									<SignIn onSignIn={this.handleSignIn} />
 								</>
 						}
+            <About></About>
 						<LoadingProgress show={authLoading} />
 						<ContextErrorMessage error={authError} contextErrorMsg={`Something went wrong during sighn in process.`} onReload={this.handleSignIn} />
 						<ContextErrorMessage error={appError} contextErrorMsg={`Something went wrong inside the app. Please reload the page.`} />

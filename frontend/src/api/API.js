@@ -55,13 +55,13 @@ Map([<Rule '/sopra/studycourses' (OPTIONS, POST, HEAD, GET, PUT) -> sopra_studyc
   #getStudyCourseByHashId = (hash) => { return this.#serverBaseURL + "/studycourse/" + hash; }
   #getPersonByHashUrl = (hash) => { return this.#serverBaseURL + "/person/" + hash; }
   #getUserByHashUrl = (userHash) => { return this.#serverBaseURL + "/user/" + userHash; }
-  #getSpoByHashUrl = (hash) => {return this.#serverBaseURL + "/spo/" + hash};
+  #getSpoByHashUrl = (hash) => `${this.#serverBaseURL}/spo/hash/${hash}`;
   #getSemesterByHashUrl = (hash) => {return this.#serverBaseURL + "/semester" + hash};
   #getAllSpoRelatedURL = (id) => `${this.#serverBaseURL}/spos/studycourse/${id}`;
   #getSpoByIdURL = (id) => `${this.#serverBaseURL}/spos/${id}`;
   #getModuleByHashURL = (hash) => `${this.#serverBaseURL}/module/hash/${hash}`;
   #getModulePartByHashURL = (hash) => `${this.#serverBaseURL}/modulepart/${hash}`;
-  #getUserByGoogleUserIdUrl = (google_user_id) => {return this.#serverBaseURL + "/user-by-google_id" + google_user_id}
+  #getUserByGoogleUserIdUrl = (google_user_id) => `${this.#serverBaseURL}/user-by-google_id/${google_user_id}`;
 
   /**
    * Get the Singelton instance
@@ -211,7 +211,6 @@ Map([<Rule '/sopra/studycourses' (OPTIONS, POST, HEAD, GET, PUT) -> sopra_studyc
     }
 
     getAllStudyCourses = () => {
-      console.log(this.#getAllStudyCoursesUrl())
       return this.#getAll(this.#getAllStudyCoursesUrl(), StudyCoursebo);
     }
     getAllModulesParts = () => {
@@ -234,8 +233,8 @@ Map([<Rule '/sopra/studycourses' (OPTIONS, POST, HEAD, GET, PUT) -> sopra_studyc
       return this.#getAll(this.#getModulePartByHashURL(hash), Modulepartbo);
     }
 
-    getUserByGoogleUserId = () => {
-      return this.#getSingle(this.#getUserByGoogleUserIdUrl(), Userbo);
+    getUserByGoogleUserId = (google_user_id) => {
+      return this.#getSingle(this.#getUserByGoogleUserIdUrl(google_user_id), Userbo);
     }
     
        
@@ -255,9 +254,7 @@ Map([<Rule '/sopra/studycourses' (OPTIONS, POST, HEAD, GET, PUT) -> sopra_studyc
   }
   #getAll = (url, BO) => {
       return this.#fetchAdvanced(url).then((responseJSON) => {
-        console.log(responseJSON)
           let responseBOs = BO.fromJSON(responseJSON);
-          console.log(responseBOs)
           return new Promise(function (resolve) {
               resolve(responseBOs);
           })

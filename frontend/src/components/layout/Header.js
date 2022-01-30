@@ -21,15 +21,15 @@ class Header extends Component {
   };
 
   render() {
-    const { user } = this.props;
+    const { user, userBo } = this.props;
 
     return (
-      <Paper variant="outlined">
+      <Paper variant="outlined" style={{marginBottom: '50px'}}>
         <ProfileDropDown user={user} />
         <Typography variant="h3" component="h1" align="center">
           Verwaltung der STUDIEN- UND PRÜFUNGSORDNUNGEN / SPO
         </Typography>
-        {user ? (
+        {user && userBo?.isadmin ? (
           <Tabs
             indicatorColor="primary"
             textColor="primary"

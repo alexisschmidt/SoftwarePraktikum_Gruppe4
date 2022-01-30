@@ -7,7 +7,6 @@ import Box from '@mui/material/Box';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
-import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -17,8 +16,6 @@ import SpoForm from './pages/SpoManagement';
 
 import API from '../api/API';
 import { Button } from '@mui/material';
-import Admin from './pages/AdminSpoAnsicht';
-
 
 
 class AdminSpoAnsicht extends Component {
@@ -43,7 +40,9 @@ class AdminSpoAnsicht extends Component {
             selectedModule:null, 
             selectedModulePart:null,
             // müssen die zwei auch sein oder nur selectedspo?
-
+            
+            spoId: null,
+            studyCourseId: null
 
 
         };
@@ -115,6 +114,14 @@ class AdminSpoAnsicht extends Component {
         });
     }
 
+    sortModuleBySemster () {
+
+        const sorted = [...this.state.spo.modules].sort((el, last) => el?.moduleparts[0].semester < last?.moduleparts[0].semester);
+        this.setState({
+            spo: {...this.state.spo, modules: sorted}
+        });
+    }
+
 	getAllModulesBySpoId = (id) => {
 
         const api = API.getAPI();
@@ -144,6 +151,7 @@ class AdminSpoAnsicht extends Component {
                             this.setState({
                                 spo: { ...this.state.spo, modules: [...m] }
                             });
+
                         }
                     });                    
                 });
@@ -181,6 +189,11 @@ class AdminSpoAnsicht extends Component {
         const studyCourseId = this.props.match.params.studyCourseID;
         const spoId = this.props.match.params.spoID;
         
+        this.setState({
+            studyCourseId: studyCourseId,
+            spoId: spoId
+        });
+        
         this.getAllModulesBySpoId(spoId);
 
         // this.getAllModulesBySpoId(spoId);
@@ -196,24 +209,31 @@ class AdminSpoAnsicht extends Component {
         */
     }
 
-    handleSpoEdit = () =>{
+    handleSpoEdit = () => {
         this.setState({
             spoFormIsOpen:true,
             selectedSPO:this.state.spo,
-
         })
     }
-    handleModuleEdit = (moduleElement) =>{
+    handleModuleEdit = (moduleElement) => {
         this.setState({
             moduleFormOpen:true,
             selectedModule:moduleElement,
         })
     }
-    handleModulePartEdit = (modulePartElement) =>{
+    handleModulePartEdit = (modulePartElement) => {
         this.setState({
             moduleartFormOpen:true,
             selectedModulePart:modulePartElement,
         })
+    }
+
+    handleGoToEdit = () => {
+        this.props.history.push(`/admin/${this.state.studyCourseId}/${this.state.spoId}/edit`);
+    }
+
+    handleGoToNoneEdit = () => {
+        this.props.history.push(`/admin/${this.state.studyCourseId}/${this.state.spoId}`);
     }
 
 
@@ -270,17 +290,7 @@ class AdminSpoAnsicht extends Component {
 
                             <div className="admin-spo-box-pruefung">
                                 Prüfung
-                            </div>
-                            {
-                                bearbeitenBoolean?
-                                <div className='adminbutton'>
-                                <Button onclick={this.handleSpoEdit}> SPO bearbeiten</Button>
-                                </div>
-                                :null
-                            }
-                            
-
-                            
+                            </div> 
                         </div>
 
                         {
@@ -319,22 +329,12 @@ class AdminSpoAnsicht extends Component {
 
                                         <div className="admin-spo-box-pruefung">
                                         	{moduleElement.examtype}              
-                                        </div>
-                                        {
-                                bearbeitenBoolean?
-                                <div className='adminbutton'>
-                                <Button onclick={()=>this.handleModuleEdit(moduleElement)}> Modul bearbeiten</Button>
-                                </div>
-                                :null
-                            }
-                                        
+                                        </div>                                        
 
                                     </div>
                                     </AccordionSummary>
                                                     <AccordionDetails>
-                                                        <Typography>
-
-                                                        <table cellpadding="8">
+                                                        <table cellPadding="8">
                                                             <tbody>
                                                             <tr>
                                                             <td>Title</td>
@@ -370,7 +370,13 @@ class AdminSpoAnsicht extends Component {
                                                             </tr>
                                                             </tbody>
                                                         </table>
-                                                        </Typography>
+                                                        {
+                                                            bearbeitenBoolean?
+                                                            <div className=''>
+                                                            <Button onClick={()=>this.handleModuleEdit(moduleElement)}> Modul bearbeiten</Button>
+                                                            </div>
+                                                            :null
+                                                        }
                                                     </AccordionDetails>
                                                 </Accordion>
                                     
@@ -406,19 +412,10 @@ class AdminSpoAnsicht extends Component {
                                                             <div className="admin-spo-accord-box-ects">
                                                                 {modulePartElement.ects}
                                                             </div>
-                                                            {
-                                                                bearbeitenBoolean?
-                                                                <div className='adminbutton'>
-                                                                <Button onclick={()=>this.handleModulePartEdit(modulePartElement)}> Modulpart bearbeiten</Button>
-                                                                </div>
-                                                                :null
-                                                            }
                                                         </div>
                                                     </AccordionSummary>
                                                     <AccordionDetails>
-                                                        <Typography>
-
-                                                        <table cellpadding="8">
+                                                        <table cellPadding="8">
                                                             <tbody>
                                                             <tr>
                                                             <td>Language</td>
@@ -454,7 +451,14 @@ class AdminSpoAnsicht extends Component {
                                                             </tr>
                                                             </tbody>
                                                         </table>
-                                                        </Typography>
+
+                                                            {
+                                                                bearbeitenBoolean?
+                                                                <div className=''>
+                                                                <Button onClick={() => this.handleModulePartEdit(modulePartElement)}> Modulpart bearbeiten</Button>
+                                                                </div>
+                                                                :null
+                                                            }
                                                     </AccordionDetails>
                                                 </Accordion>
                                             )
@@ -464,6 +468,18 @@ class AdminSpoAnsicht extends Component {
                                 )
                             })
                         }
+
+                            {
+                                bearbeitenBoolean?
+                                <div className='button-spo-edit-container'>
+                                    <Button onClick={this.handleGoToNoneEdit}>  Bearbeitungs Modus Verlassen </Button>
+                                    <Button onClick={this.handleSpoEdit}> SPO bearbeiten</Button>
+                                </div>
+                                :
+                                <div className='button-spo-edit-container'>
+                                    <Button onClick={this.handleGoToEdit}> Zum Bearbeitungs Modus</Button>
+                                </div>
+                            }
                     </CardContent>
                 </Card>
             </div>
@@ -516,4 +532,3 @@ AdminSpoAnsicht.propTypes = {
 
 
 export default withRouter(withStyles(styles)(AdminSpoAnsicht));
-<AdminSpoAnsicht bearbeitenBoolean={true}></AdminSpoAnsicht>

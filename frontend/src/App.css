@@ -137,11 +137,16 @@ table td, table td * {
   font-size: 16px;
 }
 
-
 .css-1elwnq4-MuiPaper-root-MuiAccordion-root {
   box-shadow: none !important;
 }
 
 .css-sh22l5-MuiButtonBase-root-MuiAccordionSummary-root {
   padding: 0 0 0 0 !important;
+}
+
+.button-spo-edit-container {
+  width: 100%;
+  display: flex;
+  justify-content: end;
 }

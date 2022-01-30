@@ -7,11 +7,9 @@ import Box from '@mui/material/Box';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
-import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-
 import API from '../api/API';
 
 
@@ -22,58 +20,44 @@ class StudentSpoAnsicht extends Component {
         super(props);
 
         this.state = {
+            user: null,
+            spo: null,
             studycourses: [],
-			modules: [
-                {
-                    id: 1,
-                    moduleparts:[]
-                },
-                {
-                    id: 2,
-                    moduleparts:[
-                        {
-                            id: 2345
-                        },
-                        {
-                            id: 123
-                        },
-                        {
-                            id: 222
-                        }
-                    ]
-                },
-                {
-                    id: 3,
-                    moduleparts:[
-                        {
-                            id: 8
-                        }
-                    ]
-                },
-                {
-                    id: 4,
-                    moduleparts:[]
-                }
-            ],
+			modules: [],
 			moduleparts: [],
 			semester: [],
             loadingProgress: false,
             error: null,
-            //showStudiengangAnlegenForm: false
+
+            
+            spoFormIsOpen: false,
+            moduleFormOpen: false,
+            modulepartFormOpen: false,
+            selectedSPO:null,
+            selectedModule:null, 
+            selectedModulePart:null,
+            // müssen die zwei auch sein oder nur selectedspo?
+            
+            spoId: null,
+            studyCourseId: null
+
 
         };
     }
 
-    getModulePartsByHash= (modules) => {
-        API.getAPI().getModulePartsByHash(modules).then(modulesbo => {            
+ 
+
+    getAllStudycoursesById = () => {
+        const id = this.props.match.params.id;
+        API.getAPI().getAllStudycoursesById(id).then(studyCoursebo => {            
             this.setState({
-                moduleparts: modulesbo,
+                studycourses: studyCoursebo,
                 loadingProgress: false,
                 error: null
             });
         }).catch(e => {
             this.setState({
-                moduleparts: [],
+                studycourses: [],
                 loadingProgress: false,
                 error: e
             });
@@ -85,36 +69,115 @@ class StudentSpoAnsicht extends Component {
         });
     }
 
-    CreateStudycoursesFormClosed = event => {
+    getUser = (hash) => {
+        API.getAPI().getUser(hash).then(userbo => {            
+            this.setState({
+                user: userbo,
+                loadingProgress: false,
+                error: null
+            });
+        }).catch(e => {
+            this.setState({
+                user: [],
+                loadingProgress: false,
+                error: e
+            });
+        });
+        
         this.setState({
-            showCreateStudycoursesForm: false,
-        })
+            loadingProgress: true,
+            error: null
+        });
     }
 
-    buttonNavigateToCourseClicked(id) {
-        this.props.history.push(`/admin/${id}`);
+    getPerson = (hash) => {
+        API.getAPI().getPerson(hash).then(personbo => {            
+            this.setState({
+                person: personbo,
+                loadingProgress: false,
+                error: null
+            });
+        }).catch(e => {
+            this.setState({
+                person: [],
+                loadingProgress: false,
+                error: e
+            });
+        });
+        
+        this.setState({
+            loadingProgress: true,
+            error: null
+        });
     }
+
+	getAllModulesBySpoHash= (hash) => {
+
+        const api = API.getAPI();
+        
+        api.getSpo(hash).then(spo => {
+
+            this.setState({
+                spo: {...spo, modules: []},
+                loadingProgress: false,
+                error: null
+            });
+
+            
+            spo.modules.forEach(moudleHash => {
+                api.getModuleByHash(moudleHash).then(m => {                
+
+                    api.getModulePartByHash(moudleHash).then(modulePart => {
+                        
+                        if (m && m.length) {
+                            let newModule = m[0];
+                            newModule.moduleparts = modulePart;
+
+                            this.setState({
+                                spo: { ...this.state.spo, modules: [...this.state.spo.modules, newModule] }
+                            });
+                        } else {
+                            this.setState({
+                                spo: { ...this.state.spo, modules: [...m] }
+                            });
+                        }
+                    });                    
+                });
+            });
+        });
+
+        this.setState({
+            loadingProgress: true,
+            error: null
+        });
+    }
+
+    getSemsterFromModule(element) {
+        if (element) {
+            if (element.moduleparts && element.moduleparts.length >= 1) {
+                return `${element.moduleparts[0].semester}`;
+            }
+        } 
+        return '1'
+    }
+    
 
     componentDidMount() {
-        const studyCourseId = this.props.match.params.studyCourseID;
-        const spoId = this.props.match.params.spoID;
-        
-        /*
-        this.getAllStudycoursesById();
-        this.getAllModulesById();
-        this.getAllModulePartsById();
-        this.getAllSemesterById();
-        this.getAllPersonsById();
-        this.getAllSposById();
-        this.getAllUsersById();
-        */
+        const { classes, user } = this.props;
+
+        this.setState({
+            user: user,
+        });
+
+        this.getAllModulesBySpoHash(user.spo);
     }
 
     render() {
-        const { classes } = this.props;
-        const { loadingProgress, error, studycourses, modules, moduleparts, semester, person, spo, user} = this.state;
+        const { classes, bearbeitenBoolean } = this.props;
+        const { loadingProgress, error, studycourses, modules, moduleparts, semester, person, spo, user, spoFormIsOpen, moduleFormOpen, modulepartFormOpen, selectedSPO, selectedModule, selectedModulepart} = this.state;
         return (
-            <Box sx={{ width: '100%', maxWidth: 650, marginLeft: 'auto', marginRight: 'auto' }} className="admin-spo-container">
+            <>
+                        <Box sx={{ width: '100%', maxWidth: 650, marginLeft: 'auto', marginRight: 'auto' }} className="admin-spo-container">
             <div>
                 <Card>
                     <CardContent>
@@ -143,48 +206,97 @@ class StudentSpoAnsicht extends Component {
 
                             <div className="admin-spo-box-pruefung">
                                 Prüfung
-                            </div>
-                            
+                            </div> 
                         </div>
 
                         {
-                            modules.map((moduleElement) => {
+                            spo?.modules?.map((moduleElement) => {
                                 return (
                                     <>
+                                    <Accordion key={moduleElement.id}>
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        aria-controls="panel1a-content"
+                                        id="panel1a-header"
+                                        >
                                     <div className="admin-spo-box fix-header-box">
 
                                         <div className="admin-spo-box-semster">
                                             {/* TODO ALexis. Wenn backend ready, erstze alle static daten mit den aus der dantenbank. module sollte das modul object sein"! */}
-                                            {moduleElement.id}
+                                            {/* {moduleElement.id} */}
+                                            {this.getSemsterFromModule(moduleElement)}
                                         </div>
 
                                         <div className="admin-spo-box-edv">
-                                            VS: 3350
+                                            {moduleElement.edvnr}
                                         </div>
 
                                         <div className="admin-spo-box-module">
-                                            Einstuifungs englisch
+                                            {moduleElement.name}
                                         </div>
 
                                         <div className="admin-spo-box-sws">
-                                            0
+                                            
                                         </div>
 
                                         <div className="admin-spo-box-ects">
-                                            0
+                                            {moduleElement.ects}
                                         </div>
 
                                         <div className="admin-spo-box-pruefung">
-                                            VS:LU
-                                        </div>
+                                        	{moduleElement.examtype}              
+                                        </div>                                        
 
                                     </div>
+                                    </AccordionSummary>
+                                                    <AccordionDetails>
+                                                       
+
+                                                        <table cellPadding="8">
+                                                            <tbody>
+                                                            <tr>
+                                                            <td>Title</td>
+                                                            <td>{moduleElement.title}</td>
+                                                            </tr>
+                                                            <tr>
+                                                            <td>Language</td>
+                                                            <td>{moduleElement.outcome}</td>
+                                                            </tr>
+                                                            <tr>
+                                                            <td>Literature</td>
+                                                            <td>{moduleElement.requirement}</td>
+                                                            </tr>
+                                                            <tr>
+                                                            <td>Sources</td>
+                                                            <td>{moduleElement.type}</td>
+                                                            </tr>
+                                                            <tr>
+                                                            <td>Connection</td>
+                                                            <td>{moduleElement.workload}</td>
+                                                            </tr>
+                                                            <tr>
+                                                            <td>Instructor</td>
+                                                            <td>{moduleElement.instructor}</td>
+                                                            </tr>
+                                                            <tr>
+                                                            <td>Createdby</td>
+                                                            <td>{moduleElement.createdby}</td>
+                                                            </tr>
+                                                            <tr>
+                                                            <td>Creationdate</td>
+                                                            <td>{moduleElement.creationdate}</td>
+                                                            </tr>
+                                                            </tbody>
+                                                        </table>
+                                                        
+                                                    </AccordionDetails>
+                                                </Accordion>
                                     
                                     {
-                                        moduleElement.moduleparts.map((modulePartElement) => {
+                                        moduleElement?.moduleparts?.map((modulePartElement) => {
                                 
                                             return (
-                                                <Accordion>
+                                                <Accordion key={modulePartElement.id}>
                                                     <AccordionSummary
                                                         expandIcon={<ExpandMoreIcon />}
                                                         aria-controls="panel1a-content"
@@ -193,56 +305,64 @@ class StudentSpoAnsicht extends Component {
                                                         <div className="admin-spo-accord-box">
 
                                                             <div className="admin-spo-accord-box-semster">
+                                                                {modulePartElement.semester}
                                                             </div>
 
                                                             <div className="admin-spo-box-edv">
                                                                 {/* TODO ALexis. Wenn backend ready, erstze alle static daten mit den aus der dantenbank. modulePartElement sollte das part modul object sein"! */}
-                                                                {modulePartElement.id}
+                                                                {modulePartElement.edvnr}
                                                             </div>
 
                                                             <div className="admin-spo-accord-box-module">
-                                                                Was auch immer
+                                                                {modulePartElement.name}
                                                             </div>
 
                                                             <div className="admin-spo-accord-box-sws">
-                                                                0
+                                                                {modulePartElement.sws}
                                                             </div>
 
                                                             <div className="admin-spo-accord-box-ects">
-                                                                0
+                                                                {modulePartElement.ects}
                                                             </div>
-
-                                                            <div className="admin-spo-accord-box-pruefung">
-                                                            </div>
-
                                                         </div>
                                                     </AccordionSummary>
                                                     <AccordionDetails>
-                                                        <Typography>
-                                                            <div>
-                                                                Language
-                                                            </div>
-
-                                                            <div>
-                                                                Literature
-                                                            </div>
-
-                                                            <div>
-                                                                Sources
-                                                            </div>
-
-                                                            <div>
-                                                                Connection
-                                                            </div>
-
-                                                            <div>
-                                                                Description
-                                                            </div>
-
-                                                            <div>
-                                                                Workload
-                                                            </div>
-                                                        </Typography>
+                                                        <table cellPadding="8">
+                                                            <tbody>
+                                                            <tr>
+                                                            <td>Language</td>
+                                                            <td>{modulePartElement.language}</td>
+                                                            </tr>
+                                                            <tr>
+                                                            <td>Literature</td>
+                                                            <td>{modulePartElement.literature}</td>
+                                                            </tr>
+                                                            <tr>
+                                                            <td>Sources</td>
+                                                            <td>{modulePartElement.sources}</td>
+                                                            </tr>
+                                                            <tr>
+                                                            <td>Connection</td>
+                                                            <td>{modulePartElement.connection}</td>
+                                                            </tr>
+                                                            <tr>
+                                                            <td>Description</td>
+                                                            <td>{modulePartElement.description}</td>
+                                                            </tr>
+                                                            <tr>
+                                                            <td>Workload</td>
+                                                            <td>{modulePartElement.workload}</td>
+                                                            </tr>
+                                                            <tr>
+                                                            <td>Professor</td>
+                                                            <td>{modulePartElement.professor}</td>
+                                                            </tr>
+                                                            <tr>
+                                                            <td>Creationdate</td>
+                                                            <td>{modulePartElement.creationdate}</td>
+                                                            </tr>
+                                                            </tbody>
+                                                        </table>
                                                     </AccordionDetails>
                                                 </Accordion>
                                             )
@@ -252,10 +372,13 @@ class StudentSpoAnsicht extends Component {
                                 )
                             })
                         }
+
+                            
                     </CardContent>
                 </Card>
             </div>
         </Box>
+              </>
         )
     }
 

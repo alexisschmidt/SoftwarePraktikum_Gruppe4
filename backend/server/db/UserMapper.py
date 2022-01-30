@@ -151,7 +151,7 @@ class UserMapper(Mapper):
         result = None
 
         cursor = self._cnx.cursor()
-        command = "SELECT id, creationdate, createdby, firstname, lastname, email, google_user_id, user_hash, spo_hash " \
+        command = "SELECT id, creationdate, createdby, firstname, lastname, email, google_user_id, isadmin, user_hash, spo_hash " \
                   "FROM user " \
                   f"WHERE google_user_id='{google_user_id}'"
         cursor.execute(command)

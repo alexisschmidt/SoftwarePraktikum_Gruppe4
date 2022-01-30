@@ -526,14 +526,14 @@ class UserByNameOperations(Resource):
 @sposystem.param('google_user_id', 'Die GUID des User-Objekts')
 class UserGuidOperations(Resource):
     @sposystem.marshal_with(user)
-    @secured
-    def get(self, guid):
+    #@secured
+    def get(self, google_user_id):
         """
         Auslesen eines Customer-Objekts, das durch sein Hash bestimmt wird.\n
         Das auszulesende Objekt wird durch user_hash in dem URI bestimmt.
         """
         adm = Administration()
-        us = adm.get_user_by_google_user_id(guid)
+        us = adm.get_user_by_google_user_id(google_user_id)
         return us
 
 
