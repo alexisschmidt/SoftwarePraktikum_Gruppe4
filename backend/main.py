@@ -12,6 +12,8 @@ from server.Administration import Administration as Admin
 # Wir nutzen einen selbstgeschriebenen Decorator der die Authentifikation übernimmt
 from server.SecurityDecorator import secured
 from server.bo.Module import Module
+from server.bo.ModuleType import ModuleType
+from server.bo.ExamType import ExamType
 from server.bo.Modulepart import Modulepart
 from server.bo.Person import Person
 from server.bo.Semester import Semester
@@ -54,8 +56,8 @@ Anlegen eines Namespace
 
 Namespaces erlauben die Strukturierung von APIs. Dieser Namespace beinhaltet alle
 SPO-relevanten Operationen unter dem Präfix /sposystem. 
-Eine alternative bzw. ergänzende Nutzung von Namespace könnte etwa sein, unter-
-schiedliche API-Versionen voneinander zu trennen, um etwa Abwärtskompatibilität 
+Eine alternative bzw. ergänzende Nutzung von Namespace könnte etwa sein, unterschiedliche 
+API-Versionen voneinander zu trennen, um etwa Abwärtskompatibilität 
 (vgl. Lehrveranstaltungen zu Software Engineering) zu gewährleisten. 
 Dies ließe sich z.B. umsetzen durch /sposystem/v1, /sposystem/v2 usw.
 """
@@ -116,6 +118,10 @@ module = api.inherit('Module', spoelement, {
     'parts': fields.List(fields.Integer(attribute='_parts', description='Teile eines Moduls'))
 })
 
+moduletype = api.inherit('ModuleType', namedbo)
+
+examtype = api.inherit('ExamType', namedbo)
+
 modulepart = api.inherit('Modulepart', spoelement, {
     'sws': fields.Integer(attribute='_sws', description='Anzahl der SWS des Modulteils'),
     'language': fields.String(attribute='_language', descpription='Sprache des Modulteils'),
@@ -132,7 +138,8 @@ studycourse = api.inherit('StudyCourse', namedbo)
 
 semester = api.inherit('Semester', namedbo)
 
-"""Alles @sposystem.route('')"""
+
+# SPO-Routen
 
 
 @sposystem.route('/spos')
@@ -166,22 +173,7 @@ class SpoListOperations(Resource):
             return '', 500
 
 
-''' @sposystem.route('/spos/all/<int:id>')
-@sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
-class SpoListOperations(Resource):
-    @sposystem.marshal_list_with(spo)
-    @secured
-    def get(self, id):
-        """
-        Auslesen aller SPO-Objekte.
-        Sollten keine SPO-Objekte verfügbar sein, so wird eine leere Sequenz zurückgegeben.
-        """
-        
-        spo = Admin.get_spo_by_id(id)
-        return spo '''
-
-
-@sposystem.route('/spos/<int:id>')
+@sposystem.route('/spos-by-id/<int:id>')
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
 @sposystem.param('id', 'Die ID des SPO-Objekts')
 class SpoOperations(Resource):
@@ -198,7 +190,7 @@ class SpoOperations(Resource):
         return s
 
 
-@sposystem.route('/spo/hash/<int:spo_hash>')
+@sposystem.route('/spos-by-hash/<int:spo_hash>')
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
 @sposystem.param('spo_hash', 'Der Hash des SPO-Objekts')
 class SpoOperations(Resource):
@@ -245,9 +237,9 @@ class SpoSemStudOperations(Resource):
         return s
 
 
-@sposystem.route('/spos/studycourse/<int:id>')
+@sposystem.route('/spos-by-studycourseid/<int:id>')
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
-@sposystem.param('id', 'Die ID des SPO-Objekts')
+@sposystem.param('id', 'Die ID des Studiengangs')
 class SpoOperations(Resource):
     @sposystem.marshal_list_with(spo)
     @secured
@@ -261,6 +253,8 @@ class SpoOperations(Resource):
         Admin.delete_spo(s)
         return '', 200
 
+
+# Modul-Routen
 
 @sposystem.route('/modules')
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
@@ -289,7 +283,7 @@ class ModuleListOperations(Resource):
             return '', 500
 
 
-@sposystem.route('/modules/<int:id>')
+@sposystem.route('/modules-by-id/<int:id>')
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
 @sposystem.param("id", "Die id des Modules")
 class ModuleOperations(Resource):
@@ -311,7 +305,7 @@ class ModuleOperations(Resource):
         return '', 200
 
 
-@sposystem.route('/module/hash/<int:module_hash>')
+@sposystem.route('/modules-by-hash/<int:module_hash>')
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
 @sposystem.param("module_hash", "Der Hash des Modules")
 class ModuleHashOperations(Resource):
@@ -333,7 +327,7 @@ class ModuleHashOperations(Resource):
         return '', 200
 
 
-@sposystem.route('/module/spo/<int:spo_hash>')
+@sposystem.route('/module-by-spohash/<int:spo_hash>')
 @sposystem.response(500, 'Falles es zu einem Server-seitigen Fehler kommt.')
 @sposystem.param('spo_hash', 'Der Hash der SPO')
 class ModuleSpoOperations(Resource):
@@ -343,6 +337,152 @@ class ModuleSpoOperations(Resource):
         mo = Admin.get_all_by_spo(spo_hash)
         return mo
 
+
+# Modultyp-Routen
+
+@sposystem.route('/moduletypes')
+@sposystem.response(500, 'Falles es zu einem Server-seitigen Fehler kommt.')
+class ModuleTypeListOperations(Resource):
+    @sposystem.marshal_list_with(moduletype, code=200)
+    @secured
+    def get(self):
+        modules = Admin.get_all_moduletypes()
+        return modules
+
+    @sposystem.marshal_with(moduletype, code=200)
+    @sposystem.expect(moduletype)
+    @secured
+    def post(self, **kwargs):
+        """
+        Erstellen eines Modultyp-Objekts in der Datenbank.
+        """
+
+        proposal = ModuleType.from_dict(api.payload)
+
+        if proposal is not None:
+            mo = Admin.create_moduletype(proposal, kwargs['user'])
+            return mo, 200
+        else:
+            return '', 500
+
+
+@sposystem.route('/moduletype-by-id/<int:id>')
+@sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
+@sposystem.param("id", "Die id des Modultyps")
+class ModuleTypeOperations(Resource):
+    @sposystem.marshal_with(moduletype)
+    @secured
+    def get(self, id):
+        """Auslesen eines bestimmten Modultyp-Objekts"""
+
+        mot = Admin.get_moduletype_by_id(id)
+        return mot
+
+    @secured
+    def delete(self, id):
+        """Löschen eines bestimmten Modultyp-Objekts.
+        Das zu löschende Objekt wird durch die ```id``` in dem URI bestimmt."""
+
+        mo = Admin.get_moduletype_by_id(id)
+        Admin.delete_moduletype(mo)
+        return '', 200
+
+
+@sposystem.route('/moduletype-by-hash/<int:moduletype_hash>')
+@sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
+@sposystem.param("moduletype_hash", "Der Hash des Modules")
+class ModuleTypeHashOperations(Resource):
+    @sposystem.marshal_with(moduletype)
+    @secured
+    def get(self, moduletype_hash):
+        """Auslesen eines durch hash bestimmten Modul-Objekts"""
+
+        mo = Admin.get_moduletype_by_hash(moduletype_hash)
+        return mo
+
+    @secured
+    def delete(self, moduletype_hash):
+        """Löschen eines bestimmten Module-Objekts.
+        Das zu löschende Objekt wird durch den hash in dem URI bestimmt."""
+
+        mot = Admin.get_moduletype_by_hash(moduletype_hash)
+        Admin.delete_moduletype(mot)
+        return '', 200
+
+
+# Prüfungsart-Routen
+
+@sposystem.route('/examtypes')
+@sposystem.response(500, 'Falles es zu einem Server-seitigen Fehler kommt.')
+class ExamTypeListOperations(Resource):
+    @sposystem.marshal_list_with(examtype, code=200)
+    @secured
+    def get(self):
+        examtypes = Admin.get_all_examtypes()
+        return examtypes
+
+    @sposystem.marshal_with(examtype, code=200)
+    @sposystem.expect(examtype)
+    @secured
+    def post(self, **kwargs):
+        """
+        Erstellen eines Modultyp-Objekts in der Datenbank.
+        """
+
+        proposal = ExamType.from_dict(api.payload)
+
+        if proposal is not None:
+            mo = Admin.create_examtype(proposal, kwargs['user'])
+            return mo, 200
+        else:
+            return '', 500
+
+
+@sposystem.route('/examtypes-by-id/<int:id>')
+@sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
+@sposystem.param("id", "Die id der Prüfungsart")
+class ModuleTypeOperations(Resource):
+    @sposystem.marshal_with(moduletype)
+    @secured
+    def get(self, id):
+        """Auslesen eines bestimmten Modultyp-Objekts"""
+
+        mot = Admin.get_examtype_by_id(id)
+        return mot
+
+    @secured
+    def delete(self, id):
+        """Löschen eines bestimmten Modultyp-Objekts.
+        Das zu löschende Objekt wird durch die ```id``` in dem URI bestimmt."""
+
+        mo = Admin.get_examtype_by_id(id)
+        Admin.delete_examtype(mo)
+        return '', 200
+
+
+@sposystem.route('/examtypes-by-hash/<int:examtype_hash>')
+@sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
+@sposystem.param("examtype_hash", "Der Hash des Modules")
+class ModuleTypeHashOperations(Resource):
+    @sposystem.marshal_with(moduletype)
+    @secured
+    def get(self, examtype_hash):
+        """Auslesen eines durch hash bestimmten Modul-Objekts"""
+
+        et = Admin.get_examtype_by_hash(examtype_hash)
+        return et
+
+    @secured
+    def delete(self, examtype_hash):
+        """Löschen eines bestimmten Module-Objekts.
+        Das zu löschende Objekt wird durch den hash in dem URI bestimmt."""
+
+        et = Admin.get_examtype_by_hash(examtype_hash)
+        Admin.delete_examtype(et)
+        return '', 200
+
+
+# Modulteil-Routen
 
 @sposystem.route('/moduleparts')
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
@@ -370,7 +510,7 @@ class ModulePartListOperations(Resource):
             return '', 500
 
 
-@sposystem.route('/moduleparts/<int:id>')
+@sposystem.route('/moduleparts-by-id/<int:id>')
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
 @sposystem.param("id", "Die id des Moduleparts")
 class ModulePartOperations(Resource):
@@ -392,7 +532,7 @@ class ModulePartOperations(Resource):
         return '', 200
 
 
-@sposystem.route('/moduleparts/<int:modulepart_hash>')
+@sposystem.route('/moduleparts-by-hash/<int:modulepart_hash>')
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
 @sposystem.param("modulepart_hash", "Der Hash des Moduleparts")
 class ModulePartOperations(Resource):
@@ -405,7 +545,7 @@ class ModulePartOperations(Resource):
         return mopart
 
 
-@sposystem.route('/modulepart/<int:module_hash>')
+@sposystem.route('/moduleparts-by-module/<int:module_hash>')
 @sposystem.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
 @sposystem.param('module_hash', 'Der Hash des Modules')
 class ModulePartModuleOperations(Resource):
@@ -416,6 +556,8 @@ class ModulePartModuleOperations(Resource):
         mopart = Admin.get_modulepart_by_module(module_hash)
         return mopart
 
+
+# User-Routen
 
 @sposystem.route('/users')
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
@@ -471,7 +613,7 @@ class UserListOperations(Resource):
             return '', 500
 
 
-@sposystem.route('/user/<int:user_hash>')
+@sposystem.route('/users-by-hash/<int:user_hash>')
 @sposystem.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
 @sposystem.param('lastname', 'Der Hash des User-Objekts')
 class ModuleHashOperations(Resource):
@@ -513,6 +655,8 @@ class UserByNameOperations(Resource):
         return us
 
 
+# Studiengang-Routen
+
 @sposystem.route('/studycourses')
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
 class StudycourseListOperations(Resource):
@@ -544,7 +688,7 @@ class StudycourseListOperations(Resource):
             return '', 500
 
 
-@sposystem.route('/studycourse/<int:id>')
+@sposystem.route('/studycourses-by-id/<int:id>')
 @sposystem.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
 @sposystem.param('id', 'Die ID des Studycourse-Objekts')
 class StudycourseOperations(Resource):
@@ -567,7 +711,7 @@ class StudycourseOperations(Resource):
         return '', 200
 
 
-@sposystem.route('/studycourse/<int:studycourse_hash>')
+@sposystem.route('/studycourse-by-hash/<int:studycourse_hash>')
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
 @sposystem.param("studycourse_hash", "Der Hash des Studiengangs")
 class ModulePartOperations(Resource):
@@ -577,6 +721,17 @@ class ModulePartOperations(Resource):
         sc = Admin.get_studycourse_by_hash(studycourse_hash)
         return sc
 
+    @secured
+    def delete(self, studycourse_hash):
+        """Löschen eines bestimmten Semester-Objekts.
+        Das zu löschende Objekt wird durch die ```id``` in dem URI bestimmt."""
+
+        sc = Admin.get_studycourse_by_hash(studycourse_hash)
+        Admin.delete_studycourse(sc)
+        return '', 200
+
+
+# Person_Routen
 
 @sposystem.route('/persons')
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
@@ -610,7 +765,7 @@ class PersonListOperations(Resource):
             return '', 500
 
 
-@sposystem.route('/persons/<int:id>')
+@sposystem.route('/persons-by-id/<int:id>')
 @sposystem.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
 @sposystem.param('id', 'Die ID des Person-Objekts')
 class PersonOperations(Resource):
@@ -633,7 +788,7 @@ class PersonOperations(Resource):
         return '', 200
 
 
-@sposystem.route('/person/<int:person_hash>')
+@sposystem.route('/persons-by-hash/<int:person_hash>')
 @sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
 @sposystem.param("person_hash", "Der Hash der Person")
 class ModulePartOperations(Resource):
@@ -679,30 +834,12 @@ class SemesterListOperations(Resource):
             return '', 500
 
 
-@sposystem.route('/studycourse/<int:studycourse_hash>')
-@sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
-@sposystem.param("studycourse_hash", "Der Hash des Studiengangs")
-class ModulePartOperations(Resource):
-    @sposystem.marshal_with(studycourse)
-    @secured
-    def get(self, studycourse_hash):
-        sc = Admin.get_studycourse_by_hash(studycourse_hash)
-        return sc
-
-    @secured
-    def delete(self, id):
-        """Löschen eines bestimmten Semester-Objekts.
-        Das zu löschende Objekt wird durch die ```id``` in dem URI bestimmt."""
-
-        se = Admin.get_semester_by_id(id)
-        Admin.delete_semester(se)
-        return '', 200
-
-
-"""**ACHTUNG:** Diese Zeile wird nur in der lokalen Entwicklungsumgebung ausgeführt und hat in der Cloud keine Wirkung!
+"""
+**ACHTUNG: ** 
+Diese Zeile wird nur in der lokalen Entwicklungsumgebung ausgeführt und hat in der Cloud keine Wirkung!
 """
 
-print(app.url_map)
+
 
 if __name__ == '__main__':
     app.run(debug=True)

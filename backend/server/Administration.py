@@ -1,6 +1,8 @@
 import datetime
 
 from server.bo.Module import Module
+from server.bo.ModuleType import ModuleType
+from server.bo.ExamType import ExamType
 from server.bo.Modulepart import Modulepart
 from server.bo.Person import Person
 from server.bo.Semester import Semester
@@ -8,8 +10,11 @@ from server.bo.Spo import Spo
 from server.bo.StudyCourse import StudyCourse
 from server.bo.User import User
 
+
 from server.db.ModuleMapper import ModuleMapper
 from server.db.ModulePartMapper import ModulePartMapper
+from server.db.ModuleTypeMapper import ModuleTypeMapper
+from server.db.ExamTypeMapper import ExamTypeMapper
 from server.db.PersonMapper import PersonMapper
 from server.db.SemesterMapper import SemesterMapper
 from server.db.SpoMapper import SpoMapper
@@ -28,11 +33,11 @@ class Administration (object):
     @staticmethod
     def create_spo(proposal: Spo, creator):
         """
-        Legt das Objekt in der Datenbank an und setzt creationate und creator,
+        Legt das Objekt in der Datenbank an und setzt creationdate und creator,
         wenn das Zielobjekt noch nicht in der DB existiert.
 
-        Zusätzlich wird für eine SPO ein bzw. 2 Einträge in spovalidity erstellt,
-        die die Attribute _start_semester und _end_semester darstellen und Einträge in spocomposition,
+        Zusätzlich wird für eine SPO ein bzw. 2 Einträge in spo validity erstellt,
+        die die Attribute _start_semester und _end_semester darstellen und Einträge in spo composition,
         die die Module einer SPO darstellen
 
         :param proposal: Ein Spo Objekt
@@ -170,7 +175,7 @@ class Administration (object):
     @staticmethod
     def create_module(proposal: Module, creator):
         """
-        Legt das Objekt in der Datenbank an und setzt creationate und creator,
+        Legt das Objekt in der Datenbank an und setzt creationdate und creator,
         wenn das Zielobjekt noch nicht in der DB existiert.
 
         :param proposal: Ein Modul Objekt
@@ -183,6 +188,7 @@ class Administration (object):
             if existing is None:
                 newobj = mapper.insert(proposal)
                 return newobj
+
     @staticmethod
     def get_module_by_name(name: str):
         """Alle Module mit Namen name auslesen."""
@@ -218,12 +224,108 @@ class Administration (object):
         with ModuleMapper() as mapper:
             mapper.delete(module)
 
+    """Modultyp spezifische Methoden"""
+
+    @staticmethod
+    def create_moduletype(proposal: ModuleType, creator):
+        """
+        Legt das Objekt in der Datenbank an und setzt creationdate und creator,
+        wenn das Zielobjekt noch nicht in der DB existiert.
+
+        :param proposal: Ein Modul Objekt
+        :param creator: Ein User, creator des Objekts
+        """
+        proposal.set_creationdate(datetime.date.today())
+        proposal.set_creator(hash(creator))
+        with ModuleTypeMapper() as mapper:
+            existing = mapper.find_by_hash(hash(proposal))
+            if existing is None:
+                newobj = mapper.insert(proposal)
+                return newobj
+
+    @staticmethod
+    def get_moduletype_by_name(name: str):
+        """Alle Module mit Namen name auslesen."""
+        with ModuleTypeMapper() as mapper:
+            return mapper.find_by_name(name)
+
+    @staticmethod
+    def get_moduletype_by_id(id: int):
+        with ModuleTypeMapper() as mapper:
+            motypehash = mapper.find_hash_by_id(id)
+            return mapper.find_by_hash(motypehash)
+
+    @staticmethod
+    def get_moduletype_by_hash(modulehash):
+        """Das Modul mit dem gegebenem Hash auslesen."""
+        with ModuleTypeMapper() as mapper:
+            return mapper.find_by_hash(modulehash)
+
+    @staticmethod
+    def get_all_moduletypes():
+        """Alle module auslesen."""
+        with ModuleTypeMapper() as mapper:
+            return mapper.find_all()
+
+    @staticmethod
+    def delete_moduletype(mtype: ExamType):
+        with ModuleTypeMapper() as mapper:
+            mapper.delete(mtype)
+
+    """Prüfungsart-spezifische Methoden"""
+
+    @staticmethod
+    def create_examtype(proposal: ModuleType, creator):
+        """
+        Legt das Objekt in der Datenbank an und setzt creationdate und creator,
+        wenn das Zielobjekt noch nicht in der DB existiert.
+
+        :param proposal: Ein ExamType Objekt
+        :param creator: Ein User, creator des Objekts
+        """
+        proposal.set_creationdate(datetime.date.today())
+        proposal.set_creator(hash(creator))
+        with ExamTypeMapper() as mapper:
+            existing = mapper.find_by_hash(hash(proposal))
+            if existing is None:
+                newobj = mapper.insert(proposal)
+                return newobj
+
+    @staticmethod
+    def get_examtype_by_name(name: str):
+        """Alle Module mit Namen name auslesen."""
+        with ExamTypeMapper() as mapper:
+            return mapper.find_by_name(name)
+
+    @staticmethod
+    def get_examtype_by_id(id: int):
+        with ExamTypeMapper() as mapper:
+            modthash = mapper.find_hash_by_id(id)
+            return mapper.find_by_hash(modthash)
+
+    @staticmethod
+    def get_examtype_by_hash(modulehash):
+        """Das Modul mit dem gegebenem Hash auslesen."""
+        with ExamTypeMapper() as mapper:
+            return mapper.find_by_hash(modulehash)
+
+    @staticmethod
+    def get_all_examtypes():
+        """Alle module auslesen."""
+        with ExamTypeMapper() as mapper:
+            return mapper.find_all()
+
+    @staticmethod
+    def delete_examtype(mtype: ModuleType):
+        with ExamTypeMapper() as mapper:
+            mapper.delete(mtype)
+
     """Modulteil-spezifische Methoden"""
 
     @staticmethod
     def create_modulepart(proposal: Modulepart, creator):
         """
-        Legt das Objekt in der Datenbank an und setzt creationate und creator,
+        Legt das Objekt in der Datenbank an und setzt creationdate und creator,
         wenn das Zielobjekt noch nicht in der DB existiert.
 
         :param proposal: Ein Modulepart Objekt
@@ -279,7 +381,7 @@ class Administration (object):
     @staticmethod
     def create_semester(proposal: Semester, creator):
         """
-        Legt das Objekt in der Datenbank an und setzt creationate und creator,
+        Legt das Objekt in der Datenbank an und setzt creationdate und creator,
         wenn das Zielobjekt noch nicht in der DB existiert.
 
         :param proposal: Ein Semester Objekt
@@ -325,7 +427,7 @@ class Administration (object):
     @staticmethod
     def create_studycourse(proposal: StudyCourse, creator):
         """
-        Legt das Objekt in der Datenbank an und setzt creationate und creator,
+        Legt das Objekt in der Datenbank an und setzt creationdate und creator,
         wenn das Zielobjekt noch nicht in der DB existiert.
 
         :param proposal: Ein Studycourse Objekt
@@ -372,7 +474,7 @@ class Administration (object):
     @staticmethod
     def create_user(proposal: User):
         """
-        Legt das Objekt in der Datenbank an und setzt creationate und creator,
+        Legt das Objekt in der Datenbank an und setzt creationdate und creator,
         wenn das Zielobjekt noch nicht in der DB existiert.
 
         :param proposal: Ein User Objekt
@@ -426,10 +528,10 @@ class Administration (object):
     @staticmethod
     def create_person(proposal: Person, creator):
         """
-        Legt das Objekt in der Datenbank an und setzt creationate und creator,
+        Legt das Objekt in der Datenbank an und setzt creationdate und creator,
         wenn das Zielobjekt noch nicht in der DB existiert.
 
-        :param proposal: Ein Person Objekt
+        :param proposal: Ein Personenobjekt
         :param creator: Ein User, creator des Objekts
         """
         proposal.set_creationdate(datetime.date.today())
@@ -472,4 +574,3 @@ class Administration (object):
         """Die gegebene Person aus unserem System löschen."""
         with PersonMapper() as mapper:
             mapper.delete(person)
-
