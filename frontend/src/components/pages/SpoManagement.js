@@ -8,6 +8,11 @@ import SpoForm from "./SpoForm";
 import Button from "@mui/material/Button";
 import ModuleForm from "./ModuleForm";
 import ModulepartForm from "./ModulepartForm";
+import { DialogTitle, Dialog, DialogActions } from "@mui/material";
+import NewModuletype from "./NewModuletype";
+import { DialogContent } from "@mui/material";
+import NewStudyCourse from "./NewStudyCourse";
+import NewExamtype from "./NewExamtype";
 
 class Administration extends Component {
   constructor(props) {
@@ -21,6 +26,11 @@ class Administration extends Component {
       spoFormIsOpen: false,
       moduleFormOpen: false,
       modulepartFormOpen: false,
+      newModuletypeOpen:false,
+      newExamtypeOpen:false,
+      newStudycourseOpen:false,
+      newSemesterOpen:false,
+      dialogtext:"",
     };
   }
 
@@ -50,6 +60,35 @@ class Administration extends Component {
     }
   };
 
+  moduletypeHandler = () =>{
+    this.setState({
+      newModuletypeOpen:true,
+      dialogtext:"neue Modulart hinzufügen"
+    })
+  }
+
+  examtypeHandler = () =>{
+    this.setState({
+      newExamtypeOpen:true,
+      dialogtext:"neues Prüfungsart hinzufügen"
+    })
+  }
+
+  studycourseHandler = () =>{
+    this.setState({
+      newStudycourseOpen:true,
+      dialogtext:"neuen Studiengang hinzufügen"
+    })
+  }
+
+  semesterHandler = () =>{
+    this.setState({
+      newSemesterOpen:true,
+      dialogtext:"neues Prüfungsart hinzufügen"
+    })
+  }
+  
+
   spoFormClosed = (event) => {
     this.setState({
       spoFormIsOpen: false,
@@ -65,31 +104,67 @@ class Administration extends Component {
       modulepartFormOpen: false,
     });
   };
+  closeDialog = () =>{
+    this.setState({
+      newModuletypeOpen:false,
+      newExamtypeOpen:false,
+      newSemesterOpen:false,
+      newStudycourseOpen:false,
+      dialogtext:"",
+    })
+  }
 
   /** Renders the component */
   render() {
     const { classes } = this.props;
-    const { loadingInProgress, error, spoFormIsOpen, moduleFormOpen, modulepartFormOpen } =
+    const { loadingInProgress, error, spoFormIsOpen, moduleFormOpen, modulepartFormOpen, newModuletypeOpen, newStudycourseOpen, newSemesterOpen, newExamtypeOpen, dialogtext } =
       this.state;
 
     return (
       <div className={classes.root}>
         <Paper>
           <LoadingProgress show={loadingInProgress} />
-          <Button variant="contained" onClick={this.spoFormHandler}>
-            SPO ERSTELLEN
+          
+          <Button variant="contained" onClick={this.modulepartFormHandler}>
+            Modulteile ERSTELLEN
           </Button>
           <Button variant="contained" onClick={this.moduleFormHandler}>
             Module ERSTELLEN
           </Button>
-          <Button variant="contained" onClick={this.modulepartFormHandler}>
-            Modulteile ERSTELLEN
+          <Button variant="contained" onClick={this.spoFormHandler}>
+            SPO ERSTELLEN
+          </Button>
+          <Button variant="contained" onClick={this.moduletypeHandler}>
+            Moduletype erstellen
+          </Button>
+          <Button variant="contained" onClick={this.examtypeHandler}>
+            Prüfungsart erstellen
+          </Button>
+          <Button variant="contained" onClick={this.studycourseHandler}>
+            Studiengang erstellen
+          </Button>
+          <Button variant="contained" onClick={this.semesterHandler}>
+            Semester erstellen
           </Button>
 
-          <SpoForm show={spoFormIsOpen} onClose={this.spoFormClosed} />
-          <ModuleForm show={moduleFormOpen} onClose={this.moduleFormClosed} />
+          
           <ModulepartForm show={modulepartFormOpen} onClose={this.modulepartFormClosed} />
+          <ModuleForm show={moduleFormOpen} onClose={this.moduleFormClosed} />
+          <SpoForm show={spoFormIsOpen} onClose={this.spoFormClosed} />
 
+          <Dialog open={newModuletypeOpen||newStudycourseOpen||newSemesterOpen||newExamtypeOpen} onclose={this.closeDialog}>
+            <DialogTitle>{dialogtext}</DialogTitle>
+            <DialogContent>
+            {newModuletypeOpen?<NewModuletype handleClose={this.closeDialog}/>:null}
+            {newExamtypeOpen?<NewExamtype handleClose={this.closeDialog}/>:null}
+            {newStudycourseOpen?<NewStudyCourse handleClose={this.closeDialog}/>:null}
+            {newSemesterOpen?<newSemester handleClose={this.closeDialog}/>:null}
+
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={this.closeDialog}>Schließen</Button>
+            </DialogActions>
+          </Dialog>
 
           <ContextErrorMessage
             error={error}

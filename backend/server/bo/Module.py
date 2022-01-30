@@ -24,15 +24,15 @@ class Module(Spe.SpoElement):
         """Auslesen des Modultyps"""
         return self._type
 
-    def set_type(self, value):
+    def set_type(self, mtype: int):
         """Setzen des Modultyps"""
-        self._type = value
+        self._type = mtype
 
     def get_requirement(self):
         """Auslesen der Voraussetzung(en)"""
         return self._requirement
 
-    def set_requirement(self, requirement):
+    def set_requirement(self, requirement: str):
         """Setzen der Voraussetzung(en)"""
         self._requirement = requirement
 
@@ -40,7 +40,7 @@ class Module(Spe.SpoElement):
         """Auslesen des Lernergebnisses"""
         return self._outcome
 
-    def set_outcome(self, outcome):
+    def set_outcome(self, outcome: str):
         """Setzen des Lernergebnisses"""
         self._outcome = outcome
 
@@ -48,7 +48,7 @@ class Module(Spe.SpoElement):
         """Auslesen des Prüfungstyps"""
         return self._examtype
 
-    def set_examtype(self, examtype):
+    def set_examtype(self, examtype: int):
         """Setzen des Prüfungstyps"""
         self._examtype = examtype
 
@@ -56,7 +56,7 @@ class Module(Spe.SpoElement):
         """Auslesen des Modulverantwortlichen"""
         return self._instructor
 
-    def set_instructor(self, instructor):
+    def set_instructor(self, instructor: int):
         """Setzen des Modulverantwortlichen"""
         self._instructor = instructor
 

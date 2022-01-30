@@ -12,9 +12,9 @@ class ModuleMapper(Mapper):
         result = []
 
         command = "SELECT id, creationdate, name, title, " \
-                  "requirement, examtype, outcome, type, " \
+                  "requirement, outcome, " \
                   "ects, edvnr, workload, " \
-                  "instructor_hash " \
+                  "moduletype_hash, examtype_hash, instructor_hash " \
                   "FROM module"
 
         cursor = self._cnx.cursor()
@@ -22,18 +22,18 @@ class ModuleMapper(Mapper):
         tuples = cursor.fetchall()
 
         for (id, creationdate, name, title,
-             requirement, examtype, outcome, type,
+             requirement, outcome, type,
              ects, edvnr, workload,
-             instructor_hash) in tuples:
+             moduletype_hash, examtype_hash, instructor_hash) in tuples:
             module = Module()
             module.set_id(id)
             module.set_creationdate(creationdate)
             module.set_name(name)
             module.set_title(title)
             module.set_requirement(requirement)
-            module.set_examtype(examtype)
+            module.set_examtype(examtype_hash)
             module.set_outcome(outcome)
-            module.set_type(type)
+            module.set_type(moduletype_hash)
             module.set_ects(ects)
             module.set_edvnr(edvnr)
             module.set_workload(workload)
@@ -48,9 +48,9 @@ class ModuleMapper(Mapper):
 
         result = None
         command = "SELECT id, creationdate, name, title, " \
-                  "requirement, examtype, outcome, type, " \
+                  "requirement, outcome, " \
                   "ects, edvnr, workload, " \
-                  "instructor_hash " \
+                  "moduletype_hash, examtype_hash, instructor_hash " \
                   "FROM module " \
                   f"WHERE name LIKE '{m_name}' ORDER BY name"
 
@@ -193,9 +193,8 @@ class ModuleMapper(Mapper):
 
         cursor = self._cnx.cursor()
 
-        command = "UPDATE module SET name=%s, title=%s, requirement=%s, examtype=%s, " \
-                  "instructor=%s, outcome=%s, type=%s" \
-                  "ects=%s, edvnr=%s, workload=%s, instructor_hash=%s WHERE id=%s AND module_hash=%s"
+        command = "UPDATE module SET name=%s, title=%s, requirement=%s, outcome=%s," \
+                  f"ects=%s, edvnr=%s, workload=%s, instructor_hash=%s WHERE id=%s AND module_hash=%s"
         data = (
             module.get_name(), module.get_title(), module.get_requirement(), module.get_examtype(),
             module.get_instructor(), module.get_outcome(), module.get_type(),

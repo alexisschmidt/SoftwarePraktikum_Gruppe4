@@ -10,12 +10,14 @@ class SemesterMapper(Mapper):
     def find_all(self):
         result = []
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT * from semester")
+        cursor.execute("SELECT id, creationdate, createdby, name, title, semester_hash from semester")
         tuples = cursor.fetchall()
 
-        for (id, creationdate, name, title, semester_hash) \
+        for (id, creationdate, createdby, name, title, semester_hash) \
                 in tuples:
             semester = Semester()
+            semester.set_creationdate(creationdate)
+            semester.set_creator(createdby)
             semester.set_id(id)
             semester.set_name(name)
             semester.set_title(title)
@@ -30,13 +32,15 @@ class SemesterMapper(Mapper):
     def find_by_name(self, name):
         result = None
         cursor = self._cnx.cursor()
-        command = "SELECT id, creationdate, name, title FROM semester WHERE name={}".format(name)
+        command = "SELECT id, creationdate, createdby, name, title, semester_hash FROM semester WHERE name={}".format(name)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
         try:
-            (id, creationdate, name, title) = tuples[0]
+            (id, creationdate, createdby, name, title, semester_hash) = tuples[0]
             semester = Semester()
+            semester.set_creationdate(creationdate)
+            semester.set_creator(createdby)
             semester.set_id(id)
             semester.set_name(name)
             semester.set_title(title)
@@ -70,13 +74,15 @@ class SemesterMapper(Mapper):
 
         result = None
         cursor = self._cnx.cursor()
-        command = f"SELECT * FROM semester WHERE semester_hash={hashcode}"
+        command = f"SELECT id, creationdate, createdby, name, title, semester_hash FROM semester WHERE semester_hash={hashcode}"
         cursor.execute(command)
         tuples = cursor.fetchall()
 
         try:
-            (id, creationdate, name, title) = tuples[0]
+            (id, creationdate, createdby, name, title, semester_hash) = tuples[0]
             semester = Semester()
+            semester.set_creationdate(creationdate)
+            semester.set_creator(createdby)
             semester.set_id(id)
             semester.set_name(name)
             semester.set_title(title)
@@ -101,11 +107,11 @@ class SemesterMapper(Mapper):
         scs = []
         for (semester_hash) in tuples:
             cursor.execute(
-                f"SELECT id, creationdate, name, title FROM semester "
+                f"SELECT id, creationdate, createdby, name, title, semester_hash FROM semester "
                 f"WHERE semester_hash ={semester_hash}")
             scs.append(cursor.fetchall())
         for i in scs:
-            for (id, creationdate, name, title) in i:
+            for (id, creationdate, createdby, name, title, semester_hash) in i:
                 semester = Semester()
                 semester.set_id(id)
                 semester.set_creationdate(creationdate)
