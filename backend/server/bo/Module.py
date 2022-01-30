@@ -3,19 +3,19 @@ import json
 
 
 class Module(Spe.SpoElement):
-    _type: str          # Typ des Moduls
+    _type: int          # Typ des Moduls
     _requirement: str   # Anforderungen des Moduls
     _outcome: str       # Lernergebnisse des Moduls
-    _examtype: str      # Prüfungsart des Moduls
+    _examtype: int      # Prüfungsart des Moduls
     _instructor: int    # Modulverantwortliche Person
     _parts: list[int]   # zugehörige Modulteile
 
     def __init__(self):
         super().__init__()
-        self._type = ""
+        self._type = 0
         self._requirement = ""
         self._outcome = ""
-        self._examtype = ""
+        self._examtype = 0
         self._instructor = 0
         self._parts = []
 
@@ -130,16 +130,3 @@ class Module(Spe.SpoElement):
 
     __hash__ = Spe.SpoElement.__hash__
 
-
-"""
-# test script
-test = Module()
-person1 = Person()
-person1.set_id(69)
-test.set_instructor(person1)
-testpart = Modulepart()
-test.set_moduleparts([testpart])
-print(test)
-print(test.json())
-print(hash(test))
-"""

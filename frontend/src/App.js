@@ -11,29 +11,27 @@ import firebaseConfig from "./firebaseconfig";
 import SignIn from "./components/pages/SignIn";
 import LoadingProgress from "./components/dialogs/LoadingProgress";
 import ContextErrorMessage from "./components/dialogs/ContextErrorMessage";
-import SpoStudent from "./components/pages/SpoStudent";
+//import SpoStudent from "./components/pages/SpoStudent";
 import About from "./components/pages/About";
-import Admin from "./components/pages/AdminSpoAnsicht";
-// import List from './components/pages/List';
+//import Admin from "./components/pages/AdminSpoAnsicht";
 //import Spoliste from './components/pages/Spoliste';
-// import DateAndTime from './components/content/DateAndTime';
-// import StudyCourses from './components/pages/StudyCourses';
+//import StudyCourses from './components/pages/StudyCourses';
 import AllStudyCourses from './components/AllStudycourses';
 // import SpoAuswählenOMM from './components/pages/SpOAuswählenOMM';
-import Spowi from './components/pages/Spowi';
-import SpoStudyCoursesList from './components/SpoStudyCoursesList';
-import AdminSpoAnsicht from './components/AdminSpoAnsicht';
-import AdminSpoEdit from './components/AdminSpoEdit';
+//import Spowi from './components/pages/Spowi';
+//import SpoStudyCoursesList from './components/SpoStudyCoursesList';
+//import AdminSpoAnsicht from './components/AdminSpoAnsicht';
+//import AdminSpoEdit from './components/AdminSpoEdit';
 import AdminTable from './components/content/AdminTable';
-import './App.css'
-import AdminStudiengangAuswahl from "./components/pages/AdminStudiengangAuswahl";
-import SpoForm from "./components/pages/SpoForm";
+//import AdminStudiengangAuswahl from "./components/pages/AdminStudiengangAuswahl";
+//import SpoForm from "./components/pages/SpoForm";
 import Administration from "./components/pages/SpoManagement";
 //import SpoAuswahlStudent from "./components/pages/SpoAuswahlStudent";
 // import AuswahlStudentAdmin from "./components/pages/AuswahlStudentAdmin";
-// import SpoUeberblick from "./components/pages/SpoUeberblick";
 import StudentSpoAnsicht from "./components/StudentSpoAnsicht"
 import API from './api/API';
+import SpoUeberblick from "./components/pages/SpoUeberblick";
+
 
 class App extends React.Component {
   /** Konstrukteur der App, Firebase initialisiert */
@@ -183,17 +181,21 @@ Globales CSS-Reset und Browser-Normalisierung. CssBaseline startet eine elegante
 								// else show the sign in page
 								<>
 								
-								<Route path="/student">
-									<SpoStudent />
-									</Route>
-									<SignIn onSignIn={this.handleSignIn} />
-								</>
-						}
+							    { 	
+                  <>
+                    <Route path="/student">
+									  <SpoStudent />
+									  </Route>
+									  <SignIn onSignIn={this.handleSignIn} />
+                    </>
+						      }
+                </>
+            }
             <About></About>
 						<LoadingProgress show={authLoading} />
 						<ContextErrorMessage error={authError} contextErrorMsg={`Something went wrong during sighn in process.`} onReload={this.handleSignIn} />
 						<ContextErrorMessage error={appError} contextErrorMsg={`Something went wrong inside the app. Please reload the page.`} />
-						{/* <List/> */}
+						{/* <List/> }
 						{/* <DateAndTime/> */}
 	    </Container>
       </Router>
