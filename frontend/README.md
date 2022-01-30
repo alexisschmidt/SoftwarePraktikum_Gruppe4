@@ -1,3 +1,12 @@
+Die Spoverwaltung ist eine Webapplikation zur Anzeige und Bearbeitung von Studien- und Prüfungsordnungen.
+Der Aufbau ist in zwei verschiedene Ansichten unterteilt, zum einen die Ansicht des Studenten, welcher die für ihn geltende Spo angezeigt bekommen soll.
+Zum anderen die Ansicht der Administration, welche eine neue Spo erstellen kann und bereits bestehende bearbeiten kann um eine neue Version zu generieren.
+Das System ist in vier Schichten aufgeteilt: Präsentationsschicht, Serviceschicht, Business-Logikschicht und Datenbankschicht.
+Zur Abbildung der Datenbank wurde eine relationale MySQL Datenbank verwendet, die über das mysql connector package über ein Python Backend angesprochen wird.
+In allen bestehenden Schichten wird auf Business Object Klassen verwiesen, sämtliche Logikanfragen werden über die Business-Logikschicht gelöst.
+Die Serviceschicht stellt die Ressourcen für die Präsentationsschicht zur Verfügung. Die enthaltenen Methoden sind mit einem Security Decorator verknüpft.
+Die Darstellung erfolgt über ein JavaScript frontend, welches mit der React Libary erstellt wurde. API Anfragen aus dem frontend werden an das backend gesendet und somit ausgeführt.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
