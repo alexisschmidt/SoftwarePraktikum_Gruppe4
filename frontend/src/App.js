@@ -32,7 +32,7 @@ import SpoAuswahlStudent from "./components/pages/SpoAuswahlStudent";
 import AuswahlStudentAdmin from "./components/pages/AuswahlStudentAdmin";
 import SpoUeberblick from "./components/pages/SpoUeberblick";
 import StudentSpoAnsicht from "./components/StudentSpoAnsicht"
-
+import API from './api/API';
 
 class App extends React.Component {
   /** Konstrukteur der App, Firebase initialisiert */
@@ -68,7 +68,27 @@ class App extends React.Component {
           // Die Token werden zu den Cookies im Browser hinzugefügt. Der Server kann dann schließlich das Token anhand der API verifizieren.
 
           document.cookie = `token=${token};path=/`;
+          
+/*           getUserByGoogleUserId= (user) => {
+            API.getAPI().getUserByGoogleUserId(user).then(usersbo => {
+                this.setState({
+                    user: usersbo,
+                    loadingProgress: false,
+                    error: null
+                });
+            }).catch(e => {
+                this.setState({
+                    user: [],
+                    loadingProgress: false,
+                    error: e
+                });
+            });
 
+            this.setState({
+                loadingProgress: true,
+                error: null
+            });
+          } */
           // Setzen Sie den Benutzer nicht, bevor der Token angekommen ist
           this.setState({
             currentUser: user,
@@ -124,14 +144,19 @@ Globales CSS-Reset und Browser-Normalisierung. CssBaseline startet eine elegante
       <CssBaseline />
       <Router basename={process.env.PUBLIC_URL}>
         <Container maxWidth='md'>
+          
           <Header user={currentUser} />
 		  {
 							// Is a user signed in?
 							currentUser ?
+
 								<>
 									<Route path="/" exact component={About} />
 									{/* <Route path="/Studiengangauswahl" exact component={StudyCourses}/> */}
-									<Route path="/admin" exact component={AllStudyCourses}/>
+{/* 									{apiuser?apiuser.isadmin?
+                  <>
+                  </>:null:null} */}
+                  <Route path="/admin" exact component={AllStudyCourses}/>
 									<Route path="/admintable" exact component={AdminTable}/>
 									<Route path="/admin/:studyCourseID" exact component={SpoStudyCoursesList}/>
                   <Route path="/admin/:studyCourseID/:spoID" exact component={AdminSpoAnsicht}/>

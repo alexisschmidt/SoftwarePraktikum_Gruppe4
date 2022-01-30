@@ -11,9 +11,13 @@ import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-
+import ModuleForm from './pages/SpoManagement';
+import ModulepartForm from './pages/SpoManagement';
+import SpoForm from './pages/SpoManagement';
 
 import API from '../api/API';
+import { Button } from '@mui/material';
+import Admin from './pages/AdminSpoAnsicht';
 
 
 
@@ -23,12 +27,24 @@ class AdminSpoAnsicht extends Component {
         super(props);
 
         this.state = {
+            spo: null,
             studycourses: [],
 			modules: [],
 			moduleparts: [],
 			semester: [],
             loadingProgress: false,
             error: null,
+
+            
+            spoFormIsOpen: false,
+            moduleFormOpen: false,
+            modulepartFormOpen: false,
+            selectedSPO:null,
+            selectedModule:null, 
+            selectedModulePart:null,
+            // müssen die zwei auch sein oder nur selectedspo?
+
+
 
         };
     }
@@ -56,17 +72,17 @@ class AdminSpoAnsicht extends Component {
             error: null
         });
     }
-	getAllModulesBySpoId = () => {
-        /*
-        API.getAPI().getAllModulesBySpohash().then(modules => {            
+
+    getUser = (hash) => {
+        API.getAPI().getUser(hash).then(userbo => {            
             this.setState({
-                modules: modules,
+                user: userbo,
                 loadingProgress: false,
                 error: null
             });
         }).catch(e => {
             this.setState({
-                modules: [],
+                user: [],
                 loadingProgress: false,
                 error: e
             });
@@ -75,44 +91,66 @@ class AdminSpoAnsicht extends Component {
         this.setState({
             loadingProgress: true,
             error: null
-        });*/
+        });
+    }
 
-        const dasObjectAlexisDasVomBackendZurueckKommenSollte = [
-            {
-                /*Module*/
-                id: 1,
-                creationDate: "12:00",
-                createdBy: 2,
-                name: "Online Marketing",
-                title: "OM",
-                /* ..... alle weitere elemente von module */ 
-                moduleParts: [
-                    /* Module part */ 
-                    {
-                        id: 1,
-                        creationDate: "12:00",
-                        createdBy: 2,
-                        name: "",
-                        title: "",
-                        literature: ""
-                    },
-                    {
-                        id: 2,
-                        creationDate: "12:00",
-                        createdBy: 2,
-                        name: "",
-                        title: "",
-                        literature: ""
-                    }                   
-                ]
-            }
-        ];
+    getPerson = (hash) => {
+        API.getAPI().getPerson(hash).then(personbo => {            
+            this.setState({
+                person: personbo,
+                loadingProgress: false,
+                error: null
+            });
+        }).catch(e => {
+            this.setState({
+                person: [],
+                loadingProgress: false,
+                error: e
+            });
+        });
+        
+        this.setState({
+            loadingProgress: true,
+            error: null
+        });
+    }
 
+	getAllModulesBySpoId = (id) => {
 
+        const api = API.getAPI();
+        
+        api.getSpoById(id).then(spo => {
 
+            this.setState({
+                spo: {...spo, modules: []},
+                loadingProgress: false,
+                error: null
+            });
+
+            
+            spo.modules.forEach(moudleHash => {
+                api.getModuleByHash(moudleHash).then(m => {                
+
+                    api.getModulePartByHash(moudleHash).then(modulePart => {
+                        
+                        if (m && m.length) {
+                            let newModule = m[0];
+                            newModule.moduleparts = modulePart;
+
+                            this.setState({
+                                spo: { ...this.state.spo, modules: [...this.state.spo.modules, newModule] }
+                            });
+                        } else {
+                            this.setState({
+                                spo: { ...this.state.spo, modules: [...m] }
+                            });
+                        }
+                    });                    
+                });
+            });
+        });
 
         this.setState({
-            modules: dasObjectAlexisDasVomBackendZurueckKommenSollte,
             loadingProgress: true,
             error: null
         });
@@ -128,12 +166,23 @@ class AdminSpoAnsicht extends Component {
         this.props.history.push(`/admin/${id}`);
     }
 
+
+    getSemsterFromModule(element) {
+        if (element) {
+            if (element.moduleparts && element.moduleparts.length >= 1) {
+                return `${element.moduleparts[0].semester}`;
+            }
+        } 
+        return '1'
+    }
     
 
     componentDidMount() {
-        // const studyCourseId = this.props.match.params.studyCourseID;
+        const studyCourseId = this.props.match.params.studyCourseID;
         const spoId = this.props.match.params.spoID;
         
+        this.getAllModulesBySpoId(spoId);
+
         // this.getAllModulesBySpoId(spoId);
         
         /*
@@ -147,11 +196,52 @@ class AdminSpoAnsicht extends Component {
         */
     }
 
+    handleSpoEdit = () =>{
+        this.setState({
+            spoFormIsOpen:true,
+            selectedSPO:this.state.spo,
+
+        })
+    }
+    handleModuleEdit = (moduleElement) =>{
+        this.setState({
+            moduleFormOpen:true,
+            selectedModule:moduleElement,
+        })
+    }
+    handleModulePartEdit = (modulePartElement) =>{
+        this.setState({
+            moduleartFormOpen:true,
+            selectedModulePart:modulePartElement,
+        })
+    }
+
+
+    spoFormClosed = (event) => {
+        this.setState({
+          spoFormIsOpen: false,
+          selectedSPO:null,
+        });
+      };
+      moduleFormClosed = (event) => {
+        this.setState({
+          moduleFormOpen: false,
+          selectedModule:null,
+        });
+      };
+      modulepartFormClosed = (event) => {
+        this.setState({
+          modulepartFormOpen: false,
+          selectedModulePart: null,
+        });
+      };
+
     render() {
-        const { classes } = this.props;
-        const { loadingProgress, error, studycourses, modules, moduleparts, semester, person, spo, user} = this.state;
+        const { classes, bearbeitenBoolean } = this.props;
+        const { loadingProgress, error, studycourses, modules, moduleparts, semester, person, spo, user, spoFormIsOpen, moduleFormOpen, modulepartFormOpen, selectedSPO, selectedModule, selectedModulepart} = this.state;
         return (
-            <Box sx={{ width: '100%', maxWidth: 650, marginLeft: 'auto', marginRight: 'auto' }} className="admin-spo-container">
+            <>
+                        <Box sx={{ width: '100%', maxWidth: 650, marginLeft: 'auto', marginRight: 'auto' }} className="admin-spo-container">
             <div>
                 <Card>
                     <CardContent>
@@ -181,45 +271,111 @@ class AdminSpoAnsicht extends Component {
                             <div className="admin-spo-box-pruefung">
                                 Prüfung
                             </div>
+                            {
+                                bearbeitenBoolean?
+                                <div className='adminbutton'>
+                                <Button onclick={this.handleSpoEdit}> SPO bearbeiten</Button>
+                                </div>
+                                :null
+                            }
+                            
+
                             
                         </div>
 
                         {
-                            modules.map((moduleElement) => {
+                            spo?.modules?.map((moduleElement) => {
                                 return (
                                     <>
+                                    <Accordion>
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        aria-controls="panel1a-content"
+                                        id="panel1a-header"
+                                        >
                                     <div className="admin-spo-box fix-header-box">
 
                                         <div className="admin-spo-box-semster">
                                             {/* TODO ALexis. Wenn backend ready, erstze alle static daten mit den aus der dantenbank. module sollte das modul object sein"! */}
                                             {/* {moduleElement.id} */}
-                                            1
+                                            {this.getSemsterFromModule(moduleElement)}
                                         </div>
 
                                         <div className="admin-spo-box-edv">
-                                            VS: 3350
+                                            {moduleElement.edvnr}
                                         </div>
 
                                         <div className="admin-spo-box-module">
-                                            Einstuifungs englisch
+                                            {moduleElement.name}
                                         </div>
 
                                         <div className="admin-spo-box-sws">
-                                            0
+                                            
                                         </div>
 
                                         <div className="admin-spo-box-ects">
-                                            0
+                                            {moduleElement.ects}
                                         </div>
 
                                         <div className="admin-spo-box-pruefung">
-                                            VS:LU
+                                        	{moduleElement.examtype}              
                                         </div>
+                                        {
+                                bearbeitenBoolean?
+                                <div className='adminbutton'>
+                                <Button onclick={()=>this.handleModuleEdit(moduleElement)}> Modul bearbeiten</Button>
+                                </div>
+                                :null
+                            }
+                                        
 
                                     </div>
+                                    </AccordionSummary>
+                                                    <AccordionDetails>
+                                                        <Typography>
+
+                                                        <table cellpadding="8">
+                                                            <tbody>
+                                                            <tr>
+                                                            <td>Title</td>
+                                                            <td>{moduleElement.title}</td>
+                                                            </tr>
+                                                            <tr>
+                                                            <td>Language</td>
+                                                            <td>{moduleElement.outcome}</td>
+                                                            </tr>
+                                                            <tr>
+                                                            <td>Literature</td>
+                                                            <td>{moduleElement.requirement}</td>
+                                                            </tr>
+                                                            <tr>
+                                                            <td>Sources</td>
+                                                            <td>{moduleElement.type}</td>
+                                                            </tr>
+                                                            <tr>
+                                                            <td>Connection</td>
+                                                            <td>{moduleElement.workload}</td>
+                                                            </tr>
+                                                            <tr>
+                                                            <td>Instructor</td>
+                                                            <td>{moduleElement.instructor}</td>
+                                                            </tr>
+                                                            <tr>
+                                                            <td>Createdby</td>
+                                                            <td>{moduleElement.createdby}</td>
+                                                            </tr>
+                                                            <tr>
+                                                            <td>Creationdate</td>
+                                                            <td>{moduleElement.creationdate}</td>
+                                                            </tr>
+                                                            </tbody>
+                                                        </table>
+                                                        </Typography>
+                                                    </AccordionDetails>
+                                                </Accordion>
                                     
                                     {
-                                        moduleElement.moduleparts.map((modulePartElement) => {
+                                        moduleElement?.moduleparts?.map((modulePartElement) => {
                                 
                                             return (
                                                 <Accordion>
@@ -231,38 +387,73 @@ class AdminSpoAnsicht extends Component {
                                                         <div className="admin-spo-accord-box">
 
                                                             <div className="admin-spo-accord-box-semster">
+                                                                {modulePartElement.semester}
                                                             </div>
 
                                                             <div className="admin-spo-box-edv">
                                                                 {/* TODO ALexis. Wenn backend ready, erstze alle static daten mit den aus der dantenbank. modulePartElement sollte das part modul object sein"! */}
-                                                                {modulePartElement.id}
+                                                                {modulePartElement.edvnr}
                                                             </div>
 
                                                             <div className="admin-spo-accord-box-module">
-                                                                Was auch immer
+                                                                {modulePartElement.name}
                                                             </div>
 
                                                             <div className="admin-spo-accord-box-sws">
-                                                                0
+                                                                {modulePartElement.sws}
                                                             </div>
 
                                                             <div className="admin-spo-accord-box-ects">
-                                                                0
+                                                                {modulePartElement.ects}
                                                             </div>
-
-                                                            <div className="admin-spo-accord-box-pruefung">
-                                                            </div>
-
+                                                            {
+                                                                bearbeitenBoolean?
+                                                                <div className='adminbutton'>
+                                                                <Button onclick={()=>this.handleModulePartEdit(modulePartElement)}> Modulpart bearbeiten</Button>
+                                                                </div>
+                                                                :null
+                                                            }
                                                         </div>
                                                     </AccordionSummary>
                                                     <AccordionDetails>
                                                         <Typography>
-                                                            Language
-                                                            Literature
-                                                            Sources
-                                                            Connection
-                                                            Description
-                                                            Workload
+
+                                                        <table cellpadding="8">
+                                                            <tbody>
+                                                            <tr>
+                                                            <td>Language</td>
+                                                            <td>{modulePartElement.language}</td>
+                                                            </tr>
+                                                            <tr>
+                                                            <td>Literature</td>
+                                                            <td>{modulePartElement.literature}</td>
+                                                            </tr>
+                                                            <tr>
+                                                            <td>Sources</td>
+                                                            <td>{modulePartElement.sources}</td>
+                                                            </tr>
+                                                            <tr>
+                                                            <td>Connection</td>
+                                                            <td>{modulePartElement.connection}</td>
+                                                            </tr>
+                                                            <tr>
+                                                            <td>Description</td>
+                                                            <td>{modulePartElement.description}</td>
+                                                            </tr>
+                                                            <tr>
+                                                            <td>Workload</td>
+                                                            <td>{modulePartElement.workload}</td>
+                                                            </tr>
+                                                            <tr>
+                                                            <td>Professor</td>
+                                                            <td>{modulePartElement.professor}</td>
+                                                            </tr>
+                                                            <tr>
+                                                            <td>Creationdate</td>
+                                                            <td>{modulePartElement.creationdate}</td>
+                                                            </tr>
+                                                            </tbody>
+                                                        </table>
                                                         </Typography>
                                                     </AccordionDetails>
                                                 </Accordion>
@@ -277,6 +468,13 @@ class AdminSpoAnsicht extends Component {
                 </Card>
             </div>
         </Box>
+        {bearbeitenBoolean?<>
+            {selectedSPO?<SpoForm show={spoFormIsOpen} spo={selectedSPO} onClose={this.spoFormClosed} />:null}
+            {selectedModule?<ModuleForm show={moduleFormOpen} module ={selectedModule} onClose={this.moduleFormClosed} />:null}
+            {selectedModulepart?<ModulepartForm show={modulepartFormOpen} modulepart={selectedModulepart} onClose={this.modulepartFormClosed} />:null}
+              </>
+              :null}
+              </>
         )
     }
 
@@ -318,3 +516,4 @@ AdminSpoAnsicht.propTypes = {
 
 
 export default withRouter(withStyles(styles)(AdminSpoAnsicht));
+<AdminSpoAnsicht bearbeitenBoolean={true}></AdminSpoAnsicht>

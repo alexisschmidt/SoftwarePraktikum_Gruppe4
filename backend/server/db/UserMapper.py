@@ -61,15 +61,16 @@ class UserMapper(Mapper):
         result = None
 
         cursor = self._cnx.cursor()
-        command = f"SELECT * user WHERE user_hash={hashcode}"
+        command = f"SELECT * FROM user WHERE user_hash={hashcode}"
         cursor.execute(command)
         tuples = cursor.fetchall()
 
         try:
-            (id, creationdate, firstname, lastname, email, google_user_id, isadmin) = tuples[0]
+            (id, creationdate, createdby, firstname, lastname, email, google_user_id, isadmin, user_hash, spo_hash) = tuples[0]
             user = User()
             user.set_id(id)
             user.set_creationdate(creationdate)
+            user.set_creator(createdby)
             user.set_firstname(firstname)
             user.set_lastname(lastname)
             user.set_email(email)

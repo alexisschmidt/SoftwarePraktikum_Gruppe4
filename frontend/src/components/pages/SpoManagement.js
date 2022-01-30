@@ -86,7 +86,7 @@ class Administration extends Component {
             Modulteile ERSTELLEN
           </Button>
 
-          <SpoForm show={spoFormIsOpen} onClose={this.spoFormClosed} />
+          <SpoForm show={spoFormIsOpen} spo={this.state.selecetedSPO} onClose={this.spoFormClosed} />
           <ModuleForm show={moduleFormOpen} onClose={this.moduleFormClosed} />
           <ModulepartForm show={modulepartFormOpen} onClose={this.modulepartFormClosed} />
 

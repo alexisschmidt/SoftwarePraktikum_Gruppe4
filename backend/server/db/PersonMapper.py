@@ -79,9 +79,11 @@ class PersonMapper(Mapper):
         tuples = cursor.fetchall()
 
         try:
-            (id, creationdate, firstname, lastname, email) = tuples[0]
+            (id, creationdate, createdby, firstname, lastname, email, person_hash) = tuples[0]
             person = Person()
             person.set_id(id)
+            person.set_creationdate(creationdate)
+            person.set_creator(createdby)
             person.set_firstname(firstname)
             person.set_lastname(lastname)
             person.set_email(email)

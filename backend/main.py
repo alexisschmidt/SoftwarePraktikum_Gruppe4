@@ -45,7 +45,7 @@ In dem folgenden Abschnitt bauen wir ein Modell auf, das die Datenstruktur besch
 auf deren Basis Clients und Server Daten austauschen. Grundlage hierfür ist das Package flask-restx.
 """
 api = Api(app, version='1.0', title='Sopra API',
-          description='Datenverarbeitungssystem für SPOs.')
+          description='Datenverarbeitungssystem für SPOs.', doc='/api/doc')
 
 """
 Anlegen eines Namespace
@@ -319,7 +319,7 @@ class ModuleOperations(Resource):
 @sposystem.param("module_hash", "Der Hash des Modules")
 class ModuleHashOperations(Resource):
     @sposystem.marshal_with(module)
-    @secured
+    #@secured
     def get(self, module_hash):
         """Auslesen eines durch hash bestimmten Modul-Objekts"""
         adm = Administration()
@@ -484,7 +484,7 @@ class UserListOperations(Resource):
 @sposystem.param('lastname', 'Der Hash des User-Objekts')
 class ModuleHashOperations(Resource):
     @sposystem.marshal_with(user)
-    @secured
+    #@secured
     def get(self, user_hash):
         """
         Auslesen eines Customer-Objekts, das durch sein Hash bestimmt wird.\n
@@ -519,6 +519,21 @@ class UserByNameOperations(Resource):
         """
         adm = Administration()
         us = adm.get_user_by_name(lastname)
+        return us
+    
+@sposystem.route('/user-by-google_id/<string:google_user_id>')
+@sposystem.response(500, 'Falls es zu einem Server-seitigen Fehler kommt.')
+@sposystem.param('google_user_id', 'Die GUID des User-Objekts')
+class UserGuidOperations(Resource):
+    @sposystem.marshal_with(user)
+    @secured
+    def get(self, guid):
+        """
+        Auslesen eines Customer-Objekts, das durch sein Hash bestimmt wird.\n
+        Das auszulesende Objekt wird durch user_hash in dem URI bestimmt.
+        """
+        adm = Administration()
+        us = adm.get_user_by_google_user_id(guid)
         return us
 
 
@@ -655,7 +670,7 @@ class PersonOperations(Resource):
 @sposystem.param("person_hash", "Der Hash der Person")
 class ModulePartOperations(Resource):
     @sposystem.marshal_with(studycourse)
-    @secured
+    #@secured
     def get(self, person_hash):
         adm = Administration()
         pe = adm.get_person_by_hash(person_hash)

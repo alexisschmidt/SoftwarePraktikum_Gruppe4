@@ -84,10 +84,17 @@ class SpoValidityMapper(Mapper):
         endsemcommand = f"SELECT semester_hash FROM spovalidity WHERE spo_hash={spohash} AND endsem=1"
 
         cursor.execute(startsemcommand)
-        starthash = cursor.fetchone()[0]
+        starthash = cursor.fetchone()
+        
+        if (type(starthash) is tuple):
+            starthash = starthash[0]
 
         cursor.execute(endsemcommand)
-        endhash = cursor.fetchone()[0]
+        endhash = cursor.fetchone()
+        
+        if (type(endhash) is tuple):
+            endhash = endhash[0]
+        
         return [starthash, endhash]
 
     def update_validity(self, spo: Spo, ids: list[int]):

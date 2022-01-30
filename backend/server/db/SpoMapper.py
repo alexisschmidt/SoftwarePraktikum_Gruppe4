@@ -1,3 +1,4 @@
+from operator import mod
 from server.bo.Spo import Spo
 from server.db.Mapper import Mapper
 
@@ -38,7 +39,7 @@ class SpoMapper(Mapper):
         return result
 
     def find_by_hash(self, hashcode: int):
-
+	
         result = None
         cursor = self._cnx.cursor()
 
@@ -51,7 +52,12 @@ class SpoMapper(Mapper):
         # finden der zugehörigen Module in der DB:
         cursor.execute(f"SELECT module_hash FROM spocomposition WHERE spo_hash={hashcode}")
         modules = list(cursor)
-
+        
+        if (modules is not None and len(modules)):
+            modules = modules[0]
+            if (modules is not None):
+                modules = list(modules)
+        
         # erstellen des Objekts
         try:
             (id, creationdate, createdby, name, title, studycourse_hash) = tuples[0]

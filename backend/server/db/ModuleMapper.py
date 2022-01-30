@@ -115,13 +115,11 @@ class ModuleMapper(Mapper):
 
         # Erstellen des Objekts
         try:
-            (id, creationdate, name, title,
-             requirement, examtype, outcome, type,
-             ects, edvnr, workload,
-             instructor_hash) = tuples[0]
+            (id, creationdate, createby, name, title, requirement, examtype, outcome, type, ects, edvnr, workload, module_hash, instructor_hash) = tuples[0]
             module = Module()
             module.set_id(id)
             module.set_creationdate(creationdate)
+            module.set_creator(createby)
             module.set_name(name)
             module.set_title(title)
             module.set_requirement(requirement)

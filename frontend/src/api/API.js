@@ -58,8 +58,10 @@ Map([<Rule '/sopra/studycourses' (OPTIONS, POST, HEAD, GET, PUT) -> sopra_studyc
   #getSpoByHashUrl = (hash) => {return this.#serverBaseURL + "/spo/" + hash};
   #getSemesterByHashUrl = (hash) => {return this.#serverBaseURL + "/semester" + hash};
   #getAllSpoRelatedURL = (id) => `${this.#serverBaseURL}/spos/studycourse/${id}`;
-
-
+  #getSpoByIdURL = (id) => `${this.#serverBaseURL}/spos/${id}`;
+  #getModuleByHashURL = (hash) => `${this.#serverBaseURL}/module/hash/${hash}`;
+  #getModulePartByHashURL = (hash) => `${this.#serverBaseURL}/modulepart/${hash}`;
+  #getUserByGoogleUserIdUrl = (google_user_id) => {return this.#serverBaseURL + "/user-by-google_id" + google_user_id}
 
   /**
    * Get the Singelton instance
@@ -220,6 +222,21 @@ Map([<Rule '/sopra/studycourses' (OPTIONS, POST, HEAD, GET, PUT) -> sopra_studyc
 			return this.#getAll(this.#getAllSpoRelatedURL(studyCourseId), Spobo );
 		}
 
+    getSpoById(id) {
+      return this.#getSingle(this.#getSpoByIdURL(id), Spobo);
+    }
+
+    getModuleByHash(hash) {
+      return this.#getAll(this.#getModuleByHashURL(hash), Modulebo);
+    }
+
+    getModulePartByHash(hash) {
+      return this.#getAll(this.#getModulePartByHashURL(hash), Modulepartbo);
+    }
+
+    getUserByGoogleUserId = () => {
+      return this.#getSingle(this.#getUserByGoogleUserIdUrl(), Userbo);
+    }
     
        
 

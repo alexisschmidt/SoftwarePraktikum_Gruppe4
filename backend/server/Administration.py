@@ -132,10 +132,27 @@ class Administration (object):
             result.append(obj)
         return result
 
-    def get_all_by_studycourse(self, studycourse):
+    @staticmethod
+    def get_all_by_studycourse(studycourseid: int):
         """Alle Spos eines Studienganges auslesen"""
-        with SpoMapper() as mapper:
-            return mapper.find_all_by_studycourse(studycourse)
+        with StudyCourseMapper() as mapper:
+            schash = mapper.find_hash_by_id(studycourseid)
+        result = []
+        with SpoMapper() as spomapper:
+            spos = spomapper.find_all_by_studycourse(schash)
+            for spo in spos:
+                hashcode = hash(spo)
+                with SpoValidityMapper() as valmapper:
+                    vals = valmapper.find_validities_by_spo(hashcode)                            
+                    if (vals[0] is not None):
+                        spo.set_start_semester(vals[0])    
+                    if (vals[1] is not None):
+                        spo.set_end_semester(vals[1])
+                with ModuleMapper() as modmapper:
+                    modules = modmapper.find_by_spo(hashcode)
+                    spo.set_modules(modules)
+                result.append(spo)
+        return result
 
     def delete_spo(self, spo):
         """Die gegebene Spo aus unserem System löschen."""
@@ -277,7 +294,7 @@ class Administration (object):
 
     """Studycourse-spezifische Methoden"""
 
-    def create_studycourse(self, proposal: StudyCourse, creator):
+    def create_studycourse(self, proposal: StudyCourse, user):
         """
         Legt das Objekt in der Datenbank an und setzt creationate und creator,
         wenn das Zielobjekt noch nicht in der DB existiert.
@@ -286,7 +303,7 @@ class Administration (object):
         :param creator: Ein User, creator des Objekts
         """
         proposal.set_creationdate(datetime.date.today())
-        proposal.set_creator(hash(creator))
+        proposal.set_creator(hash(user))
         with StudyCourseMapper() as mapper:
             return mapper.insert(proposal)
 
