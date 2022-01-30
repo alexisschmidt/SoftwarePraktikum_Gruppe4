@@ -12,7 +12,7 @@ class ModuleMapper(Mapper):
         result = []
 
         command = "SELECT id, creationdate, name, title, " \
-                  "requirement, examtype, outcome, type, " \
+                  "requirement, examtype_hash, outcome, moduletype_hash, " \
                   "ects, edvnr, workload, " \
                   "instructor_hash " \
                   "FROM module"
@@ -48,7 +48,7 @@ class ModuleMapper(Mapper):
 
         result = None
         command = "SELECT id, creationdate, name, title, " \
-                  "requirement, examtype, outcome, type, " \
+                  "requirement, examtype_hash, outcome, moduletype_hash, " \
                   "ects, edvnr, workload, " \
                   "instructor_hash " \
                   "FROM module " \
@@ -105,7 +105,7 @@ class ModuleMapper(Mapper):
         cursor = self._cnx.cursor()
 
         # finden des Moduls in der DB:
-        command = f"SELECT * FROM module WHERE module_hash={hashcode}"
+        command = f"SELECT id, creationdate, createdby, name, title, requirement, examtype_hash, outcome, moduletype_hash, ects, edvnr, workload, module_hash, instructor_hash FROM module WHERE module_hash={hashcode}"
         cursor.execute(command)
         tuples = cursor.fetchall()
 
@@ -115,15 +115,15 @@ class ModuleMapper(Mapper):
 
         # Erstellen des Objekts
         try:
-            (id, creationdate, createby, name, title, requirement, examtype, outcome, type, ects, edvnr, workload, module_hash, instructor_hash) = tuples[0]
+            (id, creationdate, createdby, name, title, requirement, examtype_hash, outcome, type, ects, edvnr, workload, module_hash, instructor_hash) = tuples[0]
             module = Module()
             module.set_id(id)
             module.set_creationdate(creationdate)
-            module.set_creator(createby)
+            module.set_creator(createdby)
             module.set_name(name)
             module.set_title(title)
             module.set_requirement(requirement)
-            module.set_examtype(examtype)
+            module.set_examtype(examtype_hash)
             module.set_outcome(outcome)
             module.set_type(type)
             module.set_ects(ects)
@@ -173,7 +173,7 @@ class ModuleMapper(Mapper):
 
         # anlegen des Modul-Objekts in der Datenbank.
         command = "INSERT INTO module (id, creationdate, createdby, name, title, " \
-                  "requirement, examtype, outcome, type, " \
+                  "requirement, examtype_hash, outcome, moduletype_hash, " \
                   "ects, edvnr, workload, " \
                   "module_hash, instructor_hash)" \
                   "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
@@ -190,8 +190,8 @@ class ModuleMapper(Mapper):
 
         cursor = self._cnx.cursor()
 
-        command = "UPDATE module SET name=%s, title=%s, requirement=%s, examtype=%s, " \
-                  "instructor=%s, outcome=%s, type=%s" \
+        command = "UPDATE module SET name=%s, title=%s, requirement=%s, examtype_hash=%s, " \
+                  "instructor=%s, outcome=%s, moduletype_hash=%s" \
                   "ects=%s, edvnr=%s, workload=%s, instructor_hash=%s WHERE id=%s AND module_hash=%s"
         data = (
             module.get_name(), module.get_title(), module.get_requirement(), module.get_examtype(),

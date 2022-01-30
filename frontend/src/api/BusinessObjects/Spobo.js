@@ -1,6 +1,6 @@
 import NamedBo from './NamedBo';
 
-export default class Spobo extends NamedBo{
+export default class Spobo extends NamedBo {
   /**
    * Constructs a new Spobo object with a given owner.
    * 

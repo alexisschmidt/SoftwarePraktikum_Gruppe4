@@ -1,6 +1,8 @@
 # -- coding:utf-8 --
 
 # Unser Service basiert auf Flask 2.0.2
+from pydoc import describe
+from attr import attributes
 from flask import Flask
 # Wir benutzen noch CORS 0.5.1, eine Flask-Erweiterung für Cross-Origin Resource Sharing
 from flask_cors import CORS
@@ -12,13 +14,14 @@ from server.Administration import Administration as Admin
 # Wir nutzen einen selbstgeschriebenen Decorator der die Authentifikation übernimmt
 from server.SecurityDecorator import secured
 from server.bo.Module import Module
+from server.bo.ModuleType import ModuleType
+from server.bo.ExamType import ExamType
 from server.bo.Modulepart import Modulepart
 from server.bo.Person import Person
 from server.bo.Semester import Semester
 from server.bo.Spo import Spo
 from server.bo.StudyCourse import StudyCourse
 from server.bo.User import User
-
 """
 Instanziieren von Flask. Am Ende dieser Datei erfolgt dann erst der 'Start' von Flask.
 """
@@ -68,7 +71,8 @@ BusinessObject und NamedBo dienen als Basisklassen, auf der die weiteren Struktu
 bo = api.model('BusinessObject', {
     'id': fields.Integer(attribute='_id', description='Einzigartige Identität eines Objects'),
     'creationdate': fields.DateTime(attribute='_creationdate', description='Tag der erstellung'),
-    'createdby': fields.String(attribute='_createdby', description='bearbeitender User')
+    'createdby': fields.String(attribute='_createdby', description='bearbeitender User'),
+    'hash': fields.Integer(attribute= lambda x: hash(x), description='hash eines bo')
 })
 
 """Alle BusinessObjects"""
@@ -102,7 +106,7 @@ spo = api.inherit('Spo', namedbo, {
 
 spoelement = api.inherit('Spoelement', namedbo, {
     'edvnr': fields.String(attribute='_edvnr', description='EDV nr des Spoelements'),
-    'ects': fields.Integer(attribute='_ects', description='Die Anzahl der ECTS des Moduls'),
+    'ects': fields.String(attribute='_ects', description='Die Anzahl der ECTS des Moduls'),
     'workload': fields.String(attribute='_workload',
                               description='Arbeitszeit für das Spoelement und ihre Zusammensetzung')
 })
@@ -113,8 +117,12 @@ module = api.inherit('Module', spoelement, {
     'outcome': fields.String(attribute='_outcome', description='Outcome des Moduls'),
     'examtype': fields.String(attribute='_examtype', description='Prüfungstyp des Moduls'),
     'instructor': fields.Integer(attribute='_instructor', description='Modulverantwortlicher'),
-    'parts':  fields.List(attribute='_parts', cls_or_instance = fields.Integer, description='Teile eines Moduls')
+    'moduleparts':  fields.List(attribute='_parts', cls_or_instance = fields.Integer, description='Teile eines Moduls')
 })
+
+moduletype = api.inherit('ModuleType', namedbo)
+
+examtype = api.inherit('ExamType', namedbo)
 
 modulepart = api.inherit('Modulepart', spoelement, {
     'sws': fields.Integer(attribute='_sws', description='Anzahl der SWS des Modulteils'),
@@ -125,12 +133,13 @@ modulepart = api.inherit('Modulepart', spoelement, {
     'sources': fields.String(attribute='_sources', description='Quellen'),
     'semester': fields.Integer(attribute='_semester', description='Semester des Modulteils'),
     'professor': fields.Integer(attribute='_professor', description='Prof des Modulteils'),
-    'module': fields.Integer(attribute='_module', description='Das zugehörige Modul')
 })
 
 studycourse = api.inherit('StudyCourse', namedbo)
 
 semester = api.inherit('Semester', namedbo)
+
+
 
 """Alles @sposystem.route('')"""
 
@@ -327,6 +336,149 @@ class ModuleSpoOperations(Resource):
     def get(self, spo_hash):
         mo = Admin.get_all_by_spo(spo_hash)
         return mo
+    
+@sposystem.route('/examtypes')
+@sposystem.response(500, 'Falles es zu einem Server-seitigen Fehler kommt.')
+class ExamTypeListOperations(Resource):
+    @sposystem.marshal_list_with(examtype, code=200)
+    @secured
+    def get(self):
+        examtypes = Admin.get_all_examtypes()
+        return examtypes
+
+    @sposystem.marshal_with(examtype, code=200)
+    @sposystem.expect(examtype)
+    @secured
+    def post(self, **kwargs):
+        """
+        Erstellen eines Modultyp-Objekts in der Datenbank.
+        """
+
+        proposal = ExamType.from_dict(api.payload)
+
+        if proposal is not None:
+            mo = Admin.create_examtype(proposal, kwargs['user'])
+            return mo, 200
+        else:
+            return '', 500
+
+
+@sposystem.route('/examtypes-by-id/<int:id>')
+@sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
+@sposystem.param("id", "Die id der Prüfungsart")
+class ModuleTypeOperations(Resource):
+    @sposystem.marshal_with(moduletype)
+    @secured
+    def get(self, id):
+        """Auslesen eines bestimmten Modultyp-Objekts"""
+
+        mot = Admin.get_examtype_by_id(id)
+        return mot
+
+    @secured
+    def delete(self, id):
+        """Löschen eines bestimmten Modultyp-Objekts.
+        Das zu löschende Objekt wird durch die ```id``` in dem URI bestimmt."""
+
+        mo = Admin.get_examtype_by_id(id)
+        Admin.delete_examtype(mo)
+        return '', 200
+
+
+@sposystem.route('/examtypes-by-hash/<int:examtype_hash>')
+@sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
+@sposystem.param("examtype_hash", "Der Hash des Modules")
+class ModuleTypeHashOperations(Resource):
+    @sposystem.marshal_with(moduletype)
+    @secured
+    def get(self, examtype_hash):
+        """Auslesen eines durch hash bestimmten Modul-Objekts"""
+
+        et = Admin.get_examtype_by_hash(examtype_hash)
+        return et
+
+    @secured
+    def delete(self, examtype_hash):
+        """Löschen eines bestimmten Module-Objekts.
+        Das zu löschende Objekt wird durch den hash in dem URI bestimmt."""
+
+        et = Admin.get_examtype_by_hash(examtype_hash)
+        Admin.delete_examtype(et)
+        return '', 200
+    
+# Modultyp-Routen
+
+@sposystem.route('/moduletypes')
+@sposystem.response(500, 'Falles es zu einem Server-seitigen Fehler kommt.')
+class ModuleTypeListOperations(Resource):
+    @sposystem.marshal_list_with(moduletype, code=200)
+    @secured
+    def get(self):
+        modules = Admin.get_all_moduletypes()
+        return modules
+
+    @sposystem.marshal_with(moduletype, code=200)
+    @sposystem.expect(moduletype)
+    @secured
+    def post(self, **kwargs):
+        """
+        Erstellen eines Modultyp-Objekts in der Datenbank.
+        """
+
+        proposal = ModuleType.from_dict(api.payload)
+
+        if proposal is not None:
+            mo = Admin.create_moduletype(proposal, kwargs['user'])
+            return mo, 200
+        else:
+            return '', 500
+
+
+@sposystem.route('/moduletype-by-id/<int:id>')
+@sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
+@sposystem.param("id", "Die id des Modultyps")
+class ModuleTypeOperations(Resource):
+    @sposystem.marshal_with(moduletype)
+    @secured
+    def get(self, id):
+        """Auslesen eines bestimmten Modultyp-Objekts"""
+
+        mot = Admin.get_moduletype_by_id(id)
+        return mot
+
+    @secured
+    def delete(self, id):
+        """Löschen eines bestimmten Modultyp-Objekts.
+        Das zu löschende Objekt wird durch die ```id``` in dem URI bestimmt."""
+
+        mo = Admin.get_moduletype_by_id(id)
+        Admin.delete_moduletype(mo)
+        return '', 200
+
+
+@sposystem.route('/moduletype-by-hash/<int:moduletype_hash>')
+@sposystem.response(500, 'falls es zu einem Server-seitigen Fehler kommt.')
+@sposystem.param("moduletype_hash", "Der Hash des Modules")
+class ModuleTypeHashOperations(Resource):
+    @sposystem.marshal_with(moduletype)
+    @secured
+    def get(self, moduletype_hash):
+        """Auslesen eines durch hash bestimmten Modul-Objekts"""
+
+        mo = Admin.get_moduletype_by_hash(moduletype_hash)
+        return mo
+
+    @secured
+    def delete(self, moduletype_hash):
+        """Löschen eines bestimmten Module-Objekts.
+        Das zu löschende Objekt wird durch den hash in dem URI bestimmt."""
+
+        mot = Admin.get_moduletype_by_hash(moduletype_hash)
+        Admin.delete_moduletype(mot)
+        return '', 200
+
+
+
 
 
 @sposystem.route('/moduleparts')

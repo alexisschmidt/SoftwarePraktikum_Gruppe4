@@ -55,7 +55,7 @@ class SpoStudyCoursesList extends Component {
             <Box sx={{ width: '100%', maxWidth: 650, marginLeft: 'auto', marginRight: 'auto'    }}>
      
                 <Typography variant="h6" textAlign={'center'} gutterBottom component="div">
-                    Wähle ein Semester
+                    Wähle eine SPO
                 </Typography>
                     
                 <Stack spacing={2} direction="column">

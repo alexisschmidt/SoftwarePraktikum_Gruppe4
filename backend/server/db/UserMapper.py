@@ -151,14 +151,14 @@ class UserMapper(Mapper):
         result = None
 
         cursor = self._cnx.cursor()
-        command = "SELECT id, creationdate, createdby, firstname, lastname, email, google_user_id, isadmin, user_hash, spo_hash " \
+        command = "SELECT id, createdby, creationdate, firstname, lastname, email, google_user_id, isadmin, user_hash, spo_hash " \
                   "FROM user " \
                   f"WHERE google_user_id='{gid}'"
         cursor.execute(command)
         tuples = cursor.fetchall()
 
         try:
-            (id, creationdate, createdby, firstname, lastname, email, google_user_id, isadmin, user_hash, spo_hash) = \
+            (id, createdby, creationdate, firstname, lastname, email, google_user_id, isadmin, user_hash, spo_hash ) = \
                 tuples[0]
             user = User()
             user.set_id(id)
@@ -170,6 +170,7 @@ class UserMapper(Mapper):
             user.set_google_user_id(google_user_id)
             user.set_isadmin(isadmin)
             user.set_spo(spo_hash)
+            
             result = user
         except IndexError:
             # Der IndexError wird oben beim Zugriff auf tuples[0] auftreten, wenn der vorherige SELECT-Aufruf

@@ -12,12 +12,12 @@ class ModulePartMapper(Mapper):
         cursor = self._cnx.cursor()
         cursor.execute("SELECT id, creationdate, name, title, "
                        "language, literature, semester, sources, connection, description, sws, "
-                       "ects, edvnr, workload FROM modulepart")
+                       "ects, edvnr, workload, module_hash, professor_hash FROM modulepart")
         tuples = cursor.fetchall()
 
         for (id, creationdate, name, title,
              language, literature, semester, sources, connection, description,
-             sws, ects, edvnr, workload) \
+             sws, ects, edvnr, workload, modulehash, professor) \
                 in tuples:
             modulepart = Modulepart()
             modulepart.set_id(id)
@@ -33,6 +33,7 @@ class ModulePartMapper(Mapper):
             modulepart.set_ects(ects)
             modulepart.set_edvnr(edvnr)
             modulepart.set_workload(workload)
+            modulepart.set_professor(professor)
 
             result.append(modulepart)
 
@@ -46,13 +47,13 @@ class ModulePartMapper(Mapper):
         cursor = self._cnx.cursor()
         command = "SELECT id, creationdate, name, title, " \
                   "language, literature, semester, sources, connection, description, sws, " \
-                  f"ects, edvnr, workload FROM modulepart WHERE name LIKE '{name}' ORDER BY name"
+                  f"ects, edvnr, workload, module_hash, professor_hash FROM modulepart WHERE name LIKE '{name}' ORDER BY name"
         cursor.execute(command)
         tuples = cursor.fetchall()
 
         for (id, creationdate, name, title,
              language, literature, semester, sources, connection, description, sws,
-             ects, edvnr, workload) in tuples:
+             ects, edvnr, workload, modulehash, professor) in tuples:
             modulepart = Modulepart()
             modulepart.set_id(id)
             modulepart.set_name(name)
@@ -67,6 +68,7 @@ class ModulePartMapper(Mapper):
             modulepart.set_ects(ects)
             modulepart.set_edvnr(edvnr)
             modulepart.set_workload(workload)
+            modulepart.set_professor(professor)
             result.append(modulepart)
 
         self._cnx.commit()
@@ -166,12 +168,12 @@ class ModulePartMapper(Mapper):
 
         command = "UPDATE modulepart SET name=%s, title=%s, language=%s, literature=%s, " \
                   "semester_id=%s, sources=%s, connection=%s, description=%s, " \
-                  "sws=%s, ects=%s, edvnr=%s, workload=%s WHERE id=%s AND modulepart_hash=%s "
+                  "sws=%s, ects=%s, edvnr=%s, workload=%s, module_hash=%s, professor_hash=%s WHERE id=%s AND modulepart_hash=%s "
         data = (
             modulepart.get_name(), modulepart.get_title(), modulepart.get_language(),
             modulepart.get_literature(), modulepart.get_semester(), modulepart.get_sources(),
             modulepart.get_connection(), modulepart.get_description(), modulepart.get_sws(), modulepart.get_ects(),
-            modulepart.get_edvnr(), modulepart.get_workload(), modulepart.get_id(), hash(modulepart))
+            modulepart.get_edvnr(), modulepart.get_workload(), modulepart.get_id(), modulepart.get_module(), modulepart.get_professor(), hash(modulepart))
         cursor.execute(command, data)
 
         self._cnx.commit()

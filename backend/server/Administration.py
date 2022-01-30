@@ -1,6 +1,9 @@
+
 import datetime
 
 from server.bo.Module import Module
+from server.bo.ModuleType import ModuleType
+from server.bo.ExamType import ExamType
 from server.bo.Modulepart import Modulepart
 from server.bo.Person import Person
 from server.bo.Semester import Semester
@@ -8,8 +11,11 @@ from server.bo.Spo import Spo
 from server.bo.StudyCourse import StudyCourse
 from server.bo.User import User
 
+
 from server.db.ModuleMapper import ModuleMapper
 from server.db.ModulePartMapper import ModulePartMapper
+from server.db.ModuleTypeMapper import ModuleTypeMapper
+from server.db.ExamTypeMapper import ExamTypeMapper
 from server.db.PersonMapper import PersonMapper
 from server.db.SemesterMapper import SemesterMapper
 from server.db.SpoMapper import SpoMapper
@@ -17,7 +23,6 @@ from server.db.SpoValidityMapper import SpoValidityMapper
 from server.db.SpoCompositionMapper import SpoCompositionMapper
 from server.db.StudyCourseMapper import StudyCourseMapper
 from server.db.UserMapper import UserMapper
-
 
 class Administration (object):
     def __init__(self):
@@ -182,8 +187,16 @@ class Administration (object):
         with ModuleMapper() as mapper:
             existing = mapper.find_by_hash(hash(proposal))
             if existing is None:
-                newobj = mapper.insert(proposal)
-                return newobj
+                with ModulePartMapper() as modulePartMapper:
+                    newobj = mapper.insert(proposal)
+                    parts = proposal.get_parts()
+                    
+                    for i in parts:
+                        modulepart = modulePartMapper.find_by_hash(i)
+                        modulepart.set_module(hash(newobj))
+                        modulePartMapper.update(modulepart)
+                    
+                    return newobj
     @staticmethod
     def get_module_by_name(name: str):
         """Alle Module mit Namen name auslesen."""
@@ -212,12 +225,114 @@ class Administration (object):
     def get_all_by_spo(spohash: int):
         """Gibt alle Module einer SPO aus"""
         with ModuleMapper() as mapper:
-            return mapper.find_all_by_spo(spohash)
+            return mapper.find_by_spo(spohash)
 
     @staticmethod
     def delete_module(module):
         with ModuleMapper() as mapper:
             mapper.delete(module)
+
+    @staticmethod
+    def create_moduletype(proposal: ModuleType, creator):
+        """
+        Legt das Objekt in der Datenbank an und setzt creationdate und creator,
+        wenn das Zielobjekt noch nicht in der DB existiert.
+        :param proposal: Ein Modul Objekt
+        :param creator: Ein User, creator des Objekts
+        """
+        proposal.set_creationdate(datetime.date.today())
+        proposal.set_creator(hash(creator))
+        with ModuleTypeMapper() as mapper:
+            existing = mapper.find_by_hash(hash(proposal))
+            if existing is None:
+                newobj = mapper.insert(proposal)
+                return newobj
+
+    @staticmethod
+    def get_moduletype_by_name(name: str):
+        """Alle Module mit Namen name auslesen."""
+        with ModuleTypeMapper() as mapper:
+            return mapper.find_by_name(name)
+
+    @staticmethod
+    def get_moduletype_by_id(id: int):
+        with ModuleTypeMapper() as mapper:
+            motypehash = mapper.find_hash_by_id(id)
+            return mapper.find_by_hash(motypehash)
+
+    @staticmethod
+    def get_moduletype_by_hash(modulehash):
+        """Das Modul mit dem gegebenem Hash auslesen."""
+        with ModuleTypeMapper() as mapper:
+            return mapper.find_by_hash(modulehash)
+
+    @staticmethod
+    def get_all_moduletypes():
+        """Alle module auslesen."""
+        with ModuleTypeMapper() as mapper:
+            hashes = mapper.find_all()
+            result = []
+            
+            for hash in hashes:
+                result.append(mapper.find_by_hash(hash))
+            return result
+
+    @staticmethod
+    def delete_moduletype(mtype: ExamType):
+        with ModuleTypeMapper() as mapper:
+            mapper.delete(mtype)
+
+    """Prüfungsart-spezifische Methoden"""
+
+    @staticmethod
+    def create_examtype(proposal: ModuleType, creator):
+        """
+        Legt das Objekt in der Datenbank an und setzt creationdate und creator,
+        wenn das Zielobjekt noch nicht in der DB existiert.
+        :param proposal: Ein ExamType Objekt
+        :param creator: Ein User, creator des Objekts
+        """
+        proposal.set_creationdate(datetime.date.today())
+        proposal.set_creator(hash(creator))
+        with ExamTypeMapper() as mapper:
+            existing = mapper.find_by_hash(hash(proposal))
+            if existing is None:
+                newobj = mapper.insert(proposal)
+                return newobj
+
+    @staticmethod
+    def get_examtype_by_name(name: str):
+        """Alle Module mit Namen name auslesen."""
+        with ExamTypeMapper() as mapper:
+            return mapper.find_by_name(name)
+
+    @staticmethod
+    def get_examtype_by_id(id: int):
+        with ExamTypeMapper() as mapper:
+            modthash = mapper.find_hash_by_id(id)
+            return mapper.find_by_hash(modthash)
+
+    @staticmethod
+    def get_examtype_by_hash(modulehash):
+        """Das Modul mit dem gegebenem Hash auslesen."""
+        with ExamTypeMapper() as mapper:
+            return mapper.find_by_hash(modulehash)
+
+    @staticmethod
+    def get_all_examtypes():
+        """Alle module auslesen."""
+        with ExamTypeMapper() as mapper:
+            hashes = mapper.find_all()
+            examTypes = []
+            
+            for hash in hashes:
+                examTypes.append(mapper.find_by_hash(hash))
+            return examTypes
+
+    @staticmethod
+    def delete_examtype(mtype: ModuleType):
+        with ExamTypeMapper() as mapper:
+            mapper.delete(mtype)
 
     """Modulteil-spezifische Methoden"""
 

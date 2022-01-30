@@ -3,13 +3,13 @@ from server.bo import NamedBo as Nbo
 import json
 
 
-class ExamType(Nbo.NamedBo):
+class ModuleType(Nbo.NamedBo):
 
     def __init__(self):
         super().__init__()
 
     def __str__(self):
-        return f"Modultyp: id: {self.get_id()}, name: {self._name}, title: {self._title}"
+        return f"Modultyp: id: {self.get_id()}, name: {self.get_name()}, title: {self.get_title()}"
 
     def json(self):
         return json.dumps({
@@ -20,7 +20,7 @@ class ExamType(Nbo.NamedBo):
     @staticmethod
     def from_dict(dictionary: dict):
         """Umwandeln eines Python dict() in einen StudyCourse()."""
-        obj = ExamType()
+        obj = ModuleType()
         obj.set_id(dictionary["id"])
         obj.set_name(dictionary["name"])
         obj.set_title(dictionary["title"])

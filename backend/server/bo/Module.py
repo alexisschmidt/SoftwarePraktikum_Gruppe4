@@ -61,16 +61,16 @@ class Module(Spe.SpoElement):
         self._instructor = instructor
 
     def get_parts(self):
-        return self._modules
+        return self._parts
 
     def set_parts(self, parts: list[int]):
-        self._modules = parts
+        self._parts = parts
 
     def append_part(self, part: int):
-        self._modules.append(part)
+        self._parts.append(part)
 
     def remove_part(self, part: int):
-        self._modules.remove(part)
+        self._parts.remove(part)
 
     def __str__(self):
         astring = (
@@ -101,6 +101,7 @@ class Module(Spe.SpoElement):
             'outcome': self.get_outcome(),
             'examtype': self.get_examtype(),
             'instructor': self.get_instructor(),
+            'parts': self.get_parts()
             })
 
     @staticmethod
@@ -118,6 +119,7 @@ class Module(Spe.SpoElement):
         obj.set_outcome(dictionary["outcome"])
         obj.set_examtype(dictionary["examtype"])
         obj.set_instructor(dictionary["instructor"])    # könnte geändert werden müssen
+        obj.set_parts(dictionary["moduleparts"])
         return obj
 
     def __eq__(self, other):

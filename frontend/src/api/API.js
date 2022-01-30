@@ -65,10 +65,11 @@ Map([<Rule '/sopra/studycourses' (OPTIONS, POST, HEAD, GET, PUT) -> sopra_studyc
   #getModuleByHashURL = (hash) => `${this.#serverBaseURL}/module/hash/${hash}`;
   #getModulePartByHashURL = (hash) => `${this.#serverBaseURL}/modulepart/${hash}`;
   #getUserByGoogleUserIdUrl = (google_user_id) => `${this.#serverBaseURL}/user-by-google_id/${google_user_id}`;
-  #getExamtypeByHashUrl = (hash) => {return this.#serverBaseURL + "/examtype" + hash};
-  #getModuletypeByHashUrl = (hash) => {return this.#serverBaseURL + "/moduleype" + hash};
-  #getAllExamTypeUrl = () => {return this.#serverBaseURL + "/examtype"};
-  #getAllModuleTypeUrl = () => {return this.#serverBaseURL + "/moduletype"};
+  #getExamtypeByHashUrl = (hash) => {return this.#serverBaseURL + "/examtypes" + hash};
+  #getModuletypeByHashUrl = (hash) => {return this.#serverBaseURL + "/moduleypes" + hash};
+  #getAllExamTypeUrl = () => {return this.#serverBaseURL + "/examtypes"};
+  #getAllModuleTypeUrl = () => {return this.#serverBaseURL + "/moduletypes"}; 
+  #getAllModulePartyForModuleURL = (modulehash) => `${this.#serverBaseURL}/modulepart/${modulehash}`;
 
 
 
@@ -104,7 +105,7 @@ Map([<Rule '/sopra/studycourses' (OPTIONS, POST, HEAD, GET, PUT) -> sopra_studyc
       return this.#add(this.#getAllModulePartsUrl(), modulepart, Modulepartbo);
     }
     updateModulePart = (modulepart) => {
-      return this.#update(this.#getAllModulePartsUrl(), modulepart, Modulepartbo);
+      return this.#add(this.#getAllModulePartsUrl(), modulepart, Modulepartbo);
     }
     deleteModulePart = (modulepart) => {
       return this.#delete(this.#getAllModulePartsUrl(), modulepart, Modulepartbo);
@@ -116,7 +117,7 @@ Map([<Rule '/sopra/studycourses' (OPTIONS, POST, HEAD, GET, PUT) -> sopra_studyc
       return this.#add(this.#getAllStudyCoursesUrl(), studycourse, StudyCoursebo);
     }
     updateStudyCourse = (studycourse) => {
-      return this.#update(this.#getAllStudyCoursesUrl(), studycourse, StudyCoursebo);
+      return this.#add(this.#getAllStudyCoursesUrl(), studycourse, StudyCoursebo);
     }
     deleteStudyCourse = (studycourse) => {
       return this.#delete(this.#getAllStudyCoursesUrl(), studycourse, StudyCoursebo);
@@ -128,7 +129,7 @@ Map([<Rule '/sopra/studycourses' (OPTIONS, POST, HEAD, GET, PUT) -> sopra_studyc
       return this.#add(this.#getAllSemesterUrl(), semester, Semesterbo);
     }
     updateSemester = (semester) => {
-      return this.#update(this.#getAllSemesterUrl(), semester, Semesterbo);
+      return this.#add(this.#getAllSemesterUrl(), semester, Semesterbo);
     }
     deleteSemester = (semester) => {
       return this.#delete(this.#getAllSemesterUrl(), semester, Semesterbo);
@@ -140,7 +141,7 @@ Map([<Rule '/sopra/studycourses' (OPTIONS, POST, HEAD, GET, PUT) -> sopra_studyc
       return this.#add(this.#getAllModulesURL(), module, Modulebo);
     }
     updateModule = (module) => {
-      return this.#update(this.#getAllModulesURL(), module, Modulebo);
+      return this.#add(this.#getAllModulesURL(), module, Modulebo);
     }
     deleteModule = (module) => {
       return this.#delete(this.#getAllModulesURL(), module, Modulebo);
@@ -152,7 +153,7 @@ Map([<Rule '/sopra/studycourses' (OPTIONS, POST, HEAD, GET, PUT) -> sopra_studyc
       return this.#add(this.#getAllPersonsUrl(), person, Personbo);
     }
     updatePerson = (person) => {
-      return this.#update(this.#getAllPersonsUrl(), person, Personbo);
+      return this.#add(this.#getAllPersonsUrl(), person, Personbo);
     }
     deletePerson = (person) => {
       return this.#delete(this.#getAllPersonsUrl(), person, Personbo);
@@ -164,7 +165,7 @@ Map([<Rule '/sopra/studycourses' (OPTIONS, POST, HEAD, GET, PUT) -> sopra_studyc
       return this.#add(this.#getAllUsersUrl(), user, Userbo);
     }
     updateUser = (user) => {
-      return this.#update(this.#getAllUsersUrl(), user, Userbo);
+      return this.#add(this.#getAllUsersUrl(), user, Userbo);
     }
     deleteUser = (user) => {
       return this.#delete(this.#getAllUsersUrl(), user, Userbo);
@@ -176,7 +177,7 @@ Map([<Rule '/sopra/studycourses' (OPTIONS, POST, HEAD, GET, PUT) -> sopra_studyc
       return this.#add(this.#getAllSposUrl(), spo, Spobo);
     }
     updateSpo = (spo) => {
-      return this.#update(this.#getAllSposUrl(), spo, Spobo);
+      return this.#add(this.#getAllSposUrl(), spo, Spobo);
     }
     deleteSpo = (spo) => {
       return this.#delete(this.#getAllSposUrl(), spo, Spobo);
@@ -265,6 +266,10 @@ Map([<Rule '/sopra/studycourses' (OPTIONS, POST, HEAD, GET, PUT) -> sopra_studyc
     }
     addStudyCourse = (studycourse) => {
       return this.#add(this.#getAllStudyCoursesUrl(), studycourse, StudyCoursebo);
+    }
+
+    getAllModulePartsForModule = (moduleHash) => {
+      return this.#getAll(this.#getAllModulePartyForModuleURL(moduleHash), Modulepartbo);
     }
 
 

@@ -88,7 +88,7 @@ class SpoForm extends Component {
     newSpo.setStudycourse(this.state.studyCourse);
     let modules = [];
     for (let module of this.state.moduleInSPO) {
-      modules.push(module.id);
+      modules.push(module.hash);
     }
     newSpo.setModules(modules);
 
@@ -162,7 +162,7 @@ class SpoForm extends Component {
   };
   studyCourseDropdownValueClick = (studycourse) => {
     this.setState({
-      studyCourse: studycourse.id,
+      studyCourse: studycourse.hash,
       studyCourseValidationFailed: false,
       studyCourseEdited: true,
     });
@@ -234,6 +234,31 @@ class SpoForm extends Component {
             module: response,
           });
         }
+      });
+  };
+
+  updateSpo = () => {
+    let newSpo = this.props.spo;
+    const newSpoObject = Spobo.fromJSON(newSpo);
+    newSpo = newSpoObject[0];
+    newSpo.setID(0);
+    newSpo.setName(this.state.name);
+    newSpo.setTitle(this.state.title);
+    newSpo.setStart_semester(this.state.start_semester);
+    newSpo.setEnd_semester(this.state.end_semester);
+    newSpo.setStudycourse(this.state.studyCourse);
+    let modules = [];
+    for (let module of this.state.moduleInSPO) {
+      modules.push(module.id);
+    }
+    newSpo.setModules(modules);
+    //TODO: Überprüfen, ob diese Methode wirklich alle Module aus der DB holt
+    API.getAPI()
+      .updateSpo(newSpo)
+      .then((response) => {
+        this.setState(this.baseState);
+        this.getInfos();
+        this.props.onClose(response); //Aufrufen parent in backend
       });
   };
 
@@ -484,7 +509,7 @@ class SpoForm extends Component {
                 studyCourseList.map((s) => (
                   <MenuItem
                     key={s.id}
-                    value={s.id}
+                    value={s.hash}
                     onClick={() => this.studyCourseDropdownValueClick(s)}
                   >
                     {s.name}
@@ -657,7 +682,7 @@ class SpoForm extends Component {
             spo ? (
               <ContextErrorMessage
                 error={updatingError}
-                contextErrorMsg={`The Spo ${spo.getID()} could not be updated.`}
+                contextErrorMsg={`The Spo could not be updated.`}
                 onReload={this.updateSpo}
               />
             ) : (

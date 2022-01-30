@@ -110,7 +110,6 @@ class Modulepart(Spe.SpoElement):
                    f"sources: {self._sources}, "
                    f"semester: {self._semester}, "
                    f"professor: {self._professor}, "
-                   f"module: {self._module}"
                    )
         return astring
 
@@ -130,7 +129,6 @@ class Modulepart(Spe.SpoElement):
             'sources': self.get_sources(),
             'semester': self.get_semester(),
             'professor': self.get_professor(),
-            'module': self.get_module()
         })
 
 
@@ -152,7 +150,6 @@ class Modulepart(Spe.SpoElement):
         obj.set_sources(dictionary["sources"])
         obj.set_semester(dictionary["semester"])
         obj.set_professor(dictionary["professor"])
-        obj.set_module(dictionary["module"])
         return obj
 
     __hash__ = Spe.SpoElement.__hash__

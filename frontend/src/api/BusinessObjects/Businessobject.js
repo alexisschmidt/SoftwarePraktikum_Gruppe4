@@ -7,8 +7,9 @@
 	 */
 	constructor() {
 	  this.id = 0;
-	  this.creationdate = null;
-	  this.createdby = null;
+	  this.creationdate = '';
+	  this.createdby = '';
+	  this.hash = 0;
 	}
   
 	/**
@@ -33,6 +34,10 @@
 	 */
 	getID() {
 	  return this.id;
+	}
+
+	getHash() {
+		return this.hash;
 	}
   
 	getCreationdate() {

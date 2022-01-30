@@ -95,25 +95,24 @@ export class ModulepartForm extends Component {
   addModulepart = () => {
     let newModulepart = new Modulepartbo();
     newModulepart.setID(0);
-    newModulepart.setname(this.state.name);
-    newModulepart.setedvnr(this.state.edvnr);
-    newModulepart.setects(this.state.ects);
-    newModulepart.setworkload(this.state.workload);
-    newModulepart.setsws(this.state.sws);
-    newModulepart.setlanguage(this.state.language);
-    newModulepart.setdescription(this.state.description);
-    newModulepart.setconnection(this.state.connection);
-    newModulepart.setliterature(this.state.literature);
-    newModulepart.setsources(this.state.sources);
-    newModulepart.setsemester(this.state.semester);
-    newModulepart.setprofessor(this.state.professor);
+    newModulepart.setName(this.state.name);
+    newModulepart.setEdvnr(this.state.edvnr);
+    newModulepart.setEcts(this.state.ects);
+    newModulepart.setWorkload(this.state.workload);
+    newModulepart.setSws(this.state.sws);
+    newModulepart.setLanguage(this.state.language);
+    newModulepart.setDescription(this.state.description);
+    newModulepart.setConnection(this.state.connection);
+    newModulepart.setLiterature(this.state.literature);
+    newModulepart.setSources(this.state.sources);
+    newModulepart.setSemester(this.state.semester);
+    newModulepart.setProfessor(this.state.professor);
 
     
 
     API.getAPI()
-      .addModuleParts(newModulepart)
+      .addModulePart(newModulepart)
       .then((modulepart) => {
-        this.props.getmodulepart();
         this.setState(this.baseState);
         this.getInfos()
         this.props.onClose(modulepart); //Aufrufen parent in backend
@@ -235,6 +234,32 @@ export class ModulepartForm extends Component {
 
   };
 
+  updateModulepart = () => {
+    let newModulepart = this.props.modulepart; //paul
+    newModulepart.setID(0);
+    newModulepart.setName(this.state.name);
+    newModulepart.setEdvnr(this.state.edvnr);
+    newModulepart.setEcts(this.state.ects);
+    newModulepart.setWorkload(this.state.workload);
+    newModulepart.setSws(this.state.sws);
+    newModulepart.setLanguage(this.state.language);
+    newModulepart.setDescription(this.state.description);
+    newModulepart.setConnection(this.state.connection);
+    newModulepart.setLiterature(this.state.literature);
+    newModulepart.setSources(this.state.sources);
+    newModulepart.setSemester(this.state.semester);
+    newModulepart.setProfessor(this.state.professor);
+    //fehlt hier das gleiche wie bei Module?
+    //TODO: Überprüfen, ob diese Methode wirklich alle Module aus der DB holt
+    API.getAPI()
+      .updateModulePart(newModulepart)
+      .then((response) => {
+        this.setState(this.baseState);
+        this.getInfos();
+        this.props.onClose(response); //Aufrufen parent in backend paul fragen
+      });
+  };
+
 
 
 
@@ -242,6 +267,18 @@ export class ModulepartForm extends Component {
     this.setState(this.baseState);
     this.props.onClose(null);
   };
+
+  handleNext = () => {
+    const { modulepart } = this.props;
+      if (this.state.activeStep === 0) {
+        this.getModulepart();
+        this.setState({
+          activeStep: 1,
+        });
+      } else if (this.state.activeStep === 1) {
+        modulepart ? this.updateModulepart() : this.addModulepart();
+      }
+    };
 
   render() {
     const { show, modulepart } = this.props;

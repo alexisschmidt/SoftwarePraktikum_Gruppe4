@@ -114,10 +114,10 @@ class ModuleForm extends Component {
 
 
     let moduleparts = [];
-    for (let modulepart of this.state.modulepartInSPO) {
+    for (let modulepart of this.state.modulepartInModule) {
       moduleparts.push(modulepart.id);
     }
-    newModule.setModules(moduleparts);
+    newModule.setModuleparts(moduleparts);
 
     
 
@@ -177,7 +177,13 @@ class ModuleForm extends Component {
   
      
 
-  
+  moduletypeDropdownValueClick = (moduletype) => {
+    this.setState({
+      type: moduletype.id,
+      typeValidationFailed: false,
+      typeEdited: true,
+    });
+  }
 
   examtypeDropdownValueClick = (examtype) => {
     this.setState({
@@ -262,7 +268,7 @@ class ModuleForm extends Component {
         if (module) {
           //TODO: anpassen auf die passende Methode in API
           API.getAPI()
-            .getAllModulePartsForMODULE(module.hash)
+            .getAllModulePartsForModule(module.hash)
             .then((modulepart) => {
               //alle moduleparts die in der spo sind aus der response entfernen
               let modulepartOhneModule = response.filter((m) => {
@@ -279,6 +285,36 @@ class ModuleForm extends Component {
             modulepart: response,
           });
         }
+      });
+  };
+
+  updateModule = () => {
+    const newModule = this.props.module; //paul
+    newModule.setID(0);
+    newModule.setName(this.state.name);
+    newModule.setTitle(this.state.title);
+    newModule.setEdvnr(this.state.edvnr);
+    newModule.setEcts(this.state.ects);
+    newModule.setWorkload(this.state.workload);
+    newModule.setRequirement(this.state.requirement);
+    newModule.setOutcome(this.state.outcome);
+    newModule.setExamtype(this.state.examtype);
+    newModule.setInstructor(this.state.instructor);
+    newModule.setType(this.state.type);
+
+
+    let moduleparts = [];
+    for (let modulepart of this.state.modulepartInModule) {
+      moduleparts.push(modulepart.id);
+    }
+    newModule.setModuleparts(moduleparts);
+    //TODO: Überprüfen, ob diese Methode wirklich alle Module aus der DB holt
+    API.getAPI()
+      .updateModule(newModule)
+      .then((response) => {
+        this.setState(this.baseState);
+        this.getInfos();
+        this.props.onClose(response); //Aufrufen parent in backend paul fragen
       });
   };
 
@@ -383,7 +419,7 @@ class ModuleForm extends Component {
   intersection = (checkedarray, modulepart) => {
     //überprüft ob ein modulpart in dem checkedarray vorhanden ist
     const modulpartIDs = modulepart.map((m) => m.id);
-    return checkedarray.filter((c) => modulpartIDs.IndexOf(c) !== -1);
+    return checkedarray.filter((c) => modulpartIDs.indexOf(c) !== -1);
   };
 
   renderTextfields() {
@@ -520,7 +556,7 @@ class ModuleForm extends Component {
 <Grid item xs={12} sm={8} md={8}>
                     <TextField label="Prüfungsart" fullWidth select value={examtype?examtype:""} error={examtypeValidationFailed}>
                         {examtypeList?examtypeList.map(s => <MenuItem key={s.id} value={s.id}
-                        onClick={() => this.studyCourseDropdownValueClick(s)}
+                        onClick={() => this.examtypeDropdownValueClick(s)}
                         >{s.name}</MenuItem>):<MenuItem value="">Kein Prüfungsart vorhanden</MenuItem>}
                     </TextField>
                 </Grid>
@@ -537,7 +573,7 @@ class ModuleForm extends Component {
                 <Grid item xs={12} sm={8} md={8}>
                     <TextField label="Modulart" fullWidth select value={type?type:""} error={typeValidationFailed}>
                         {moduletypeList?moduletypeList.map(s => <MenuItem key={s.id} value={s.id}
-                        onClick={() => this.typeDropdownValueClick(s)}
+                        onClick={() => this.moduletypeDropdownValueClick(s)}
                         >{s.name}</MenuItem>):<MenuItem value="">Kein Modulart vorhanden</MenuItem>}
                     </TextField>
                 </Grid>
@@ -545,7 +581,7 @@ class ModuleForm extends Component {
       </>
     );
   }
-  renderAddModulepart() {
+  renderAddModulepart = () => {
     const { modulepart, modulepartInModule, checked } = this.state;
 
     //Modulepart, die jeweils auf der linken und rechten Seite ausgewählt sind
@@ -709,7 +745,7 @@ class ModuleForm extends Component {
           </Stepper>
           {activeStep === 0
             ? this.renderTextfields()
-            : this.renderAddModulpart()}
+            : this.renderAddModulepart()}
           <LoadingProgress show={addingInProgress || updatingInProgress} />
           {
             // Show error message in dependency of Projektart prop
