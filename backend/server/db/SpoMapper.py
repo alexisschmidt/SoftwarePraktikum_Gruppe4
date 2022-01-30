@@ -97,12 +97,25 @@ class SpoMapper(Mapper):
     def find_all_by_studycourse(self, studycoursehash: int):
         result = []
         cursor = self._cnx.cursor()
-        cursor.execute(f"SELECT spo_hash FROM spo "
-                       f"WHERE studycourse_hash={studycoursehash}")
+        command = "SELECT * FROM spo " \
+                  f"WHERE studycourse_hash ={studycoursehash}"
+        cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for spo_hash in tuples:
-            result.append(spo_hash[0])
+        # Erstellen einer Liste von Objekten
+        for (id, creationdate, createdby, name, title, spo_hash, studycourse_hash) \
+                in tuples:
+            cursor.execute(f"SELECT module_hash FROM spocomposition WHERE spo_hash={spo_hash}")
+            modules = list(cursor.fetchall())
+            spo = Spo()
+            spo.set_id(id)
+            spo.set_creationdate(creationdate)
+            spo.set_creator(createdby)
+            spo.set_name(name)
+            spo.set_title(title)
+            spo.set_studycourse(studycourse_hash)
+            spo.set_modules(modules)
+            result.append(spo)
 
         self._cnx.commit()
         cursor.close()

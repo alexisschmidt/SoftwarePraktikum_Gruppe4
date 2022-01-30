@@ -5,8 +5,8 @@ import Semesterbo from "./BusinessObjects/Semesterbo";
 import Spobo from "./BusinessObjects/Spobo";
 import StudyCoursebo from "./BusinessObjects/StudyCoursebo";
 import Userbo from "./BusinessObjects/Userbo";
-import Examtypebo from "./BusinessObjects/ExamTypebo";
-import Moduletypebo from "./BusinessObjects/ModuleTypebo"
+import ExamTypebo from "./BusinessObjects/ExamTypebo";
+import ModuleTypebo from "./BusinessObjects/Moduletypebo"
 
 
 
@@ -249,16 +249,16 @@ Map([<Rule '/sopra/studycourses' (OPTIONS, POST, HEAD, GET, PUT) -> sopra_studyc
     }
     
     getAllExamtype = () => {
-      return this.#getAll(this.#getAllExamTypeUrl(), Examtypebo);
+      return this.#getAll(this.#getAllExamTypeUrl(), ExamTypebo);
     }
     getAllModuletype = () =>{
-      return this.#getAll(this.#getAllModuleTypeUrl(), Moduletypebo);
+      return this.#getAll(this.#getAllModuleTypeUrl(), ModuleTypebo);
     }
     addModuletype = (moduletype) => {
-      return this.#add(this.#getAllModuleTypeUrl(), moduletype, Moduletypebo);
+      return this.#add(this.#getAllModuleTypeUrl(), moduletype, ModuleTypebo);
     }
     addExamtype = (examtype) => {
-      return this.#add(this.#getAllExamTypeUrl(), examtype, Examtypebo);
+      return this.#add(this.#getAllExamTypeUrl(), examtype, ExamTypebo);
     }
     addSemester = (semester) => {
       return this.#add(this.#getAllSemesterUrl(), semester, Semesterbo);

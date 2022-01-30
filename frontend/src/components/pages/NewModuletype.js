@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import {Button, TextField,} from '@mui/material';
 import API from '../../api/API';
-import ModuleTypebo  from '../../api/BusinessObjects/ModuleTypebo';
+import ModuleTypebo  from '../../api/BusinessObjects/Moduletypebo';
 import ContextErrorMessage from "../dialogs/ContextErrorMessage";
 
 

@@ -10,9 +10,9 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import ModuleForm from './pages/SpoManagement';
-import ModulepartForm from './pages/SpoManagement';
-import SpoForm from './pages/SpoManagement';
+import ModuleForm from './pages/ModuleForm';
+import ModulepartForm from './pages/ModulepartForm';
+import SpoForm from './pages/SpoForm';
 
 import API from '../api/API';
 import { Button } from '@mui/material';
@@ -38,7 +38,7 @@ class AdminSpoAnsicht extends Component {
             modulepartFormOpen: false,
             selectedSPO:null,
             selectedModule:null, 
-            selectedModulePart:null,
+            selectedModulepart:null,
             // müssen die zwei auch sein oder nur selectedspo?
             
             spoId: null,
@@ -132,28 +132,27 @@ class AdminSpoAnsicht extends Component {
                 spo: {...spo, modules: []},
                 loadingProgress: false,
                 error: null
-            });
-
-            
-            spo.modules.forEach(moudleHash => {
-                api.getModuleByHash(moudleHash).then(m => {                
-
-                    api.getModulePartByHash(moudleHash).then(modulePart => {
-                        
-                        if (m && m.length) {
-                            let newModule = m[0];
-                            newModule.moduleparts = modulePart;
-
-                            this.setState({
-                                spo: { ...this.state.spo, modules: [...this.state.spo.modules, newModule] }
-                            });
-                        } else {
-                            this.setState({
-                                spo: { ...this.state.spo, modules: [...m] }
-                            });
-
-                        }
-                    });                    
+            }, () => {
+                spo.modules.forEach(moudleHash => {
+                    api.getModuleByHash(moudleHash).then(m => {                
+    
+                        api.getModulePartByHash(moudleHash).then(modulePart => {
+                            
+                            if (m && m.length) {
+                                let newModule = m[0];
+                                newModule.moduleparts = modulePart;
+    
+                                this.setState({
+                                    spo: { ...this.state.spo, modules: [...this.state.spo.modules, newModule] }
+                                });
+                            } else {
+                                this.setState({
+                                    spo: { ...this.state.spo, modules: [...m] }
+                                });
+    
+                            }
+                        });                    
+                    });
                 });
             });
         });
@@ -223,8 +222,8 @@ class AdminSpoAnsicht extends Component {
     }
     handleModulePartEdit = (modulePartElement) => {
         this.setState({
-            moduleartFormOpen:true,
-            selectedModulePart:modulePartElement,
+            modulepartFormOpen:true,
+            selectedModulepart:modulePartElement,
         })
     }
 
@@ -252,7 +251,7 @@ class AdminSpoAnsicht extends Component {
       modulepartFormClosed = (event) => {
         this.setState({
           modulepartFormOpen: false,
-          selectedModulePart: null,
+          selectedModulepart: null,
         });
       };
 

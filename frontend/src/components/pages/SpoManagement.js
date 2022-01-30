@@ -13,6 +13,7 @@ import NewModuletype from "./NewModuletype";
 import { DialogContent } from "@mui/material";
 import NewStudyCourse from "./NewStudyCourse";
 import NewExamtype from "./NewExamtype";
+import NewSemester from "./NewSemester";
 
 class Administration extends Component {
   constructor(props) {
@@ -70,7 +71,7 @@ class Administration extends Component {
   examtypeHandler = () =>{
     this.setState({
       newExamtypeOpen:true,
-      dialogtext:"neues Prüfungsart hinzufügen"
+      dialogtext:"neue Prüfungsart hinzufügen"
     })
   }
 
@@ -84,7 +85,7 @@ class Administration extends Component {
   semesterHandler = () =>{
     this.setState({
       newSemesterOpen:true,
-      dialogtext:"neues Prüfungsart hinzufügen"
+      dialogtext:"neues Semester hinzufügen"
     })
   }
   
@@ -158,7 +159,7 @@ class Administration extends Component {
             {newModuletypeOpen?<NewModuletype handleClose={this.closeDialog}/>:null}
             {newExamtypeOpen?<NewExamtype handleClose={this.closeDialog}/>:null}
             {newStudycourseOpen?<NewStudyCourse handleClose={this.closeDialog}/>:null}
-            {newSemesterOpen?<newSemester handleClose={this.closeDialog}/>:null}
+            {newSemesterOpen?<NewSemester handleClose={this.closeDialog}/>:null}
 
             </DialogContent>
             <DialogActions>

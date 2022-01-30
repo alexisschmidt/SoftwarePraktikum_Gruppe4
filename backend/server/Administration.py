@@ -411,10 +411,10 @@ class Administration (object):
     def save_user(user):
         with UserMapper() as mapper:
             us = mapper.find_by_google_user_id(user.get_google_user_id())
-        if us is None:
-            mapper.insert(user)
-        else:
-            mapper.update(user)
+            if us is None:
+                mapper.insert(user)
+            else:
+                mapper.update(user)
 
     @staticmethod
     def delete_user(user):

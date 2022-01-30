@@ -11,26 +11,27 @@ import firebaseConfig from "./firebaseconfig";
 import SignIn from "./components/pages/SignIn";
 import LoadingProgress from "./components/dialogs/LoadingProgress";
 import ContextErrorMessage from "./components/dialogs/ContextErrorMessage";
-//import SpoStudent from "./components/pages/SpoStudent";
+import SpoStudent from "./components/pages/SpoStudent";
 import About from "./components/pages/About";
-//import Admin from "./components/pages/AdminSpoAnsicht";
+import Admin from "./components/pages/AdminSpoAnsicht";
 //import Spoliste from './components/pages/Spoliste';
-//import StudyCourses from './components/pages/StudyCourses';
+// import StudyCourses from './components/pages/StudyCourses';
 import AllStudyCourses from './components/AllStudycourses';
 // import SpoAuswählenOMM from './components/pages/SpOAuswählenOMM';
-//import Spowi from './components/pages/Spowi';
-//import SpoStudyCoursesList from './components/SpoStudyCoursesList';
-//import AdminSpoAnsicht from './components/AdminSpoAnsicht';
-//import AdminSpoEdit from './components/AdminSpoEdit';
+import Spowi from './components/pages/Spowi';
+import SpoStudyCoursesList from './components/SpoStudyCoursesList';
+import AdminSpoAnsicht from './components/AdminSpoAnsicht';
+import AdminSpoEdit from './components/AdminSpoEdit';
 import AdminTable from './components/content/AdminTable';
-//import AdminStudiengangAuswahl from "./components/pages/AdminStudiengangAuswahl";
-//import SpoForm from "./components/pages/SpoForm";
+import AdminStudiengangAuswahl from "./components/pages/AdminStudiengangAuswahl";
+import SpoForm from "./components/pages/SpoForm";
 import Administration from "./components/pages/SpoManagement";
-//import SpoAuswahlStudent from "./components/pages/SpoAuswahlStudent";
+// import SpoAuswahlStudent from "./components/pages/SpoAuswahlStudent";
 // import AuswahlStudentAdmin from "./components/pages/AuswahlStudentAdmin";
 import StudentSpoAnsicht from "./components/StudentSpoAnsicht"
 import API from './api/API';
-import SpoUeberblick from "./components/pages/SpoUeberblick";
+// import SpoUeberblick from "./components/pages/SpoUeberblick";
+import './App.css';
 
 
 class App extends React.Component {
